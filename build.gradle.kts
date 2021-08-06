@@ -33,6 +33,8 @@ dependencies {
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
 	implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
 	implementation("com.squareup.okhttp3:okhttp:4.8.1")
+	implementation("com.squareup.okhttp3:logging-interceptor:4.8.1")
+
 
 	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.2")

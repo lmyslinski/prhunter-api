@@ -1,18 +1,22 @@
 package io.prhunter.api.oauth
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 private val log = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("/oauth")
 class OAuthController(
-    @Value("\${github.clientSecret}") private val clientSecret: String,
-    private val githubClient: GithubClient
+    private val githubSecrets: GithubSecrets,
+    private val githubClient: GithubClient,
+    private val objectMapper: ObjectMapper,
 ) {
     @GetMapping("/install")
     fun handleWebhook(@RequestParam code: String): ResponseEntity<String> {
@@ -20,11 +24,15 @@ class OAuthController(
         val resp = runBlocking {
             githubClient.getAccessToken(
                 AccessTokenRequest(
-                    code, "Iv1.339cb2b3104333db", clientSecret, "https://smee.io/TdZaUekAVfbZdxcv/api/oauth/complete"
+                    code, githubSecrets.clientId, githubSecrets.clientSecret, "https://15ab75995c2d.ngrok.io/api/oauth/complete"
                 ),
-            ).string()
+            )
+        }.execute()
+        if(resp.isSuccessful){
+            println(resp.body())
+            val obj = objectMapper.readValue(resp.body(), AccessTokenResponse::class.java)
+            println(obj)
         }
-        println(resp)
         return ResponseEntity.ok().body("")
     }
 
