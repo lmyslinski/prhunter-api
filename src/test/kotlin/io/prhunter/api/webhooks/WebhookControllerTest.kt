@@ -8,7 +8,7 @@ import io.mockk.just
 import io.mockk.verify
 import io.prhunter.api.installation.InstallationService
 import io.prhunter.api.webhooks.model.AccountDetails
-import io.prhunter.api.webhooks.model.InstallationCreated
+import io.prhunter.api.webhooks.model.WebhookBody
 import io.prhunter.api.webhooks.model.InstallationDetails
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,11 +32,10 @@ internal class WebhookControllerTest(
 
     @Test
     fun `should register an app`() {
-        mockMvc.
         every { installationService!!.registerInstallation(any())} just Runs
-        val input = InstallationCreated(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"))
+        val input = WebhookBody(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"), "created")
         mockMvc.post("/webhook") {
-            content = input
+            content = objectMapper.writeValueAsString(input)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
@@ -47,7 +46,16 @@ internal class WebhookControllerTest(
 
     @Test
     fun `should delete an app`(){
+        every { installationService!!.removeInstallation(any())} just Runs
+        val input = WebhookBody(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"), "deleted")
+        mockMvc.post("/webhook") {
+            content = objectMapper.writeValueAsString(input)
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
 
+        verify { installationService!!.removeInstallation(any()) }
     }
 
 }

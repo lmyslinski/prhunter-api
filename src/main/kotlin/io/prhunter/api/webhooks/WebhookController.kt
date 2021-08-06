@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.webhooks.model.InstallationCreated
+import io.prhunter.api.webhooks.model.WebhookBody
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -27,7 +27,7 @@ class WebhookController(
         val eventTree = objectMapper.readTree(eventBody)
         when (eventTree.get("action").asText()) {
             "created" -> {
-                val webhookDetails = objectMapper.readValue<InstallationCreated>(eventBody)
+                val webhookDetails = objectMapper.readValue<WebhookBody>(eventBody)
                 installationService.registerInstallation(
                     Installation(
                         webhookDetails.installation.id,
@@ -39,7 +39,7 @@ class WebhookController(
                 )
             }
             "deleted" -> {
-                val webhookDetails = objectMapper.readValue<InstallationCreated>(eventBody)
+                val webhookDetails = objectMapper.readValue<WebhookBody>(eventBody)
                 val installationId = webhookDetails.installation.id
                 installationService.removeInstallation(installationId)
             }

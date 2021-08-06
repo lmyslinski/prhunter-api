@@ -1,8 +1,9 @@
 package io.prhunter.api.webhooks.model
 
-data class InstallationCreated(
+data class WebhookBody(
     val installation: InstallationDetails,
-    val sender: AccountDetails
+    val sender: AccountDetails,
+    val action: String
 )
 
 data class InstallationDetails(
