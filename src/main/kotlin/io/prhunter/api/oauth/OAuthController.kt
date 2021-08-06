@@ -1,6 +1,6 @@
 package io.prhunter.api.oauth
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import io.prhunter.api.user.GithubUserService
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
@@ -14,26 +14,18 @@ private val log = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/oauth")
 class OAuthController(
-    private val githubSecrets: GithubSecrets,
-    private val githubClient: GithubClient,
-    private val objectMapper: ObjectMapper,
+    private val userService: GithubUserService
 ) {
     @GetMapping("/install")
     fun handleWebhook(@RequestParam code: String): ResponseEntity<String> {
-        log.info { "Oauth request: $code" }
-        val resp = runBlocking {
-            githubClient.getAccessToken(
-                AccessTokenRequest(
-                    code, githubSecrets.clientId, githubSecrets.clientSecret, "https://15ab75995c2d.ngrok.io/api/oauth/complete"
-                ),
-            )
-        }.execute()
-        if(resp.isSuccessful){
-            println(resp.body())
-            val obj = objectMapper.readValue(resp.body(), AccessTokenResponse::class.java)
-            println(obj)
+        return runBlocking{
+            try{
+                userService.registerUser(code)
+                ResponseEntity.ok().body("")
+            } catch (ex: Throwable){
+                ResponseEntity.internalServerError().body("Sorry, but the registration process has failed. Please remove the app from you account and try again.")
+            }
         }
-        return ResponseEntity.ok().body("")
     }
 
     @GetMapping("/complete")

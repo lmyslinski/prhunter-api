@@ -1,5 +1,10 @@
 package io.prhunter.api.webhooks
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.prhunter.api.installation.Installation
+import io.prhunter.api.installation.InstallationService
+import io.prhunter.api.webhooks.model.InstallationCreated
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,14 +16,39 @@ private val log = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("/webhook")
-class WebhookController {
+class WebhookController(
+    private val objectMapper: ObjectMapper,
+    private val installationService: InstallationService
+) {
 
     @PostMapping()
     fun handleWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
-        log.info { "Webhook received: $eventBody" }
-        return ResponseEntity.ok().body(eventBody)
+        log.debug { "Webhook received: $eventBody" }
+        val eventTree = objectMapper.readTree(eventBody)
+        when (eventTree.get("action").asText()) {
+            "created" -> {
+                val webhookDetails = objectMapper.readValue<InstallationCreated>(eventBody)
+                installationService.registerInstallation(
+                    Installation(
+                        webhookDetails.installation.id,
+                        webhookDetails.installation.account.id,
+                        webhookDetails.installation.account.type,
+                        webhookDetails.sender.id,
+                        webhookDetails.sender.type
+                    )
+                )
+            }
+            "deleted" -> {
+                val webhookDetails = objectMapper.readValue<InstallationCreated>(eventBody)
+                val installationId = webhookDetails.installation.id
+                installationService.removeInstallation(installationId)
+            }
+            else -> {
+                log.info { "Webhook ignored" }
+            }
+        }
+        return ResponseEntity.ok().body("Webhook handled successfully")
     }
-
 }
 
 

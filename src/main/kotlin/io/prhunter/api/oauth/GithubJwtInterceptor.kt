@@ -3,8 +3,6 @@ package io.prhunter.api.oauth
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import mu.KotlinLogging
-import okhttp3.Interceptor
-import okhttp3.Response
 import org.bouncycastle.asn1.ASN1Sequence
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey
 import org.bouncycastle.util.io.pem.PemReader
@@ -23,7 +21,7 @@ import java.util.*
 
 private val log = KotlinLogging.logger {}
 
-class GithubJwtInterceptor(private val githubSecrets: GithubSecrets) : Interceptor {
+class GithubJwtInterceptor(private val githubSecrets: GithubSecrets) {
 
     private fun parsePEMFile(pemFile: File): ByteArray {
         if (!pemFile.isFile || !pemFile.exists()) {
@@ -70,11 +68,11 @@ class GithubJwtInterceptor(private val githubSecrets: GithubSecrets) : Intercept
                 .compact()
     }
 
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val jwtToken = generateJwtKey()
-        val updated = request.newBuilder().header("Authentication", "Bearer $jwtToken").build()
-        println(jwtToken)
-        return chain.proceed(updated)
-    }
+//    override fun intercept(chain: Interceptor.Chain): Response {
+//        val request = chain.request()
+//        val jwtToken = generateJwtKey()
+//        val updated = request.newBuilder().header("Authentication", "Bearer $jwtToken").build()
+//        println(jwtToken)
+//        return chain.proceed(updated)
+//    }
 }

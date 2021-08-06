@@ -17,12 +17,12 @@ class JacksonConfig {
     @Primary
     fun objectMapper(): ObjectMapper {
         val objectMapper = jacksonObjectMapper()
+
         objectMapper.registerModule(JavaTimeModule())
-
         objectMapper.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
-
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
         return objectMapper
     }
 }
