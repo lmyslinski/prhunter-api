@@ -11,7 +11,7 @@ class TestController {
 
     @GetMapping("/")
     fun test(): ResponseEntity<String> {
-        return ResponseEntity.ok().body("Test")
+        return ResponseEntity.ok().body("Successfully logged in")
     }
 
 }

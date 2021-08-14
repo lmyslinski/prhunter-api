@@ -16,10 +16,17 @@ class GithubUserService(
     private val httpClient: HttpClient,
 ) {
 
-    suspend fun registerUser(code: String): GithubUser{
+    suspend fun registerUser(code: String): GithubUser {
         val accessToken = getAccessToken(code)
         val userProfile = GitHubBuilder().withOAuthToken(accessToken.accessToken).build().myself
-        val newUser = GithubUser(userProfile.id, userProfile.login, userProfile.email, userProfile.name, accessToken.accessToken, userProfile.createdAt.toInstant())
+        val newUser = GithubUser(
+            userProfile.id,
+            userProfile.login,
+            userProfile.email,
+            userProfile.name,
+            accessToken.accessToken,
+            userProfile.createdAt.toInstant()
+        )
         return githubUserRepository.save(newUser)
     }
 
@@ -31,7 +38,7 @@ class GithubUserService(
                 code,
                 githubSecrets.clientId,
                 githubSecrets.clientSecret,
-                "https://6fcbb8f63d98.ngrok.io/api/oauth/complete"
+                "http://localhost:3000/signup-success"
             )
         }
     }
