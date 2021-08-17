@@ -26,7 +26,3 @@ github:
   clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
-
-logging:
-  level:
-    org.springframework: DEBUG

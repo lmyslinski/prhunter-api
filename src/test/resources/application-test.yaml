@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:13:///prhunter
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: integrationtest
+            client-secret: secret
+            client-name: Client to Mock Oauth2 Server
+            scope: user
+            redirect-uri-template: http://localhost:8080/login/oauth2/code/github
+            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+        provider:
+          github:
+            authorization-uri: "http://0.0.0.0:8090/oauth/authorize"
+            token-uri: "http://0.0.0.0:8090/oauth/token"
+            user-info-uri: "http://0.0.0.0:8090/userinfo"
+            user-info-authentication-method: header
+            user-name-attribute: sub
+
+logging:
+  level:
+    org.springframework: debug
+
+github:
+  appId: ${GITHUB_APP_ID:invalid}
+  clientId: ${GITHUB_CLIENT_ID:invalid}
+  clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
+  webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
+  privateKey: ${GITHUB_PRIVATE_KEY:invalid}

@@ -48,6 +48,9 @@ dependencies {
 
 	testImplementation("io.mockk:mockk:1.9.3")
 	testImplementation("com.ninja-squad:springmockk:3.0.1")
+	testImplementation("com.github.tomakehurst:wiremock-jre8:2.27.1")
+	testImplementation("com.marcinziolo:kotlin-wiremock:1.0.2")
+
 
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
