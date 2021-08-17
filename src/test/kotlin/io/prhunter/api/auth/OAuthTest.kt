@@ -2,23 +2,13 @@ package io.prhunter.api.auth
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.common.ConsoleNotifier
-import com.github.tomakehurst.wiremock.common.LocalNotifier.notifier
-import com.github.tomakehurst.wiremock.junit.WireMockRule
-import com.github.tomakehurst.wiremock.matching.UrlPattern
 import io.prhunter.api.WireMockContextInitializer
-import org.junit.ClassRule
-import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -85,6 +75,7 @@ class OAuthTest(
                         )
                 )
         )
+        // TODO this has to be done differently
         val redirectResult = mockMvc.get("/oauth2/authorization/github").andExpect {
             status { is3xxRedirection() }
         }.andReturn()

@@ -34,6 +34,7 @@ class OAuth2LoginSecurityConfig: WebSecurityConfigurerAdapter() {
                 userInfoEndpoint {
                     userAuthoritiesMapper = userAuthoritiesMapper()
                 }
+                defaultSuccessUrl("http://localhost:3000/signup-success", false)
             }
             exceptionHandling {
                 authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
