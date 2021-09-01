@@ -8,13 +8,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 
 @EnableWebSecurity
 @Configuration
-class OAuth2LoginSecurityConfig: WebSecurityConfigurerAdapter() {
+class SecurityConfig(
+    private val clientRegistrationRepository: ClientRegistrationRepository,
+    private val authorizedClientService: OAuth2AuthorizedClientService,
+    private val authorizedClientRepository: OAuth2AuthorizedClientRepository
+): WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
         http{
@@ -35,6 +43,7 @@ class OAuth2LoginSecurityConfig: WebSecurityConfigurerAdapter() {
                     userAuthoritiesMapper = userAuthoritiesMapper()
                 }
                 defaultSuccessUrl("http://localhost:3000/signup-success", false)
+
             }
             exceptionHandling {
                 authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
@@ -42,6 +51,7 @@ class OAuth2LoginSecurityConfig: WebSecurityConfigurerAdapter() {
             httpBasic {
                 disable()
             }
+            addFilterBefore(GithubRequestModifierFilter(), OAuth2LoginAuthenticationFilter::class.java)
         }
     }
 
@@ -63,6 +73,10 @@ class OAuth2LoginSecurityConfig: WebSecurityConfigurerAdapter() {
 
         mappedAuthorities
     }
+
+//    private fun customGithubOAuthFilter(): GithubOAuth2LoginAuthenticationFilter {
+//        return GithubOAuth2LoginAuthenticationFilter(clientRegistrationRepository, authorizedClientService, authorizedClientRepository)
+//    }
 
 //override fun configure(http: HttpSecurity?) {
 //    http {
