@@ -20,6 +20,7 @@ server:
     contextPath: /api
 
 github:
+  baseUrl: "api.github.com"
   appId: ${GITHUB_APP_ID:invalid}
   clientId: ${GITHUB_CLIENT_ID:invalid}
   clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
@@ -28,4 +29,5 @@ github:
 
 logging:
   level:
-    org.springframework: debug
+    org.springframework: info
+

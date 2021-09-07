@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfig(
+class WebConfig(
     private val githubSecrets: GithubSecrets
 ): WebSecurityConfigurerAdapter() {
 

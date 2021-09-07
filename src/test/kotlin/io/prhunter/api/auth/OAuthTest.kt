@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.get
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = [WireMockContextInitializer::class])
-
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class OAuthTest(
@@ -33,6 +32,7 @@ class OAuthTest(
     fun afterEach() {
         wireMockServer.resetAll()
     }
+
     @Test
     fun stopOAuthResponses() {
         wireMockServer.stubFor(

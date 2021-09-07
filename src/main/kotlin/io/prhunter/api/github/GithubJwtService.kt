@@ -1,27 +1,39 @@
-package io.prhunter.api.oauth
+package io.prhunter.api.github
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import mu.KotlinLogging
 import org.bouncycastle.asn1.ASN1Sequence
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey
 import org.bouncycastle.util.io.pem.PemReader
 import org.springframework.core.io.ClassPathResource
+import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.OpenOption
+import java.nio.file.Path
+import java.nio.file.StandardOpenOption
 import java.security.KeyFactory
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.RSAPrivateKeySpec
 import java.util.*
+import kotlin.io.path.writeBytes
 
+@Service
+object GithubJwtService {
 
-private val log = KotlinLogging.logger {}
-
-class GithubJwtInterceptor(private val githubSecrets: GithubSecrets) {
+    fun generateJwtKey(githubAppId: String, privateKeyFile: File): String {
+        val pk = readPKCS1PrivateKeyFromFile(privateKeyFile)
+        return Jwts.builder().setIssuer(githubAppId)
+            .signWith(pk, SignatureAlgorithm.RS256)
+            .setIssuedAt(Date(System.currentTimeMillis() - 1000))
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 5))
+            .compact()
+    }
 
     private fun parsePEMFile(pemFile: File): ByteArray {
         if (!pemFile.isFile || !pemFile.exists()) {
@@ -34,12 +46,12 @@ class GithubJwtInterceptor(private val githubSecrets: GithubSecrets) {
         return content
     }
 
-    private fun getPKCS1PrivateKey(keyBytes: ByteArray, algorithm: String): PrivateKey? {
+    private fun getPKCS1PrivateKey(keyBytes: ByteArray): PrivateKey? {
         var privateKey: PrivateKey? = null
         try {
             val asn1PrivKey = RSAPrivateKey.getInstance(ASN1Sequence.fromByteArray(keyBytes))
             val rsaPrivateKeySpec = RSAPrivateKeySpec(asn1PrivKey.modulus, asn1PrivKey.privateExponent)
-            val kf = KeyFactory.getInstance(algorithm)
+            val kf = KeyFactory.getInstance("RSA")
             privateKey = kf.generatePrivate(rsaPrivateKeySpec)
         } catch (e: NoSuchAlgorithmException) {
             println("Could not reconstruct the private key, the given algorithm could not be found.")
@@ -51,28 +63,15 @@ class GithubJwtInterceptor(private val githubSecrets: GithubSecrets) {
         return privateKey
     }
 
-    fun readPKCS1PrivateKeyFromFile(filepath: String, algorithm: String): PrivateKey? {
-        val bytes = parsePEMFile(File(filepath))
-        return getPKCS1PrivateKey(bytes, algorithm)
+    private fun readPKCS1PrivateKeyFromFile(file: File): PrivateKey? {
+        val bytes = parsePEMFile(file)
+        return getPKCS1PrivateKey(bytes)
     }
 
-    fun generateJwtKey(): String {
-
-        val input = ClassPathResource("prhunter-io.2021-08-03.private-key.pem").file.absolutePath
-        val pk = readPKCS1PrivateKeyFromFile(input, "RSA")
-
-        return Jwts.builder().setIssuer(githubSecrets.appId)
-                .signWith(pk, SignatureAlgorithm.RS256)
-                .setIssuedAt(Date(System.currentTimeMillis() - 1000))
-                .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 5))
-                .compact()
+    fun generateTmpPrivateKey(privateKeyContent: String): File  {
+        val temp: Path = Files.createTempFile("private-key", ".pem")
+        val content = Base64.getDecoder().decode(privateKeyContent)
+        temp.writeBytes(content, StandardOpenOption.WRITE)
+        return temp.toFile()
     }
-
-//    override fun intercept(chain: Interceptor.Chain): Response {
-//        val request = chain.request()
-//        val jwtToken = generateJwtKey()
-//        val updated = request.newBuilder().header("Authentication", "Bearer $jwtToken").build()
-//        println(jwtToken)
-//        return chain.proceed(updated)
-//    }
 }

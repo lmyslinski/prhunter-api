@@ -1,7 +1,6 @@
 package io.prhunter.api.installation
 
 import mu.KotlinLogging
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
 
@@ -9,7 +8,7 @@ private val log = KotlinLogging.logger {}
 
 @Service
 class InstallationService(
-    @Autowired private val installationRepository: InstallationRepository
+    private val installationRepository: InstallationRepository
 ) {
 
     fun registerInstallation(installation: Installation){
@@ -24,5 +23,9 @@ class InstallationService(
         }catch (ex: EmptyResultDataAccessException){
             log.warn { "An installation deletion was attempted but $installationId was not found" }
         }
+    }
+
+    fun getInstallationsByUserId(id: Long): List<Installation> {
+        return installationRepository.findBySenderId(id)
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.context.event.ContextClosedEvent
 class WireMockContextInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
 
-        val wmServer = WireMockServer(WireMockConfiguration().port(8090))
+        val wmServer = WireMockServer(WireMockConfiguration().dynamicPort())
         wmServer.start()
 
         applicationContext.beanFactory.registerSingleton("wireMock", wmServer)

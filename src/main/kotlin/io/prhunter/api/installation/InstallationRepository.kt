@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface InstallationRepository : JpaRepository<Installation, Long>
+interface InstallationRepository : JpaRepository<Installation, Long>{
+    fun findBySenderId(senderId: Long): List<Installation>
+}

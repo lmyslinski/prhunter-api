@@ -39,3 +39,4 @@ out/
 .client-secret
 .webhook-secret
 .sdkmanrc
+.env*
