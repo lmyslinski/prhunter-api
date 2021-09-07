@@ -1,4 +1,4 @@
-package io.prhunter.api.webhooks.model
+package io.prhunter.api.github.webhooks.model
 
 data class WebhookBody(
     val installation: InstallationDetails,

@@ -1,4 +1,4 @@
-package io.prhunter.api.oauth
+package io.prhunter.api.github
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -10,4 +10,5 @@ class GithubSecrets(
     @Value("\${github.clientSecret}") val clientSecret: String,
     @Value("\${github.webhookSecret}") val webhookSecret: String,
     @Value("\${github.privateKey}") val privateKey: String,
+    @Value("\${github.successUrl}") val successUrl: String,
 )

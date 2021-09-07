@@ -1,10 +1,10 @@
-package io.prhunter.api.webhooks
+package io.prhunter.api.github.webhooks
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.webhooks.model.WebhookBody
+import io.prhunter.api.github.webhooks.model.WebhookBody
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

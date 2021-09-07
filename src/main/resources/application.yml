@@ -15,6 +15,7 @@ spring:
             client-id: ${GITHUB_CLIENT_ID:invalid}
             client-secret: ${GITHUB_CLIENT_SECRET:invalid}
 
+
 server:
   servlet:
     contextPath: /api
@@ -22,6 +23,7 @@ server:
 github:
   baseUrl: "api.github.com"
   appId: ${GITHUB_APP_ID:invalid}
+  successUrl: ${GITHUB_SUCCESS_URL:https://prhunter.io/signup-success}
   clientId: ${GITHUB_CLIENT_ID:invalid}
   clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}

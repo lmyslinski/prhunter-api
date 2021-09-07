@@ -1,6 +1,6 @@
 package io.prhunter.api.config
 
-import io.prhunter.api.oauth.GithubSecrets
+import io.prhunter.api.github.GithubSecrets
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
 import org.springframework.web.filter.OncePerRequestFilter

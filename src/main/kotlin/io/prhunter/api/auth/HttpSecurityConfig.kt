@@ -1,6 +1,7 @@
-package io.prhunter.api.config
+package io.prhunter.api.auth
 
-import io.prhunter.api.oauth.GithubSecrets
+import io.prhunter.api.config.GithubRequestModifierFilter
+import io.prhunter.api.github.GithubSecrets
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -18,15 +19,16 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 
 @EnableWebSecurity
 @Configuration
-class WebConfig(
+class HttpSecurityConfig(
     private val githubSecrets: GithubSecrets
-): WebSecurityConfigurerAdapter() {
+) : WebSecurityConfigurerAdapter() {
 
     private val customAuthorizedClientRepository = HttpSessionOAuth2AuthorizationRequestRepository()
-    private val githubRequestModifierFilter = GithubRequestModifierFilter(customAuthorizedClientRepository, githubSecrets)
+    private val githubRequestModifierFilter =
+        GithubRequestModifierFilter(customAuthorizedClientRepository, githubSecrets)
 
     override fun configure(http: HttpSecurity?) {
-        http{
+        http {
             authorizeRequests {
                 authorize("/webhook", permitAll)
                 authorize("/login/**", permitAll)
@@ -43,7 +45,7 @@ class WebConfig(
                 userInfoEndpoint {
                     userAuthoritiesMapper = userAuthoritiesMapper()
                 }
-                defaultSuccessUrl("http://localhost:3000/signup-success", false)
+                defaultSuccessUrl(githubSecrets.successUrl, false)
                 authorizationEndpoint {
                     authorizationRequestRepository = customAuthorizedClientRepository
                 }
@@ -58,34 +60,23 @@ class WebConfig(
         }
     }
 
-    private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper = GrantedAuthoritiesMapper { authorities: Collection<GrantedAuthority> ->
-        val mappedAuthorities = emptySet<GrantedAuthority>()
+    private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
+        GrantedAuthoritiesMapper { authorities: Collection<GrantedAuthority> ->
+            val mappedAuthorities = emptySet<GrantedAuthority>()
 
-        authorities.forEach { authority ->
-            if (authority is OidcUserAuthority) {
-                val idToken = authority.idToken
-                val userInfo = authority.userInfo
-                // Map the claims found in idToken and/or userInfo
-                // to one or more GrantedAuthority's and add it to mappedAuthorities
-            } else if (authority is OAuth2UserAuthority) {
-                val userAttributes = authority.attributes
-                // Map the attributes found in userAttributes
-                // to one or more GrantedAuthority's and add it to mappedAuthorities
+            authorities.forEach { authority ->
+                if (authority is OidcUserAuthority) {
+                    val idToken = authority.idToken
+                    val userInfo = authority.userInfo
+                    // Map the claims found in idToken and/or userInfo
+                    // to one or more GrantedAuthority's and add it to mappedAuthorities
+                } else if (authority is OAuth2UserAuthority) {
+                    val userAttributes = authority.attributes
+                    // Map the attributes found in userAttributes
+                    // to one or more GrantedAuthority's and add it to mappedAuthorities
+                }
             }
+
+            mappedAuthorities
         }
-
-        mappedAuthorities
-    }
-
-//    private fun customGithubOAuthFilter(): GithubOAuth2LoginAuthenticationFilter {
-//        return GithubOAuth2LoginAuthenticationFilter(clientRegistrationRepository, authorizedClientService, authorizedClientRepository)
-//    }
-
-//override fun configure(http: HttpSecurity?) {
-//    http {
-//        securityMatcher("/greetings/**")
-//
-//        httpBasic {}
-//    }
-//}
 }

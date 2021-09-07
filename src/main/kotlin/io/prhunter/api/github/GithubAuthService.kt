@@ -1,6 +1,5 @@
 package io.prhunter.api.github
 
-import io.prhunter.api.oauth.GithubSecrets
 import org.kohsuke.github.GHApp
 import org.kohsuke.github.GitHubBuilder
 import org.springframework.stereotype.Service

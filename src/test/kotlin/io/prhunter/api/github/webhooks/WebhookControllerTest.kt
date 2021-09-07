@@ -1,4 +1,4 @@
-package io.prhunter.api.webhooks
+package io.prhunter.api.github.webhooks
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
@@ -7,9 +7,9 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.verify
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.webhooks.model.AccountDetails
-import io.prhunter.api.webhooks.model.WebhookBody
-import io.prhunter.api.webhooks.model.InstallationDetails
+import io.prhunter.api.github.webhooks.model.AccountDetails
+import io.prhunter.api.github.webhooks.model.WebhookBody
+import io.prhunter.api.github.webhooks.model.InstallationDetails
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
