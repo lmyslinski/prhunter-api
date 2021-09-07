@@ -10,17 +10,19 @@ class GithubAuthService(
     private val githubSecrets: GithubSecrets
 ) {
 
-    private val gh = getApplicationGithubClient()
-
-    fun getInstallationAuthToken(installationId: Long): String {
-        val appInstallation = gh.getInstallationById(installationId)
-        return appInstallation.createToken().create().token
+    private val githubAppClient by lazy {
+        getApplicationGithubClient()
     }
 
     private fun getApplicationGithubClient(): GHApp {
         val tmpPrivateKey = GithubJwtService.generateTmpPrivateKey(githubSecrets.privateKey)
         val jwtToken = GithubJwtService.generateJwtKey(githubSecrets.appId, tmpPrivateKey)
         return GitHubBuilder().withJwtToken(jwtToken).build().app
+    }
+
+    fun getInstallationAuthToken(installationId: Long): String {
+        val appInstallation = githubAppClient.getInstallationById(installationId)
+        return appInstallation.createToken().create().token
     }
 
 }
