@@ -6,20 +6,20 @@ spring:
       client:
         registration:
           github:
-            client-id: integrationtest
-            client-secret: secret
-            client-name: Client to Mock Oauth2 Server
-            scope: user
+#            client-id: github
+#            client-secret: secret
+#            client-name: Client to Mock Oauth2 Server
+#            scope: user
             redirect-uri-template: http://localhost:8080/login/oauth2/code/github
-            client-authentication-method: basic
-            authorization-grant-type: authorization_code
+#            client-authentication-method: basic
+#            authorization-grant-type: authorization_code
         provider:
           github:
-            authorization-uri: "http://0.0.0.0:8090/oauth/authorize"
+            authorization-uri: "http://0.0.0.0:8090/login/oauth/authorize"
             token-uri: "http://0.0.0.0:8090/oauth/token"
             user-info-uri: "http://0.0.0.0:8090/userinfo"
-            user-info-authentication-method: header
-            user-name-attribute: sub
+#            user-info-authentication-method: header
+#            user-name-attribute: sub
 
 github:
   appId: ${GITHUB_APP_ID:invalid}
@@ -27,3 +27,7 @@ github:
   clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
+
+logging:
+  level:
+    org.springframework.security: debug
