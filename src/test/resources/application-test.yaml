@@ -21,6 +21,10 @@ spring:
 #            user-info-authentication-method: header
 #            user-name-attribute: sub
 
+server:
+  servlet:
+    contextPath: /
+
 github:
   appId: ${GITHUB_APP_ID:invalid}
   clientId: ${GITHUB_CLIENT_ID:invalid}

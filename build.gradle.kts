@@ -46,6 +46,8 @@ dependencies {
 	implementation("org.bouncycastle:bcprov-jdk15on:1.69")
 	implementation("org.bouncycastle:bcpkix-jdk15on:1.69")
 
+	implementation("com.vladmihalcea:hibernate-types-55:2.12.1")
+
 	testImplementation("io.mockk:mockk:1.9.3")
 	testImplementation("com.ninja-squad:springmockk:3.0.1")
 	testImplementation("com.github.tomakehurst:wiremock-jre8:2.27.1")
