@@ -10,6 +10,9 @@ import java.time.Instant
 class BountyService(val bountyRepository: BountyRepository) {
 
     fun createBounty(createBountyRequest: CreateBountyRequest): Bounty {
+        // get access token for user
+        // check if the token has access to the repository linked in the request
+
         val bounty = Bounty(
             repoId = createBountyRequest.repoId,
             issueId = createBountyRequest.issueId,

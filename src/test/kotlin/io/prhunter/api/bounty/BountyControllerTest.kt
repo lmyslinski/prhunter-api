@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.test.context.ActiveProfiles
@@ -25,6 +26,16 @@ class BountyControllerTest(
     @Autowired val objectMapper: ObjectMapper,
     @Autowired val bountyRepository: BountyRepository
 ) {
+
+    private val createBountyRequest = CreateBountyRequest(
+        1L,
+        2L,
+        "test-issue",
+        "test-body",
+        listOf("scala", "kotlin"),
+        BigDecimal.valueOf(100L),
+        "USD"
+    )
 
     @BeforeEach
     fun setup() {
@@ -58,33 +69,43 @@ class BountyControllerTest(
     }
 
     @Test
-    fun `should create a new bounty`() {
-        val createRequest = CreateBountyRequest(
-            1L,
-            2L,
-            "test-issue",
-            "test-body",
-            listOf("scala", "kotlin"),
-            BigDecimal.valueOf(100L),
-            "USD"
-        )
-        val requestJson = objectMapper.writeValueAsString(createRequest)
-
-        val dd = SecurityMockMvcRequestPostProcessors.user("test-user")
-
+    fun `should create a new bounty if signed in and issue owner`() {
         val response = mockMvc.post("/bounty") {
-            content = requestJson
+            content = objectMapper.writeValueAsString(createBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(dd)
+            with(SecurityMockMvcRequestPostProcessors.user("test-user"))
         }.andExpect {
             status { is2xxSuccessful() }
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn().response.contentAsString
 
         val actual = objectMapper.readValue<Bounty>(response)
+
         Assertions.assertNotNull(actual.id)
-        Assertions.assertEquals(createRequest.title, actual.title)
+        Assertions.assertEquals(createBountyRequest.title, actual.title)
+    }
+
+    @Test
+    fun `should return 401 for create bounty if not signed in`(){
+        mockMvc.post("/bounty") {
+            content = objectMapper.writeValueAsString(createBountyRequest)
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isEqualTo(HttpStatus.UNAUTHORIZED.value()) }
+        }
+    }
+
+    @Test
+    fun `should return 403 for create bounty if not issue owner`(){
+//        mockMvc.post("/bounty") {
+//            content = objectMapper.writeValueAsString(createBountyRequest)
+//            contentType = MediaType.APPLICATION_JSON
+//            accept = MediaType.APPLICATION_JSON
+//        }.andExpect {
+//            status { isEqualTo(HttpStatus.UNAUTHORIZED.value()) }
+//        }
     }
 
     @Test
@@ -104,8 +125,17 @@ class BountyControllerTest(
     }
 
     @Test
-    fun `should get a single bounty sucessfully`(){
-
+    fun `should get a single bounty successfully`(){
+        val expected = bountyRepository.findAll().sortedBy { it.updatedAt }.first()
+        mockMvc.get("/bounty/${expected.id}").andExpect {
+            status {
+                isOk()
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                }
+                content { json(objectMapper.writeValueAsString(expected)) }
+            }
+        }
     }
 
     // should list all bounties without any permissions

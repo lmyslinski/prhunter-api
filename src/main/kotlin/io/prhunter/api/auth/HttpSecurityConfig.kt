@@ -3,6 +3,7 @@ package io.prhunter.api.auth
 import io.prhunter.api.config.GithubRequestModifierFilter
 import io.prhunter.api.github.GithubSecrets
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -33,6 +34,8 @@ class HttpSecurityConfig(
                 authorize("/webhook", permitAll)
                 authorize("/login/**", permitAll)
                 authorize("/oauth2/**", permitAll)
+                authorize(HttpMethod.GET, "/bounty", permitAll)
+                authorize(HttpMethod.GET, "/bounty/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
             csrf {
