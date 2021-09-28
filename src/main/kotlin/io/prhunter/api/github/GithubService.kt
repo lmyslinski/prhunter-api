@@ -39,7 +39,4 @@ class GithubService(
             githubRestClient.listAuthenticatedUserRepos(userToken)
         }
     }
-
-
-
 }

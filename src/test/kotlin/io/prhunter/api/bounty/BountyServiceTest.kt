@@ -2,11 +2,11 @@ package io.prhunter.api.bounty
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.client.GHRepoPermissionData
 import io.prhunter.api.github.client.Permissions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
@@ -34,7 +34,7 @@ class BountyServiceTest {
             )
         )
 
-        assertThrows<NoRepoAdminAccessException> { bountyService.createBounty(createBountyRequest, accessToken) }
+        assertThrows<RepoAdminAccessRequired> { bountyService.createBounty(createBountyRequest, accessToken) }
     }
 
     @Test
@@ -53,7 +53,7 @@ class BountyServiceTest {
             )
         )
 
-        assertThrows<NoRepoAdminAccessException> { bountyService.createBounty(createBountyRequest, accessToken) }
+        assertThrows<RepoAdminAccessRequired> { bountyService.createBounty(createBountyRequest, accessToken) }
     }
 
     @Test
@@ -74,6 +74,6 @@ class BountyServiceTest {
         val bounty = mockk<Bounty>()
         every { bountyRepository.save(any()) }.returns(bounty)
         val expected = bountyService.createBounty(createBountyRequest, accessToken)
-        assert(bounty == expected)
+        assertEquals(bounty, expected)
     }
 }

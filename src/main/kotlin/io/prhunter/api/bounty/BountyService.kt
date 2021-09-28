@@ -3,10 +3,8 @@ package io.prhunter.api.bounty
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.github.GithubService
-import io.prhunter.api.github.client.GHRepoPermissionData
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import java.lang.RuntimeException
 import java.time.Instant
 
 @Service
@@ -34,8 +32,9 @@ class BountyService(val bountyRepository: BountyRepository, val githubService: G
         return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt"))
     }
 
-    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest): Bounty {
+    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, userAccessToken: String): Bounty {
         val bounty = getBounty(id)
+        validateUserHasAccessToRepo(bounty.repoId, userAccessToken)
         val updatedBounty = bounty.copy(
             body = updateBountyRequest.body,
             title = updateBountyRequest.title,
@@ -52,7 +51,7 @@ class BountyService(val bountyRepository: BountyRepository, val githubService: G
         val userRepoList = githubService.listAuthenticatedUserRepos(userAccessToken)
         val hasAdminAccess = userRepoList.find { it.id == repoId }?.permissions?.admin ?: false
         if(!hasAdminAccess){
-            throw NoRepoAdminAccessException()
+            throw RepoAdminAccessRequired()
         }
     }
 

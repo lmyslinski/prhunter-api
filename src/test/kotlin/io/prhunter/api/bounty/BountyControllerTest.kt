@@ -2,14 +2,25 @@ package io.prhunter.api.bounty
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.coEvery
+import io.mockk.every
 import io.prhunter.api.bounty.api.CreateBountyRequest
-import org.junit.jupiter.api.*
+import io.prhunter.api.github.client.GHRepoPermissionData
+import io.prhunter.api.github.client.GithubRestClient
+import io.prhunter.api.github.client.Permissions
+import io.prhunter.api.installation.InstallationService
+import io.prhunter.api.user.GithubUser
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -27,6 +38,9 @@ class BountyControllerTest(
     @Autowired val bountyRepository: BountyRepository
 ) {
 
+    @MockkBean
+    private val githubRestClient: GithubRestClient? = null
+
     private val createBountyRequest = CreateBountyRequest(
         1L,
         2L,
@@ -36,6 +50,8 @@ class BountyControllerTest(
         BigDecimal.valueOf(100L),
         "USD"
     )
+
+    private val testUser = GithubUser(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
 
     @BeforeEach
     fun setup() {
@@ -70,11 +86,13 @@ class BountyControllerTest(
 
     @Test
     fun `should create a new bounty if signed in and issue owner`() {
+        coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(listOf(GHRepoPermissionData(createBountyRequest.repoId, "", "", false, Permissions(true, true, true))))
+
         val response = mockMvc.post("/bounty") {
             content = objectMapper.writeValueAsString(createBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(SecurityMockMvcRequestPostProcessors.user("test-user"))
+            with(oauth2Login().oauth2User(testUser))
         }.andExpect {
             status { is2xxSuccessful() }
             content { contentType(MediaType.APPLICATION_JSON) }
@@ -99,13 +117,16 @@ class BountyControllerTest(
 
     @Test
     fun `should return 403 for create bounty if not issue owner`(){
-//        mockMvc.post("/bounty") {
-//            content = objectMapper.writeValueAsString(createBountyRequest)
-//            contentType = MediaType.APPLICATION_JSON
-//            accept = MediaType.APPLICATION_JSON
-//        }.andExpect {
-//            status { isEqualTo(HttpStatus.UNAUTHORIZED.value()) }
-//        }
+        coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(listOf(GHRepoPermissionData(createBountyRequest.repoId, "", "", false, Permissions(false, true, true))))
+
+        mockMvc.post("/bounty") {
+            content = objectMapper.writeValueAsString(createBountyRequest)
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            with(oauth2Login().oauth2User(testUser))
+        }.andExpect {
+            status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
+        }
     }
 
     @Test

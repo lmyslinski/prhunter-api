@@ -22,12 +22,12 @@ class BountyController(private val bountyService: BountyService) {
         @RequestBody createBountyRequest: CreateBountyRequest,
         principal: Principal
     ): ResponseEntity<Bounty> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            bountyService.createBounty(
-                createBountyRequest,
-                RequestUtil.getUserFromRequest(principal).accessToken
-            )
+        val accessToken = RequestUtil.getUserFromRequest(principal).accessToken
+        val bounty = bountyService.createBounty(
+            createBountyRequest,
+            accessToken
         )
+        return ResponseEntity.status(HttpStatus.CREATED).body(bounty)
     }
 
     @GetMapping("/{id}")
@@ -38,8 +38,11 @@ class BountyController(private val bountyService: BountyService) {
     @PutMapping("/{id}")
     fun updateBounty(
         @PathVariable id: Long,
-        @RequestBody updateBountyRequest: UpdateBountyRequest
+        @RequestBody updateBountyRequest: UpdateBountyRequest,
+        principal: Principal
     ): ResponseEntity<Bounty> {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(bountyService.updateBounty(id, updateBountyRequest))
+        val accessToken = RequestUtil.getUserFromRequest(principal).accessToken
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+            .body(bountyService.updateBounty(id, updateBountyRequest, accessToken))
     }
 }
