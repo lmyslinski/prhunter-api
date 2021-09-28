@@ -2,17 +2,18 @@ package io.prhunter.api.bounty
 
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
+import io.prhunter.api.github.GithubService
+import io.prhunter.api.github.client.GHRepoPermissionData
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.lang.RuntimeException
 import java.time.Instant
 
 @Service
-class BountyService(val bountyRepository: BountyRepository) {
+class BountyService(val bountyRepository: BountyRepository, val githubService: GithubService) {
 
-    fun createBounty(createBountyRequest: CreateBountyRequest): Bounty {
-        // get access token for user
-        // check if the token has access to the repository linked in the request
-
+    fun createBounty(createBountyRequest: CreateBountyRequest, userAccessToken: String): Bounty {
+        validateUserHasAccessToRepo(createBountyRequest.repoId, userAccessToken)
         val bounty = Bounty(
             repoId = createBountyRequest.repoId,
             issueId = createBountyRequest.issueId,
@@ -44,6 +45,15 @@ class BountyService(val bountyRepository: BountyRepository) {
             updatedAt = Instant.now(),
         )
         return bountyRepository.save(updatedBounty)
+    }
+
+    private fun validateUserHasAccessToRepo(repoId: Long, userAccessToken: String) {
+        // check if the user has admin access to the repository linked in the request
+        val userRepoList = githubService.listAuthenticatedUserRepos(userAccessToken)
+        val hasAdminAccess = userRepoList.find { it.id == repoId }?.permissions?.admin ?: false
+        if(!hasAdminAccess){
+            throw NoRepoAdminAccessException()
+        }
     }
 
 }

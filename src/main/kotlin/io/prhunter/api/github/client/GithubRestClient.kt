@@ -25,7 +25,7 @@ class GithubRestClient(
 
         if (response.status.value == 200) {
             return objectMapper.readValue(response.readText())
-        }else{
+        } else {
             throw RuntimeException("Could not get repository data")
         }
     }
@@ -40,8 +40,23 @@ class GithubRestClient(
 
         if (response.status.value == 200) {
             return objectMapper.readValue(response.readText())
-        }else{
+        } else {
             throw RuntimeException("Could not get issues")
+        }
+    }
+
+    suspend fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
+        val response = httpClient.get<HttpResponse>("$githubBaseUrl/user/repos") {
+            headers {
+                append("accept", "application/vnd.github.v3+json")
+                append("Authorization", "Bearer $userToken")
+            }
+        }
+
+        if (response.status.value == 200) {
+            return objectMapper.readValue(response.readText())
+        } else {
+            throw RuntimeException("Could not get user repositories")
         }
     }
 

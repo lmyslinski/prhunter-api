@@ -1,6 +1,7 @@
 package io.prhunter.api.github
 
 import io.prhunter.api.github.client.GHRepoData
+import io.prhunter.api.github.client.GHRepoPermissionData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
 import io.prhunter.api.installation.InstallationService
@@ -26,9 +27,19 @@ class GithubService(
         } else listOf()
     }
 
-    fun listIssues(owner: String, repo: String, token: String): List<Issue> {
+    fun listRepositoryIssues(owner: String, repo: String, token: String): List<Issue> {
         return runBlocking {
             githubRestClient.listIssues(owner, repo, token)
         }
     }
+
+    // https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
+    fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
+        return runBlocking {
+            githubRestClient.listAuthenticatedUserRepos(userToken)
+        }
+    }
+
+
+
 }

@@ -23,7 +23,7 @@ class RepositoryController(
 
     @GetMapping("/{owner}/{repo}/issues")
     fun listIssues(@PathVariable owner: String, @PathVariable repo: String, principal: Principal): List<Issue> {
-        return githubService.listIssues(owner, repo, RequestUtil.getUserFromRequest(principal).accessToken)
+        return githubService.listRepositoryIssues(owner, repo, RequestUtil.getUserFromRequest(principal).accessToken)
     }
 
 }
