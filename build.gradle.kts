@@ -96,7 +96,7 @@ val gitVersion: groovy.lang.Closure<String> by extra
 
 jib {
 	from {
-		image = "openjdk:15-alpine"
+		image = "openjdk:16-alpine"
 	}
 	to {
 		image = "registry.digitalocean.com/prhunter/api:${gitVersion()}"
