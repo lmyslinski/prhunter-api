@@ -3,6 +3,7 @@ package io.prhunter.api.auth
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import io.prhunter.api.OAuthContextInitializer
+import io.prhunter.api.github.GithubSecrets
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -24,6 +25,7 @@ import java.net.URLDecoder
 @AutoConfigureMockMvc
 class OAuthTest(
     @Autowired val mockMvc: MockMvc,
+    @Autowired val githubSecrets: GithubSecrets,
 ) {
 
     @Autowired
@@ -88,7 +90,7 @@ class OAuthTest(
         stubUserInfoResponse()
         mockMvc.get("/login/oauth2/code/github?code=github&setup_action=install").andExpect {
             status { is3xxRedirection() }
-            redirectedUrl("https://prhunter.io/signup-success")
+            redirectedUrl(githubSecrets.successUrl)
         }
     }
 
@@ -115,7 +117,7 @@ class OAuthTest(
         Assertions.assertEquals("/login/oauth2/code/github?code=invalid&state=${state}", redirectLocation)
 
         // TODO finishing this test requires persisting the session between resttemplate and mockmvc... this is bit too much effort for now
-        val omg = mockMvc.get(redirectLocation).andReturn()
+        mockMvc.get(redirectLocation).andReturn()
 //           omg.response
 //            .andExpect {
 //            status { is2xxSuccessful() }

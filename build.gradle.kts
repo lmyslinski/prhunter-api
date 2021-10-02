@@ -4,6 +4,9 @@ plugins {
 	id("org.springframework.boot") version "2.5.3"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("org.flywaydb.flyway") version "7.3.2"
+	id("com.google.cloud.tools.jib") version "3.1.4"
+	id("com.palantir.git-version") version "0.12.3"
+
 	kotlin("jvm") version "1.5.21"
 	kotlin("plugin.spring") version "1.5.21"
 	kotlin("plugin.jpa") version "1.5.21"
@@ -87,4 +90,23 @@ flyway {
 	url = "jdbc:postgresql://localhost:5432/prhunter"
 	user = "localdev"
 	password = "localdev"
+}
+
+val gitVersion: groovy.lang.Closure<String> by extra
+
+jib {
+	from {
+		image = "openjdk:15-alpine"
+	}
+	to {
+		image = "registry.digitalocean.com/prhunter/api:${gitVersion()}"
+	}
+	container {
+//		jvmFlags = {
+//		}
+//			[
+//				'-Xms512m',
+//				'-Xmx1500m']
+//		}
+	}
 }
