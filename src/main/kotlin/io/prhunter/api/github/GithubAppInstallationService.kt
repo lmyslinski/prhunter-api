@@ -11,8 +11,8 @@ class GithubAppInstallationService(
     val githubRestClient: GithubRestClient
 ) {
 
-    suspend fun listRepositories(installation: Installation): RepositoryList? {
-        val authToken = githubAuthService.getInstallationAuthToken(installation.id)
+    suspend fun listRepositories(installationId: Long): RepositoryList? {
+        val authToken = githubAuthService.getInstallationAuthToken(installationId)
         return githubRestClient.listRepositories(authToken)
     }
 

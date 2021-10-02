@@ -41,9 +41,9 @@ class RepositoryControllerTest(
 
     @Test
     fun `should list repositories for user installations`() {
-        installationService.registerInstallation(testInstallation)
+        val newInstall = installationService.registerInstallation(testInstallation)
         val repolist = listOf(GHRepoData(132L, "test-repo", "full-repo-name", false))
-        coEvery { appInstallationService!!.listRepositories(testInstallation) }.returns(RepositoryList(1, repolist))
+        coEvery { appInstallationService!!.listRepositories(newInstall.id) }.returns(RepositoryList(1, repolist))
 
         val response = mockMvc.get("/repo") {
             accept = MediaType.APPLICATION_JSON

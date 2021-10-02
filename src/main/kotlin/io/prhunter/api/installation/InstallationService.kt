@@ -11,9 +11,10 @@ class InstallationService(
     private val installationRepository: InstallationRepository
 ) {
 
-    fun registerInstallation(installation: Installation){
-        installationRepository.save(installation)
+    fun registerInstallation(installation: Installation): Installation{
+        val newInstallation = installationRepository.save(installation)
         log.info { "A new app installation was created" }
+        return newInstallation
     }
 
     fun removeInstallation(installationId: Long){

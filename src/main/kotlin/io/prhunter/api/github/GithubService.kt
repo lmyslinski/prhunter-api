@@ -21,7 +21,7 @@ class GithubService(
         return if (installations.isNotEmpty()) {
             installations.map { installation ->
                 runBlocking {
-                    githubAppInstallationService.listRepositories(installation)
+                    githubAppInstallationService.listRepositories(installation.id)
                 }!!.repositories
             }.flatten()
         } else listOf()
