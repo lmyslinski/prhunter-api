@@ -33,6 +33,9 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 	implementation("io.github.microutils:kotlin-logging:2.0.8")
 
+	implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
+	implementation("org.springdoc:springdoc-openapi-security:1.5.10")
+
 	implementation("io.ktor:ktor-client-core:$ktorVersion")
 	implementation("io.ktor:ktor-client-cio:$ktorVersion")
 	implementation("io.ktor:ktor-client-jackson:$ktorVersion")
