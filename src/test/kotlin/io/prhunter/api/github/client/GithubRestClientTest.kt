@@ -75,4 +75,21 @@ class GithubRestClientTest {
         )
         Assertions.assertEquals(expected, resp)
     }
+
+    @Test
+    fun `should list user repository list correctly`(){
+        val userRepoListResponse = ClassPathResource("/user-repo-list-response.json").file.readText()
+        val token = "12345"
+        wireMockServer.stubFor(
+            get("/user/repos").withHeader("Authorization", equalTo("Bearer $token")).willReturn(aResponse().withBody(userRepoListResponse))
+        )
+
+        val client = GithubRestClient(HttpClient(), JacksonConfig().objectMapper(), wireMockServer.baseUrl())
+        val resp = runBlocking {
+            client.listAuthenticatedUserRepos(token)
+        }
+
+        val expected = GHRepoPermissionData(302553476, "githubactions-modeldeployment-demo-githubalgo", "algorithmiaio/githubactions-modeldeployment-demo-githubalgo", false, Permissions(false, false,false, false, true))
+        Assertions.assertEquals(expected, resp.first())
+    }
 }

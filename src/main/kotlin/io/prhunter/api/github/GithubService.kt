@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service
 class GithubService(
     private val githubAppInstallationService: GithubAppInstallationService,
     private val installationService: InstallationService,
-    val githubRestClient: GithubRestClient
+    private val githubRestClient: GithubRestClient
 ) {
 
-    fun listRepositories(currentUser: GithubUser): List<GHRepoData> {
+    fun listUserInstallationRepositories(currentUser: GithubUser): List<GHRepoData> {
         val installations = installationService.getInstallationsByUserId(currentUser.id)
         return if (installations.isNotEmpty()) {
             installations.map { installation ->

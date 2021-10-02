@@ -20,6 +20,7 @@ class UserService(private val githubUserRepository: GithubUserRepository) : OAut
         val userOpt = githubUserRepository.findById(id)
         if(userOpt.isEmpty){
             val githubUser = GithubUser(
+                // id is set to the name attribute
                 user.name.toLong(),
                 user.getAttribute<String>("login")!!,
                 user.getAttribute<String>("email"),

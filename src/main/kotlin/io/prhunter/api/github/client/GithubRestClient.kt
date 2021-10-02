@@ -45,6 +45,7 @@ class GithubRestClient(
         }
     }
 
+//    https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
     suspend fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/user/repos") {
             headers {

@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
-import io.mockk.every
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.github.client.GHRepoPermissionData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Permissions
-import io.prhunter.api.installation.InstallationService
 import io.prhunter.api.user.GithubUser
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
@@ -104,7 +102,7 @@ class BountyControllerTest(
                     "",
                     "",
                     false,
-                    Permissions(true, true, true)
+                    Permissions(true, true, true, true, true)
                 )
             )
         )
@@ -145,7 +143,7 @@ class BountyControllerTest(
                     "",
                     "",
                     false,
-                    Permissions(false, true, true)
+                    Permissions(false, true, true, true, true)
                 )
             )
         )
@@ -227,7 +225,7 @@ class BountyControllerTest(
                     "",
                     "",
                     false,
-                    Permissions(true, true, true)
+                    Permissions(true, true, true, true, true)
                 )
             )
         )

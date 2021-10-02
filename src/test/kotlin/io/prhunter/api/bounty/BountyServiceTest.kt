@@ -29,7 +29,7 @@ class BountyServiceTest {
                     "",
                     "",
                     false,
-                    Permissions(false, false, false)
+                    Permissions(false, false, false, false, false)
                 )
             )
         )
@@ -48,7 +48,7 @@ class BountyServiceTest {
                     "",
                     "",
                     false,
-                    Permissions(true, false, false)
+                    Permissions(true, false, false, false, false)
                 )
             )
         )
@@ -67,7 +67,7 @@ class BountyServiceTest {
                     "",
                     "",
                     false,
-                    Permissions(true, false, false)
+                    Permissions(true, false, false, false, false)
                 )
             )
         )

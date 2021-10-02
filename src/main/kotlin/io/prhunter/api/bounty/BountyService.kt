@@ -50,7 +50,7 @@ class BountyService(val bountyRepository: BountyRepository, val githubService: G
         // check if the user has admin access to the repository linked in the request
         val userRepoList = githubService.listAuthenticatedUserRepos(userAccessToken)
         val hasAdminAccess = userRepoList.find { it.id == repoId }?.permissions?.admin ?: false
-        if(!hasAdminAccess){
+        if (!hasAdminAccess) {
             throw RepoAdminAccessRequired()
         }
     }
