@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.kapt3.base.toJavacList
 
 plugins {
 	id("org.springframework.boot") version "2.5.3"
@@ -92,21 +93,16 @@ flyway {
 	password = "localdev"
 }
 
-val gitVersion: groovy.lang.Closure<String> by extra
+val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
 
 jib {
 	from {
 		image = "openjdk:16-alpine"
 	}
 	to {
-		image = "registry.digitalocean.com/prhunter/api:${gitVersion()}"
+		image = "registry.digitalocean.com/prhunter/api:${versionDetails().gitHashFull}"
 	}
 	container {
-//		jvmFlags = {
-//		}
-//			[
-//				'-Xms512m',
-//				'-Xmx1500m']
-//		}
+		jvmFlags = listOf("-Xms512m", "-Xmx1500m")
 	}
 }
