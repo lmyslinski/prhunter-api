@@ -18,9 +18,21 @@ spring:
             client-id: ${GITHUB_CLIENT_ID:invalid}
             client-secret: ${GITHUB_CLIENT_SECRET:invalid}
 
+
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      livenessState:
+        enabled: true
+      readinessState:
+        enabled: true
+
 server:
   servlet:
-    contextPath: /api
+    contextPath: /
 
 github:
   baseUrl: "api.github.com"
