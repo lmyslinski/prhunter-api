@@ -28,11 +28,11 @@ class HttpSecurityConfig(
     private val githubRequestModifierFilter =
         GithubRequestModifierFilter(customAuthorizedClientRepository, githubSecrets)
 
-//            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
     override fun configure(http: HttpSecurity?) {
         http {
             authorizeRequests {
                 authorize("/webhook", permitAll)
+                authorize("/actuator/health/**", permitAll)
                 authorize("/login/**", permitAll)
                 authorize("/oauth2/**", permitAll)
                 authorize("/v3/api-docs/**", permitAll)

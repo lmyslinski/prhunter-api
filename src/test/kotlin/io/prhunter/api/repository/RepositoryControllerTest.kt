@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
-import io.mockk.every
 import io.prhunter.api.github.GithubAppInstallationService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.RepositoryList
