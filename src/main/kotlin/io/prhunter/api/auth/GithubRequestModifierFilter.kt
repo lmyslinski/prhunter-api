@@ -39,7 +39,7 @@ class GithubRequestWrapper(
             val mockOAuth2Request = OAuth2AuthorizationRequest.authorizationCode().authorizationRequestUri(
                 "https://github.com/login/oauth/authorize",
             ).clientId(githubSecrets.clientId)
-                .redirectUri("http://localhost:8080/api/login/oauth2/code/github")
+                .redirectUri("http://api.prhunter.io/login/oauth2/code/github")
                 .state("random-state")
                 .scope("read:user")
                 .authorizationRequestUri("doesn't matter at this stage")
