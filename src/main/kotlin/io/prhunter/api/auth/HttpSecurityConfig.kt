@@ -2,6 +2,7 @@ package io.prhunter.api.auth
 
 import io.prhunter.api.config.GithubRequestModifierFilter
 import io.prhunter.api.github.GithubSecrets
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -16,6 +17,8 @@ import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationF
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @EnableWebSecurity
@@ -64,6 +67,19 @@ class HttpSecurityConfig(
                 disable()
             }
             addFilterBefore(githubRequestModifierFilter, OAuth2LoginAuthenticationFilter::class.java)
+        }
+    }
+
+    @Bean
+    fun corsConfigurer(): WebMvcConfigurer {
+        return object : WebMvcConfigurer {
+            override fun addCorsMappings(registry: CorsRegistry) {
+                registry.addMapping("/**").allowedOrigins(
+                    "http://localhost:3000",
+                    "https://prhunter.io",
+                    "https://www.prhunter.io",
+                ).allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            }
         }
     }
 
