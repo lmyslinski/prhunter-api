@@ -1,6 +1,6 @@
 package io.prhunter.api.common
 
-import io.prhunter.api.bounty.RepoAdminAccessRequired
+import io.prhunter.api.common.errors.ApiException
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
@@ -25,15 +25,20 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> =
         apiError(ex, status)
 
-
-    @ExceptionHandler(RepoAdminAccessRequired::class)
-    protected fun handleEntityNotFound(
-        ex: RepoAdminAccessRequired
-    ): ResponseEntity<Any> = apiError(ex, HttpStatus.FORBIDDEN)
-
     private fun apiError(ex: Throwable, status: HttpStatus): ResponseEntity<Any> {
-        val apiError = ApiError(status, LocalDateTime.now(), ex.message ?: "", ex.localizedMessage)
+        val apiError = ApiError(status, LocalDateTime.now(), ex.message ?: "", status.value())
+        logger.error(ex.message, ex)
         return ResponseEntity(apiError, apiError.status)
     }
+
+    @ExceptionHandler(RuntimeException::class)
+    protected fun handleGenericError(
+        ex: RuntimeException
+    ): ResponseEntity<Any> = apiError(ex, HttpStatus.INTERNAL_SERVER_ERROR)
+
+    @ExceptionHandler(ApiException::class)
+    protected fun handleApiErrors(
+        ex: ApiException
+    ): ResponseEntity<Any> = apiError(ex, ex.status)
 
 }

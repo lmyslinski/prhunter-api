@@ -44,6 +44,9 @@ class BountyControllerTest(
         "test-issue",
         "test-body",
         listOf("scala", "kotlin"),
+        listOf("new", "first"),
+        Experience.Begginer,
+        BountyType.Feature,
         BigDecimal.valueOf(100L),
         "USD"
     )
@@ -51,6 +54,9 @@ class BountyControllerTest(
         "new-title",
         "new-desc",
         listOf("kotlin", "javascript"),
+        listOf("updated"),
+        Experience.Advanced,
+        BountyType.Feature,
         BigDecimal.valueOf(99),
         "ETH"
     )
@@ -58,19 +64,34 @@ class BountyControllerTest(
     private val now = Instant.now()
     private val bounties = listOf(
         Bounty(
-            1L, 1L, 1L, "1", "1", arrayOf("scala"), BigDecimal.valueOf(10), "ETH", updatedAt = now.minus(
+            1L, 1L, 1L, "1", "1", arrayOf("scala"), tags = arrayOf("new", "first"),
+            Experience.Begginer,
+            BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = now.minus(
                 1,
                 ChronoUnit.MINUTES
             )
         ),
         Bounty(
-            2L, 2L, 2L, "2", "2", arrayOf("java"), BigDecimal.valueOf(20), "BTC", updatedAt = now.minus(
+            2L, 2L, 2L, "2", "2", arrayOf("java"), tags = arrayOf("new", "first"),
+            Experience.Begginer,
+            BountyType.Feature, BigDecimal.valueOf(20), "BTC", updatedAt = now.minus(
                 2,
                 ChronoUnit.MINUTES
             )
         ),
         Bounty(
-            3L, 3L, 3L, "3", "3", arrayOf("javascript"), BigDecimal.valueOf(30), "USD", updatedAt = now.minus(
+            3L,
+            3L,
+            3L,
+            "3",
+            "3",
+            arrayOf("javascript"),
+            tags = arrayOf("new", "first"),
+            Experience.Begginer,
+            BountyType.Feature,
+            BigDecimal.valueOf(30),
+            "USD",
+            updatedAt = now.minus(
                 3,
                 ChronoUnit.MINUTES
             )
@@ -155,6 +176,18 @@ class BountyControllerTest(
             with(oauth2Login().oauth2User(testUser))
         }.andExpect {
             status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
+        }
+    }
+
+    @Test
+    fun `should return 404 if bounty not found`(){
+        mockMvc.get("/bounty/111").andExpect {
+            status {
+                isNotFound()
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                }
+            }
         }
     }
 

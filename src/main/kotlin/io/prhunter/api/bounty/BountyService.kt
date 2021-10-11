@@ -2,6 +2,7 @@ package io.prhunter.api.bounty
 
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
+import io.prhunter.api.common.errors.RepoAdminAccessRequired
 import io.prhunter.api.github.GithubService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -19,13 +20,16 @@ class BountyService(val bountyRepository: BountyRepository, val githubService: G
             body = createBountyRequest.body,
             bountyValue = createBountyRequest.bountyValue,
             bountyCurrency = createBountyRequest.bountyCurrency,
-            languages = createBountyRequest.languages.toTypedArray()
+            languages = createBountyRequest.languages.toTypedArray(),
+            tags = createBountyRequest.tags.toTypedArray(),
+            experience = createBountyRequest.experience,
+            bountyType = createBountyRequest.bountyType
         )
         return bountyRepository.save(bounty)
     }
 
     fun getBounty(id: Long): Bounty {
-        return bountyRepository.findById(id).orElseThrow()
+        return bountyRepository.findById(id).orElseThrow { NotFoundException(id) }
     }
 
     fun list(): List<Bounty> {
@@ -42,6 +46,9 @@ class BountyService(val bountyRepository: BountyRepository, val githubService: G
             bountyCurrency = updateBountyRequest.bountryCurrency,
             bountyValue = updateBountyRequest.bountyValue,
             updatedAt = Instant.now(),
+            tags = updateBountyRequest.tags.toTypedArray(),
+            experience = updateBountyRequest.experience,
+            bountyType = updateBountyRequest.bountyType
         )
         return bountyRepository.save(updatedBounty)
     }

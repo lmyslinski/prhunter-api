@@ -1,4 +1,4 @@
-package io.prhunter.api.bounty
+package io.prhunter.api.common.errors
 
 import java.lang.RuntimeException
 

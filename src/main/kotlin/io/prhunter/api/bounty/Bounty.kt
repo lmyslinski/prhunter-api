@@ -25,6 +25,10 @@ data class Bounty(
     val body: String,
     @Type(type = "string-array")
     val languages: Array<String>,
+    @Type(type = "string-array")
+    val tags: Array<String>,
+    val experience: Experience,
+    val bountyType: BountyType,
     val bountyValue: BigDecimal,
     val bountyCurrency: String,
     val createdAt: Instant = Instant.now(),

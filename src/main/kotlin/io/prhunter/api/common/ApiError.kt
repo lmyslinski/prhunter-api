@@ -9,5 +9,5 @@ data class ApiError(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     val timestamp: LocalDateTime,
     val message: String,
-    val details: String
+    val code: Int,
 )
