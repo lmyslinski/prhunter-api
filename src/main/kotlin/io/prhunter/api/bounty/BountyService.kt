@@ -2,7 +2,7 @@ package io.prhunter.api.bounty
 
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
-import io.prhunter.api.common.errors.RepoAdminAccessRequired
+import io.prhunter.api.common.errors.NotFoundException
 import io.prhunter.api.github.GithubService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service

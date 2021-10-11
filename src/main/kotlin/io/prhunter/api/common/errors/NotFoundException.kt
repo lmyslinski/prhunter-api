@@ -1,5 +1,5 @@
 package io.prhunter.api.common.errors
 
-import java.lang.RuntimeException
+import org.springframework.http.HttpStatus
 
-class RepoAdminAccessRequired : RuntimeException("The user does not have admin access to the requested repository")
+class NotFoundException(id: Any) : ApiException("The object with ID ${id} was not found", HttpStatus.NOT_FOUND)
