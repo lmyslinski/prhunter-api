@@ -43,6 +43,7 @@ class HttpSecurityConfig(
                 authorize("/swagger-ui.html", permitAll)
                 authorize(HttpMethod.GET, "/bounty", permitAll)
                 authorize(HttpMethod.GET, "/bounty/**", permitAll)
+                authorize(HttpMethod.POST, "/bounty/search", permitAll)
                 authorize(anyRequest, authenticated)
             }
             csrf {

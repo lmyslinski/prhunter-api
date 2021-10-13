@@ -1,16 +1,23 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.kapt3.base.toJavacList
+import org.jooq.meta.jaxb.ForcedType
+import org.jooq.meta.jaxb.Logging
 
 plugins {
-	id("org.springframework.boot") version "2.5.3"
+	kotlin("jvm") version "1.5.31"
+	kotlin("plugin.spring") version "1.5.31"
+	kotlin("plugin.jpa") version "1.5.31"
+
+	id("org.springframework.boot") version "2.5.5"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("org.flywaydb.flyway") version "7.3.2"
 	id("com.google.cloud.tools.jib") version "3.1.4"
 	id("com.palantir.git-version") version "0.12.3"
+	id("java")
+	id("nu.studer.jooq") version "5.2"
+}
 
-	kotlin("jvm") version "1.5.21"
-	kotlin("plugin.spring") version "1.5.21"
-	kotlin("plugin.jpa") version "1.5.21"
+sourceSets.main {
+	java.srcDirs("src/main/kotlin", "src/generated/jooq")
 }
 
 group = "io.prhunter"
@@ -54,6 +61,8 @@ dependencies {
 	implementation("org.bouncycastle:bcpkix-jdk15on:1.69")
 
 	implementation("com.vladmihalcea:hibernate-types-55:2.12.1")
+	implementation("org.jooq:jooq:3.14.7")
+	jooqGenerator("org.postgresql:postgresql:42.2.14")
 
 	testImplementation("io.mockk:mockk:1.9.3")
 	testImplementation("com.ninja-squad:springmockk:3.0.1")
@@ -104,5 +113,54 @@ jib {
 	}
 	container {
 		jvmFlags = listOf("-Xms512m", "-Xmx1500m")
+	}
+}
+
+jooq {
+	version.set("3.14.7")  // default (can be omitted)
+	edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)  // default (can be omitted)
+
+	configurations {
+		create("api") {  // name of the jOOQ configuration
+			generateSchemaSourceOnCompilation.set(false)  // default (can be omitted)
+
+			jooqConfiguration.apply {
+				logging = Logging.WARN
+				jdbc.apply {
+					driver = "org.postgresql.Driver"
+					url = "jdbc:postgresql://localhost:5432/prhunter"
+					user = "localdev"
+					password = "localdev"
+				}
+				generator.apply {
+					name = "org.jooq.codegen.DefaultGenerator"
+					database.apply {
+						name = "org.jooq.meta.postgres.PostgresDatabase"
+						inputSchema = "public"
+						forcedTypes.addAll(arrayOf(
+							ForcedType()
+								.withName("varchar")
+								.withIncludeExpression(".*")
+								.withIncludeTypes("JSONB?"),
+							ForcedType()
+								.withName("varchar")
+								.withIncludeExpression(".*")
+								.withIncludeTypes("INET")
+						).toList())
+					}
+					generate.apply {
+						isDeprecated = false
+						isRecords = true
+						isImmutablePojos = true
+						isFluentSetters = true
+					}
+					target.apply {
+						packageName = "io.prhunter.generated"
+						directory = "src/generated/jooq"  // default (can be omitted)
+					}
+					strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+				}
+			}
+		}
 	}
 }

@@ -18,8 +18,6 @@ spring:
             client-id: ${GITHUB_CLIENT_ID:invalid}
             client-secret: ${GITHUB_CLIENT_SECRET:invalid}
 
-
-
 management:
   endpoint:
     health:
