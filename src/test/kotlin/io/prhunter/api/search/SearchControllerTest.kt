@@ -2,10 +2,7 @@ package io.prhunter.api.search
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.prhunter.api.bounty.Bounty
-import io.prhunter.api.bounty.BountyRepository
-import io.prhunter.api.bounty.BountyType
-import io.prhunter.api.bounty.Experience
+import io.prhunter.api.bounty.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -58,7 +55,7 @@ class SearchControllerTest {
         Bounty(
             2L, 2L, 2L, "2", "2", arrayOf("java"), tags = arrayOf("new", "first"),
             Experience.Advanced,
-            BountyType.Feature, BigDecimal.valueOf(20), "BTC", updatedAt = now.minus(
+            BountyType.Feature, BigDecimal.valueOf(20), "ETH", updatedAt = now.minus(
                 4,
                 ChronoUnit.MINUTES
             )
@@ -74,7 +71,7 @@ class SearchControllerTest {
             Experience.Begginer,
             BountyType.Feature,
             BigDecimal.valueOf(30),
-            "USD",
+            "ETH",
             updatedAt = now.minus(
                 3,
                 ChronoUnit.MINUTES
@@ -123,8 +120,69 @@ class SearchControllerTest {
     }
 
     @Test
-    fun `should filter by price correctly`(){
-        
+    fun `should filter by price and currency correctly`() {
+        val results = search(
+            SearchRequest(
+                price = PriceFilterParams(
+                    BigDecimal.valueOf(11L),
+                    BigDecimal.valueOf(21L),
+                    BountyCurrency.ETH
+                )
+            )
+        )
+        Assertions.assertEquals(1, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(2), results.content.map { it.issueId }.toTypedArray())
+    }
+
+    @Test
+    fun `should filter by max price only`() {
+        val results = search(
+            SearchRequest(
+                price = PriceFilterParams(
+                    to = BigDecimal.valueOf(21L),
+                    currency = BountyCurrency.ETH
+                )
+            )
+        )
+        Assertions.assertEquals(2, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 2), results.content.map { it.issueId }.toTypedArray())
+    }
+
+    @Test
+    fun `should filter by min price only`() {
+        val results = search(
+            SearchRequest(
+                price = PriceFilterParams(
+                    min = BigDecimal.valueOf(11L),
+                    currency = BountyCurrency.ETH
+                )
+            )
+        )
+        Assertions.assertEquals(2, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(3, 2), results.content.map { it.issueId }.toTypedArray())
+    }
+
+    @Test
+    fun `should filter by currency only`() {
+        val results = search(
+            SearchRequest(
+                price = PriceFilterParams(
+                    currency = BountyCurrency.ETH
+                )
+            )
+        )
+        Assertions.assertEquals(3, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 3, 2), results.content.map { it.issueId }.toTypedArray())
+    }
+
+    @Test
+    fun `should filter by tags correctly`() {
+
+    }
+
+    @Test
+    fun `should filter by bounty type correctly`() {
+
     }
 
     private fun search(searchRequest: SearchRequest): PageResponse<Bounty> {

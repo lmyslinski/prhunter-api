@@ -6,13 +6,7 @@ spring:
       client:
         registration:
           github:
-#            client-id: github
-#            client-secret: secret
-#            client-name: Client to Mock Oauth2 Server
-#            scope: user
             redirect-uri-template: http://localhost:8080/login/oauth2/code/github
-#            client-authentication-method: basic
-#            authorization-grant-type: authorization_code
         provider:
           github:
             authorization-uri: "http://0.0.0.0:8090/login/oauth/authorize"

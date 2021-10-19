@@ -18,8 +18,8 @@ class GithubRestClient(
     suspend fun listRepositories(installationToken: String): RepositoryList {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/installation/repositories") {
             headers {
-                append("accept", "application/vnd.github.v3+json")
-                append("Authorization", "Bearer $installationToken")
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $installationToken")
             }
         }
 
@@ -33,8 +33,8 @@ class GithubRestClient(
     suspend fun listIssues(owner: String, repo: String, userToken: String): List<Issue> {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$owner/$repo/issues") {
             headers {
-                append("accept", "application/vnd.github.v3+json")
-                append("Authorization", "Bearer $userToken")
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $userToken")
             }
         }
 
@@ -49,8 +49,8 @@ class GithubRestClient(
     suspend fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/user/repos") {
             headers {
-                append("accept", "application/vnd.github.v3+json")
-                append("Authorization", "Bearer $userToken")
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $userToken")
             }
         }
 

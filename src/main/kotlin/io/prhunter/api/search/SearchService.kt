@@ -1,7 +1,6 @@
 package io.prhunter.api.search
 
 import io.prhunter.api.bounty.Bounty
-import io.prhunter.api.bounty.BountyRepository
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.toView
 import io.prhunter.api.crypto.CoinGeckoApiService
@@ -26,7 +25,8 @@ class SearchService(
         val pageable = getPageable(searchRequest)
         val conditions = listOfNotNull(
             getExperienceFilter(searchRequest),
-            getLanguageFilter(searchRequest)
+            getLanguageFilter(searchRequest),
+            getPriceFilter(searchRequest)
         )
         val selectQuery = dslContext.selectFrom(BOUNTY).where(getWhereCond(conditions))
             .orderBy(getOrderBy(searchRequest))
@@ -48,6 +48,14 @@ class SearchService(
     private fun getExperienceFilter(searchRequest: SearchRequest): Condition? {
         return if (searchRequest.experience != null) {
             BOUNTY.EXPERIENCE.eq(searchRequest.experience.name)
+        } else null
+    }
+
+    private fun getPriceFilter(searchRequest: SearchRequest): Condition? {
+        return if (searchRequest.price != null) {
+            BOUNTY.BOUNTY_CURRENCY.eq(searchRequest.price.currency.name).and(
+                BOUNTY.BOUNTY_VALUE.between(searchRequest.price.min, searchRequest.price.to)
+            )
         } else null
     }
 
