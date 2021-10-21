@@ -60,7 +60,7 @@ class BountyServiceTest {
     fun `should create bounty if user has admin access to the repository`() {
         val createBountyRequest =
             CreateBountyRequest(1L, 2L, "title", "body", listOf("scala"), listOf("new", "first"),
-                Experience.Begginer,
+                Experience.Beginner,
                 BountyType.Feature,BigDecimal.valueOf(20L), "ETH")
         every { githubService.listAuthenticatedUserRepos(accessToken) }.returns(
             listOf(

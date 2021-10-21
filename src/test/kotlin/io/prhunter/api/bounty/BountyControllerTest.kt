@@ -45,7 +45,7 @@ class BountyControllerTest(
         "test-body",
         listOf("scala", "kotlin"),
         listOf("new", "first"),
-        Experience.Begginer,
+        Experience.Beginner,
         BountyType.Feature,
         BigDecimal.valueOf(100L),
         "USD"
@@ -65,7 +65,7 @@ class BountyControllerTest(
     private val bounties = listOf(
         Bounty(
             1L, 1L, 1L, "1", "1", arrayOf("scala"), tags = arrayOf("new", "first"),
-            Experience.Begginer,
+            Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = now.minus(
                 1,
                 ChronoUnit.MINUTES
@@ -73,7 +73,7 @@ class BountyControllerTest(
         ),
         Bounty(
             2L, 2L, 2L, "2", "2", arrayOf("java"), tags = arrayOf("new", "first"),
-            Experience.Begginer,
+            Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(20), "BTC", updatedAt = now.minus(
                 2,
                 ChronoUnit.MINUTES
@@ -87,7 +87,7 @@ class BountyControllerTest(
             "3",
             arrayOf("javascript"),
             tags = arrayOf("new", "first"),
-            Experience.Begginer,
+            Experience.Beginner,
             BountyType.Feature,
             BigDecimal.valueOf(30),
             "USD",

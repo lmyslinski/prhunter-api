@@ -46,7 +46,7 @@ class SearchControllerTest {
     private val bounties = listOf(
         Bounty(
             1L, 1L, 1L, "1", "1", arrayOf("scala"), tags = arrayOf("new", "first"),
-            Experience.Begginer,
+            Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = now.minus(
                 1,
                 ChronoUnit.MINUTES
@@ -68,7 +68,7 @@ class SearchControllerTest {
             "3",
             arrayOf("javascript"),
             tags = arrayOf("new", "react"),
-            Experience.Begginer,
+            Experience.Beginner,
             BountyType.Feature,
             BigDecimal.valueOf(30),
             "ETH",
@@ -107,7 +107,7 @@ class SearchControllerTest {
 
     @Test
     fun `should filter by experience correctly`() {
-        val results = search(SearchRequest(experience = Experience.Begginer))
+        val results = search(SearchRequest(experience = Experience.Beginner))
         Assertions.assertEquals(2, results.total)
         Assertions.assertArrayEquals(arrayOf<Long>(1, 3), results.content.map { it.issueId }.toTypedArray())
     }

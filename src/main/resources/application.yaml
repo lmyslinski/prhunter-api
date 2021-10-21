@@ -44,7 +44,7 @@ github:
 
 logging:
   level:
-    org.springframework: info
+    org.springframework: debug
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
