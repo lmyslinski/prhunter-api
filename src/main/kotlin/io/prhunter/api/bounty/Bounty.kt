@@ -36,7 +36,7 @@ data class Bounty(
 )
 
 
-fun Bounty.toView(usdPrice: BigDecimal): BountyView =
+fun Bounty.toView(ethPrice: BigDecimal): BountyView =
     BountyView(
         this.id!!,
         this.repoId,
@@ -48,7 +48,7 @@ fun Bounty.toView(usdPrice: BigDecimal): BountyView =
         this.experience,
         this.bountyType,
         this.bountyValue,
-        usdPrice,
+        this.bountyValue*ethPrice,
         this.bountyCurrency,
         this.createdAt,
         this.updatedAt

@@ -36,7 +36,7 @@ class SearchService(
         val total = selectQuery.fetch().size
         val results = selectQuery.fetchInto(Bounty::class.java)
         val ethPrice = coinGeckoApiService.getCurrentEthUsdPrice()
-        val bountyViews = results.map { it.toView(it.bountyValue * ethPrice) }
+        val bountyViews = results.map { it.toView(ethPrice) }
         return PageResponse(bountyViews, pageable.pageNumber + 1, total)
     }
 

@@ -17,7 +17,7 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID:invalid}
             client-secret: ${GITHUB_CLIENT_SECRET:invalid}
-            redirect-uri-template: "http://api.prhunter.io/login/oauth2/code/github"
+            redirect-uri-template: "https://api.prhunter.io/login/oauth2/code/github"
             
 management:
   endpoint:
@@ -45,6 +45,7 @@ github:
 logging:
   level:
     org.springframework: info
+    org.springframework.security: debug
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

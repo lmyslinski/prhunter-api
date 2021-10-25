@@ -50,7 +50,7 @@ class HttpSecurityConfig(
                 disable()
             }
             cors {
-                disable()
+                corsConfigurer()
             }
             oauth2Login {
                 userInfoEndpoint {
@@ -75,11 +75,7 @@ class HttpSecurityConfig(
     fun corsConfigurer(): WebMvcConfigurer {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/**").allowedOrigins(
-                    "http://localhost:3000",
-                    "https://prhunter.io",
-                    "https://www.prhunter.io",
-                ).allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                registry.addMapping("/bounty").allowedOrigins("http://localhost:3000").allowedMethods("*").allowCredentials(true)
             }
         }
     }
