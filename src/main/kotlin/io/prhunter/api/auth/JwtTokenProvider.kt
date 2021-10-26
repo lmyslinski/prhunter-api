@@ -2,10 +2,10 @@ package io.prhunter.api.auth
 
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
-import io.prhunter.api.auth.Constants.ACCESS_TOKEN_VALIDITY_SECONDS
-import io.prhunter.api.auth.Constants.AUTHORITIES_KEY
+import io.prhunter.api.auth.AuthConstants.ACCESS_TOKEN_VALIDITY_SECONDS
+import io.prhunter.api.auth.AuthConstants.AUTHORITIES_KEY
 import io.prhunter.api.user.GithubUser
-import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -15,20 +15,10 @@ import java.util.*
 import java.util.stream.Collectors
 import kotlin.reflect.KFunction1
 
-private val log = KotlinLogging.logger {}
-
-object Constants {
-    const val ACCESS_TOKEN_VALIDITY_SECONDS = 5 * 60 * 60.toLong()
-    const val SIGNING_KEY = "devglan123r"
-    const val TOKEN_PREFIX = "Bearer "
-    const val HEADER_STRING = "Authorization"
-    const val AUTHORITIES_KEY = "scopes"
-}
-
 @Service
-class JwtTokenProvider {
+class JwtTokenProvider(@Autowired private val authSecrets: AuthSecrets) {
 
-    private val secretKey = Keys.hmacShaKeyFor("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx".toByteArray())
+    private val secretKey = Keys.hmacShaKeyFor(authSecrets.jwtSecret.toByteArray())
 
     fun generateToken(authentication: Authentication): String {
         val authorities: String = (authentication.principal as GithubUser)

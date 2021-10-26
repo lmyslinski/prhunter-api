@@ -1,8 +1,8 @@
 package io.prhunter.api.auth
 
 import io.jsonwebtoken.ExpiredJwtException
-import io.prhunter.api.auth.Constants.HEADER_STRING
-import io.prhunter.api.auth.Constants.TOKEN_PREFIX
+import io.prhunter.api.auth.AuthConstants.HEADER_STRING
+import io.prhunter.api.auth.AuthConstants.TOKEN_PREFIX
 import io.prhunter.api.oauth.UserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired

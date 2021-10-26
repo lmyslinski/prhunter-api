@@ -42,6 +42,9 @@ github:
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 
+auth:
+  jwtSecret: ${JWT_SECRET:9c898633-a4f5-43fa-a81b-18de8cd969c7}
+
 logging:
   level:
     org.springframework: info
