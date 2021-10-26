@@ -85,12 +85,12 @@ class OAuthTest(
     }
 
     @Test
-    fun `should fill in custom state when oauth triggered from install`() {
+    fun `should fill in custom state when oauth triggered from install and redirect to JWT handler`() {
         stubTokenResponse()
         stubUserInfoResponse()
         mockMvc.get("/login/oauth2/code/github?code=github&setup_action=install").andExpect {
             status { is3xxRedirection() }
-            redirectedUrl(githubSecrets.successUrl)
+            redirectedUrlPattern("${githubSecrets.successUrl}?token=**")
         }
     }
 
@@ -104,7 +104,7 @@ class OAuthTest(
             status { is3xxRedirection() }
         }.andReturn()
         // Web client is redirected to the github site
-        val redirectUrl = URLDecoder.decode(resp.response.redirectedUrl)
+        val redirectUrl = URLDecoder.decode(resp.response.redirectedUrl, "UTF-8")
         val state = redirectUrl.split('&')[3].substring(6)
         // github site calls our callback from the login
 

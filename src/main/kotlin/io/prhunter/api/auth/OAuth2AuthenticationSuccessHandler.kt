@@ -1,5 +1,6 @@
 package io.prhunter.api.auth
 
+import io.prhunter.api.github.GithubSecrets
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class OAuth2AuthenticationSuccessHandler(
     @Autowired private val jwtTokenProvider: JwtTokenProvider,
+    @Autowired private val githubSecrets: GithubSecrets
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     override fun onAuthenticationSuccess(
@@ -32,10 +34,8 @@ class OAuth2AuthenticationSuccessHandler(
         response: HttpServletResponse,
         authentication: Authentication
     ): String {
-        val redirectUri = "http://localhost:3000/oauth2/redirect"
-//        val targetUrl = redirectUri.orElse(defaultTargetUrl)
         val token: String = jwtTokenProvider.generateToken(authentication)
-        return UriComponentsBuilder.fromUriString(redirectUri)
+        return UriComponentsBuilder.fromUriString(githubSecrets.successUrl)
             .queryParam("token", token)
             .build().toUriString()
     }
