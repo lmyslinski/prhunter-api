@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationF
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -24,7 +25,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @EnableWebSecurity
 @Configuration
 class HttpSecurityConfig(
-    private val githubSecrets: GithubSecrets
+    private val githubSecrets: GithubSecrets,
+    private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val tokenAuthenticationFilter: TokenAuthenticationFilter
 ) : WebSecurityConfigurerAdapter() {
 
     private val customAuthorizedClientRepository = HttpSessionOAuth2AuthorizationRequestRepository()
@@ -41,8 +44,8 @@ class HttpSecurityConfig(
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/swagger-ui.html", permitAll)
-                authorize(HttpMethod.GET, "/bounty", permitAll)
-                authorize(HttpMethod.GET, "/bounty/**", permitAll)
+//                authorize(HttpMethod.GET, "/bounty", permitAll)
+//                authorize(HttpMethod.GET, "/bounty/**", permitAll)
                 authorize(HttpMethod.POST, "/bounty/search", permitAll)
                 authorize(anyRequest, authenticated)
             }
@@ -60,6 +63,7 @@ class HttpSecurityConfig(
                 authorizationEndpoint {
                     authorizationRequestRepository = customAuthorizedClientRepository
                 }
+                authenticationSuccessHandler = oAuth2AuthenticationSuccessHandler
             }
             exceptionHandling {
                 authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
@@ -67,7 +71,9 @@ class HttpSecurityConfig(
             httpBasic {
                 disable()
             }
+
             addFilterBefore(githubRequestModifierFilter, OAuth2LoginAuthenticationFilter::class.java)
+            addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         }
     }
 
@@ -75,7 +81,10 @@ class HttpSecurityConfig(
     fun corsConfigurer(): WebMvcConfigurer {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/bounty").allowedOrigins("http://localhost:3000").allowedMethods("*").allowCredentials(true)
+                registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:3000")
+                    .allowedMethods("*")
+                    .allowCredentials(true)
             }
         }
     }
