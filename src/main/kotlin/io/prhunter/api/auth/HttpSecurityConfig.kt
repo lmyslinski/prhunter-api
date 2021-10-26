@@ -75,7 +75,10 @@ class HttpSecurityConfig(
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:3000")
+                    .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://prhunter.io"
+                    )
                     .allowedMethods("*")
                     .allowCredentials(true)
             }
