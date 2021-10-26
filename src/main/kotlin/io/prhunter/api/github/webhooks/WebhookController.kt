@@ -2,6 +2,7 @@ package io.prhunter.api.github.webhooks
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.prhunter.api.github.GithubSecrets
 import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
 import io.prhunter.api.github.webhooks.model.WebhookBody
@@ -19,12 +20,14 @@ private val log = KotlinLogging.logger {}
 @RequestMapping("/webhook")
 class WebhookController(
     private val objectMapper: ObjectMapper,
-    private val installationService: InstallationService
+    private val installationService: InstallationService,
+    private val githubSecrets: GithubSecrets
 ) {
 
     @PostMapping()
     fun handleWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
         log.debug { "Webhook received: $eventBody" }
+        validateWebhook()
         val eventTree = objectMapper.readTree(eventBody)
         when (eventTree.get("action").asText()) {
             "created" -> {
@@ -49,6 +52,10 @@ class WebhookController(
             }
         }
         return ResponseEntity.ok().body("Webhook handled successfully")
+    }
+
+    private fun validateWebhook(){
+        // TODO use webhook secret to check that the webhook comes from Github
     }
 }
 

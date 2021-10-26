@@ -1,4 +1,4 @@
-package io.prhunter.api.config
+package io.prhunter.api.auth
 
 import io.prhunter.api.github.GithubSecrets
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository
@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
 import javax.servlet.http.HttpServletResponse
 
+// When the oauth flow is triggered during Github App installation, the `state` variable and the authorization
+// context are both missing. To make the Spring Security Github handling work, we need to add the `state variable to the
+// URL as well as add some mock authorization request to the repository matched with that state. This filter wraps
+// an incoming request and does just that.
 class GithubRequestModifierFilter(
     private val oauthRequestRepository: AuthorizationRequestRepository<OAuth2AuthorizationRequest>,
     private val githubSecrets: GithubSecrets
@@ -39,7 +43,7 @@ class GithubRequestWrapper(
             val mockOAuth2Request = OAuth2AuthorizationRequest.authorizationCode().authorizationRequestUri(
                 "https://github.com/login/oauth/authorize",
             ).clientId(githubSecrets.clientId)
-                .redirectUri("http://api.prhunter.io/login/oauth2/code/github")
+                .redirectUri("https://api.prhunter.io/login/oauth2/code/github")
                 .state("random-state")
                 .scope("read:user")
                 .authorizationRequestUri("doesn't matter at this stage")

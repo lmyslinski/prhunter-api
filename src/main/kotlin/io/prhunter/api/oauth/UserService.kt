@@ -2,6 +2,8 @@ package io.prhunter.api.oauth
 
 import io.prhunter.api.user.GithubUser
 import io.prhunter.api.user.GithubUserRepository
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
-class UserService(private val githubUserRepository: GithubUserRepository) : OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+class UserService(private val githubUserRepository: GithubUserRepository) : OAuth2UserService<OAuth2UserRequest, OAuth2User>, UserDetailsService {
 
     val default = DefaultOAuth2UserService()
 
@@ -34,5 +36,9 @@ class UserService(private val githubUserRepository: GithubUserRepository) : OAut
         }else{
             return userOpt.get()
         }
+    }
+
+    override fun loadUserByUsername(username: String): UserDetails {
+        return githubUserRepository.findByLogin(username) as UserDetails
     }
 }
