@@ -21,7 +21,6 @@ class CoinGeckoApiService(
     fun getCurrentEthUsdPrice(): BigDecimal {
         return cache.get(CryptoCurrency.ETHEREUM) {
             runBlocking {
-                log.info { "Fetching ${CryptoCurrency.ETHEREUM} price from coinGecko" }
                 coinGeckoApiClient.fetchPrice("ethereum")
             }
         }
