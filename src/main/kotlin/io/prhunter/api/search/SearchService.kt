@@ -26,7 +26,10 @@ class SearchService(
         val conditions = listOfNotNull(
             getExperienceFilter(searchRequest),
             getLanguageFilter(searchRequest),
-            getPriceFilter(searchRequest)
+            getPriceFilter(searchRequest),
+            getBountyTypeFilter(searchRequest),
+            getTitleOrBodyFilter(searchRequest),
+            getTagsFilter(searchRequest),
         )
         val selectQuery = dslContext.selectFrom(BOUNTY).where(getWhereCond(conditions))
             .orderBy(getOrderBy(searchRequest))
@@ -38,6 +41,24 @@ class SearchService(
         val ethPrice = coinGeckoApiService.getCurrentEthUsdPrice()
         val bountyViews = results.map { it.toView(ethPrice) }
         return PageResponse(bountyViews, pageable.pageNumber + 1, total)
+    }
+
+    private fun getBountyTypeFilter(searchRequest: SearchRequest): Condition? {
+        return if (searchRequest.bountyType != null) {
+            BOUNTY.BOUNTY_TYPE.eq(searchRequest.bountyType.name)
+        } else null
+    }
+
+    private fun getTitleOrBodyFilter(searchRequest: SearchRequest): Condition? {
+        return if (!searchRequest.titleOrBody.isNullOrEmpty()) {
+            BOUNTY.TITLE.contains(searchRequest.titleOrBody).or(BOUNTY.BODY.contains(searchRequest.titleOrBody))
+        } else null
+    }
+
+    private fun getTagsFilter(searchRequest: SearchRequest): Condition? {
+        return if (!searchRequest.tags.isNullOrEmpty()){
+          BOUNTY.TAGS.contains(searchRequest.tags.toTypedArray())
+        } else null
     }
 
     private fun getPageable(searchRequest: SearchRequest): Pageable {

@@ -1,6 +1,7 @@
 package io.prhunter.api.search
 
 import io.prhunter.api.bounty.BountyCurrency
+import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -14,6 +15,9 @@ data class SearchRequest(
         val experience: Experience? = null,
         val language: String? = null,
         val price: PriceFilterParams? = null,
+        val tags: List<String>? = null,
+        val bountyType: BountyType? = null,
+        val titleOrBody: String? = null,
 )
 
 data class LocationFilterParams(

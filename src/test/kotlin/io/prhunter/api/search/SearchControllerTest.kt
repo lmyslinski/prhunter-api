@@ -45,17 +45,17 @@ class SearchControllerTest {
     private val now = Instant.now()
     private val bounties = listOf(
         Bounty(
-            1L, 1L, 1L, "1", "1", arrayOf("scala"), tags = arrayOf("new", "first"),
+            1L, 1L, 1L, "test", "1", arrayOf("scala"), tags = arrayOf("new", "first"),
             Experience.Beginner,
-            BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = now.minus(
+            BountyType.Bug, BigDecimal.valueOf(10), "ETH", updatedAt = now.minus(
                 1,
                 ChronoUnit.MINUTES
             )
         ),
         Bounty(
-            2L, 2L, 2L, "2", "2", arrayOf("java"), tags = arrayOf("new", "first"),
+            2L, 2L, 2L, "2", "2", arrayOf("java"), tags = arrayOf("new", "second"),
             Experience.Advanced,
-            BountyType.Feature, BigDecimal.valueOf(20), "ETH", updatedAt = now.minus(
+            BountyType.Housekeeping, BigDecimal.valueOf(20), "ETH", updatedAt = now.minus(
                 4,
                 ChronoUnit.MINUTES
             )
@@ -65,9 +65,9 @@ class SearchControllerTest {
             3L,
             3L,
             "3",
-            "3",
+            "test in here",
             arrayOf("javascript"),
-            tags = arrayOf("new", "react"),
+            tags = arrayOf("another", "react"),
             Experience.Beginner,
             BountyType.Feature,
             BigDecimal.valueOf(30),
@@ -86,7 +86,7 @@ class SearchControllerTest {
             arrayOf("other"),
             tags = arrayOf("react", "ror"),
             Experience.Intermediate,
-            BountyType.Housekeeping,
+            BountyType.Meta,
             BigDecimal.valueOf(30),
             "USD",
             updatedAt = now.minus(
@@ -177,12 +177,23 @@ class SearchControllerTest {
 
     @Test
     fun `should filter by tags correctly`() {
-
+        val results = search(SearchRequest(tags = listOf("new")))
+        Assertions.assertEquals(2, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
     fun `should filter by bounty type correctly`() {
+        val results = search(SearchRequest(bountyType = BountyType.Feature))
+        Assertions.assertEquals(1, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(3), results.content.map { it.issueId }.toTypedArray())
+    }
 
+    @Test
+    fun `should filter by title or body correctly`() {
+        val results = search(SearchRequest(titleOrBody = "test"))
+        Assertions.assertEquals(2, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(1,3), results.content.map { it.issueId }.toTypedArray())
     }
 
     private fun search(searchRequest: SearchRequest): PageResponse<Bounty> {
