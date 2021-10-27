@@ -48,7 +48,7 @@ auth:
 logging:
   level:
     org.springframework: info
-    org.springframework.security: debug
+    org.springframework.security: info
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

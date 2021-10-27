@@ -13,10 +13,10 @@ import java.math.BigDecimal
 
 class BountyServiceTest {
 
-    val accessToken = "123"
-    val githubService = mockk<GithubService>()
-    val bountyRepository = mockk<BountyRepository>()
-    val bountyService = BountyService(bountyRepository, githubService)
+    private val accessToken = "123"
+    private val githubService = mockk<GithubService>()
+    private val bountyRepository = mockk<BountyRepository>()
+    private val bountyService = BountyService(bountyRepository, githubService)
 
     @Test
     fun `should throw if user does not have admin access to the repository`() {
