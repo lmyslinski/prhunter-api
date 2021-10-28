@@ -69,7 +69,7 @@ class HttpSecurityConfig(
             addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         }
     }
-    
+
     fun corsConfigurer(): WebMvcConfigurer {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
