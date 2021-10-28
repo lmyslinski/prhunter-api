@@ -48,7 +48,7 @@ class HttpSecurityConfig(
                 disable()
             }
             cors {
-                corsConfigurer()
+                disable()
             }
             oauth2Login {
                 defaultSuccessUrl(githubSecrets.successUrl, false)
@@ -69,8 +69,7 @@ class HttpSecurityConfig(
             addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         }
     }
-
-    @Bean
+    
     fun corsConfigurer(): WebMvcConfigurer {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
