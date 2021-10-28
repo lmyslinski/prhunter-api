@@ -12,8 +12,7 @@ class LogbookConfiguration {
         return Logbook.builder()
             .condition(
                 exclude(
-                    requestTo("/health"),
-                    requestTo("/admin/**"),
+                    requestTo("/actuator/**"),
                     contentType("application/octet-stream")
                 )
             )
