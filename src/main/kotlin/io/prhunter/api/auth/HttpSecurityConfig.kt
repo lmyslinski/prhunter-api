@@ -48,7 +48,7 @@ class HttpSecurityConfig(
                 disable()
             }
             cors {
-                disable()
+                corsConfigurer()
             }
             oauth2Login {
                 defaultSuccessUrl(githubSecrets.successUrl, false)
