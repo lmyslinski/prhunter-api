@@ -39,16 +39,13 @@ class HttpSecurityConfig(
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/swagger-ui.html", permitAll)
+                authorize("/bounty/search", permitAll)
                 authorize(HttpMethod.GET, "/bounty", permitAll)
                 authorize(HttpMethod.GET, "/bounty/**", permitAll)
-                authorize(HttpMethod.POST, "/bounty/search", permitAll)
                 authorize(anyRequest, authenticated)
             }
             csrf {
                 disable()
-            }
-            cors {
-                corsConfigurer()
             }
             oauth2Login {
                 defaultSuccessUrl(githubSecrets.successUrl, false)
@@ -70,13 +67,17 @@ class HttpSecurityConfig(
         }
     }
 
+    @Bean
     fun corsConfigurer(): WebMvcConfigurer {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("*")
+                    .allowedOrigins(
+                        "http://localhost:3000",
+                        "http://127.0.0.1:3000",
+                        "https://prhunter.io"
+                    )
                     .allowedMethods("*")
-                    .allowCredentials(true)
             }
         }
     }

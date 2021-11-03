@@ -49,7 +49,7 @@ logging:
   level:
     org.springframework: info
     org.springframework.security: info
-    org.zalando.logbook: trace
+    org.zalando.logbook: info
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
