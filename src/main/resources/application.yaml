@@ -18,6 +18,8 @@ spring:
             client-id: ${GITHUB_CLIENT_ID:invalid}
             client-secret: ${GITHUB_CLIENT_SECRET:invalid}
             redirect-uri-template: "https://api.prhunter.io/login/oauth2/code/github"
+  main:
+    banner-mode: off
             
 management:
   endpoint:
@@ -42,8 +44,12 @@ github:
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 
+twilio:
+  apiKey: ${TWILIO_KEY:invalid}
+
 auth:
   jwtSecret: ${JWT_SECRET:9c898633-a4f5-43fa-a81b-18de8cd969c7}
+
 
 logging:
   level:

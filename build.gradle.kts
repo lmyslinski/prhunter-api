@@ -58,6 +58,7 @@ dependencies {
 
     implementation("org.kohsuke:github-api:1.132")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.4")
+    implementation("com.sendgrid:sendgrid-java:4.8.0")
 
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
