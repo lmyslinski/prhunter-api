@@ -38,7 +38,7 @@ server:
 github:
   baseUrl: "api.github.com"
   appId: ${GITHUB_APP_ID:invalid}
-  successUrl: ${GITHUB_SUCCESS_URL:https://prhunter.io/oauth2/redirect}
+  successUrl: ${GITHUB_SUCCESS_URL:http://localhost:3000/oauth2/redirect}
   clientId: ${GITHUB_CLIENT_ID:invalid}
   clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
