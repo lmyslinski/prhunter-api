@@ -23,7 +23,7 @@ sourceSets.main {
 group = "io.prhunter"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_16
-val ktorVersion = "1.6.2"
+val ktorVersion = "1.6.5"
 
 repositories {
     mavenCentral()
@@ -52,11 +52,11 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-security:1.5.11")
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-java:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
-    implementation("org.kohsuke:github-api:1.132")
+    implementation("org.kohsuke:github-api:1.135")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.4")
     implementation("com.sendgrid:sendgrid-java:4.8.0")
 
