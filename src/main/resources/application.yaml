@@ -17,7 +17,7 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID:invalid}
             client-secret: ${GITHUB_CLIENT_SECRET:invalid}
-            redirect-uri-template: "https://api.prhunter.io/login/oauth2/code/github"
+            redirect-uri-template: ${GITHUB_REDIRECT_URL:invalid}
   main:
     banner-mode: off
             
@@ -36,13 +36,14 @@ server:
     contextPath: /
 
 github:
-  baseUrl: "api.github.com"
+  baseUrl: "https://api.github.com"
   appId: ${GITHUB_APP_ID:invalid}
   successUrl: ${GITHUB_SUCCESS_URL:http://localhost:3000/oauth2/redirect}
   clientId: ${GITHUB_CLIENT_ID:invalid}
   clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
+  redirectUrl: ${GITHUB_REDIRECT_URL:invalid}
 
 twilio:
   apiKey: ${TWILIO_KEY:invalid}
@@ -53,7 +54,7 @@ auth:
 
 logging:
   level:
-    io.ktor: debug
+    io.ktor: info
     org.springframework: info
     org.springframework.security: info
     org.zalando.logbook: info

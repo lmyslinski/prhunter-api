@@ -1,20 +1,26 @@
 package io.prhunter.api.common
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.prhunter.api.common.errors.ApiException
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.time.LocalDateTime
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-class RestExceptionHandler : ResponseEntityExceptionHandler() {
+class RestExceptionHandler(private val objectMapper: ObjectMapper) : ResponseEntityExceptionHandler(), AuthenticationFailureHandler {
 
     override fun handleExceptionInternal(
         ex: Exception,
@@ -40,5 +46,15 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
     protected fun handleApiErrors(
         ex: ApiException
     ): ResponseEntity<Any> = apiError(ex, ex.status)
+
+    override fun onAuthenticationFailure(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        exception: AuthenticationException
+    ) {
+        val errorResponse = apiError(exception, HttpStatus.UNAUTHORIZED)
+        response.outputStream.println(objectMapper.writeValueAsString(errorResponse))
+    }
+
 
 }

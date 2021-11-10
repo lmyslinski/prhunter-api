@@ -1,5 +1,6 @@
 package io.prhunter.api.auth
 
+import io.prhunter.api.common.RestExceptionHandler
 import io.prhunter.api.github.GithubSecrets
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,7 +23,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class HttpSecurityConfig(
     private val githubSecrets: GithubSecrets,
     private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
-    private val tokenAuthenticationFilter: TokenAuthenticationFilter
+    private val tokenAuthenticationFilter: TokenAuthenticationFilter,
+    private val restExceptionHandler: RestExceptionHandler
 ) : WebSecurityConfigurerAdapter() {
 
     private val customAuthorizedClientRepository = HttpSessionOAuth2AuthorizationRequestRepository()
@@ -54,7 +56,7 @@ class HttpSecurityConfig(
                     authorizationRequestRepository = customAuthorizedClientRepository
                 }
                 authenticationSuccessHandler = oAuth2AuthenticationSuccessHandler
-
+                authenticationFailureHandler = restExceptionHandler
             }
             exceptionHandling {
                 authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
@@ -65,6 +67,7 @@ class HttpSecurityConfig(
 
             addFilterBefore(githubRequestModifierFilter, OAuth2LoginAuthenticationFilter::class.java)
             addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+
         }
     }
 
