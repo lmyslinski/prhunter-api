@@ -70,23 +70,14 @@ jobs:
         - uses: actions/setup-java@v1
           with:
             java-version: 16
-        - name: Cache Gradle packages
-          uses: actions/cache@v2
-          with:
-            path: |
-              ~/.gradle/caches
-              ~/.gradle/wrapper
-            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            restore-keys: |
-              ${{ runner.os }}-gradle-
-
+            
         # Setup doctl
         - name: Install doctl
           uses: digitalocean/action-doctl@v2
           with:
             token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         - name: Log in to DO Container Registry
-          run: doctl registry login --expiry-seconds 600
+          run: doctl registry login --expiry-seconds 1200
         - name: Build Docker image
           run: ./gradlew jib
         - name: Cleanup Gradle Cache
