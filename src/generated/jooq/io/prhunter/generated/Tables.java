@@ -8,6 +8,8 @@ import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
 import io.prhunter.generated.tables.GithubUser;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.SpringSession;
+import io.prhunter.generated.tables.SpringSessionAttributes;
 
 
 /**
@@ -35,4 +37,14 @@ public class Tables {
      * The table <code>public.installation</code>.
      */
     public static final Installation INSTALLATION = Installation.INSTALLATION;
+
+    /**
+     * The table <code>public.spring_session</code>.
+     */
+    public static final SpringSession SPRING_SESSION = SpringSession.SPRING_SESSION;
+
+    /**
+     * The table <code>public.spring_session_attributes</code>.
+     */
+    public static final SpringSessionAttributes SPRING_SESSION_ATTRIBUTES = SpringSessionAttributes.SPRING_SESSION_ATTRIBUTES;
 }

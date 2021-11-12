@@ -33,6 +33,18 @@ class GithubService(
         }
     }
 
+    fun getIssue(repoOwner: String, repoName: String, issueNumber: Long, accessToken: String): Issue {
+        return runBlocking {
+            githubRestClient.getIssue(repoOwner, repoName, issueNumber, accessToken)
+        }
+    }
+
+    fun getRepository(owner: String, repo: String, token: String): GHRepoData {
+        return runBlocking {
+            githubRestClient.getRepository(owner, repo, token)
+        }
+    }
+
     // https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
     fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
         return runBlocking {

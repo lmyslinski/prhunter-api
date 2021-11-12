@@ -27,10 +27,10 @@ class BountyController(
         @RequestBody createBountyRequest: CreateBountyRequest,
         principal: Principal
     ): ResponseEntity<BountyView> {
-        val accessToken = RequestUtil.getUserFromRequest(principal).accessToken
+        val githubUser = RequestUtil.getUserFromRequest(principal)
         val bounty = bountyService.createBounty(
             createBountyRequest,
-            accessToken
+            githubUser
         )
         return ResponseEntity.status(HttpStatus.CREATED).body(bounty.toView(coinGeckoApiService.getCurrentEthUsdPrice()))
     }
@@ -46,8 +46,8 @@ class BountyController(
         @RequestBody updateBountyRequest: UpdateBountyRequest,
         principal: Principal
     ): ResponseEntity<BountyView> {
-        val accessToken = RequestUtil.getUserFromRequest(principal).accessToken
+        val githubUser = RequestUtil.getUserFromRequest(principal)
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(bountyService.updateBounty(id, updateBountyRequest, accessToken).toView(coinGeckoApiService.getCurrentEthUsdPrice()))
+            .body(bountyService.updateBounty(id, updateBountyRequest, githubUser).toView(coinGeckoApiService.getCurrentEthUsdPrice()))
     }
 }

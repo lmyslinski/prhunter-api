@@ -30,6 +30,21 @@ class GithubRestClient(
         }
     }
 
+    suspend fun getIssue(repoOwner: String, repoName: String, issueNumber: Long, accessToken: String): Issue {
+        val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$repoOwner/$repoName/issues/$issueNumber") {
+            headers {
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $accessToken")
+            }
+        }
+
+        if (response.status.value == 200) {
+            return objectMapper.readValue(response.readText())
+        } else {
+            throw RuntimeException("Could not get issues")
+        }
+    }
+
     suspend fun listIssues(owner: String, repo: String, userToken: String): List<Issue> {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$owner/$repo/issues") {
             headers {
@@ -42,6 +57,21 @@ class GithubRestClient(
             return objectMapper.readValue(response.readText())
         } else {
             throw RuntimeException("Could not get issues")
+        }
+    }
+
+    suspend fun getRepository(owner: String, repo: String, userToken: String): GHRepoData {
+        val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$owner/$repo") {
+            headers {
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $userToken")
+            }
+        }
+
+        if (response.status.value == 200) {
+            return objectMapper.readValue(response.readText())
+        } else {
+            throw RuntimeException("Could not get issue")
         }
     }
 
@@ -60,5 +90,6 @@ class GithubRestClient(
             throw RuntimeException("Could not get user repositories")
         }
     }
+
 
 }

@@ -31,6 +31,10 @@ public class Bounty implements Serializable {
     private final String[]      tags;
     private final String        experience;
     private final String        bountyType;
+    private final Long          githubUserId;
+    private final Long          issueNumber;
+    private final String        repoOwner;
+    private final String        repoName;
 
     public Bounty(Bounty value) {
         this.id = value.id;
@@ -46,6 +50,10 @@ public class Bounty implements Serializable {
         this.tags = value.tags;
         this.experience = value.experience;
         this.bountyType = value.bountyType;
+        this.githubUserId = value.githubUserId;
+        this.issueNumber = value.issueNumber;
+        this.repoOwner = value.repoOwner;
+        this.repoName = value.repoName;
     }
 
     public Bounty(
@@ -61,7 +69,11 @@ public class Bounty implements Serializable {
         LocalDateTime updatedAt,
         String[]      tags,
         String        experience,
-        String        bountyType
+        String        bountyType,
+        Long          githubUserId,
+        Long          issueNumber,
+        String        repoOwner,
+        String        repoName
     ) {
         this.id = id;
         this.repoId = repoId;
@@ -76,6 +88,10 @@ public class Bounty implements Serializable {
         this.tags = tags;
         this.experience = experience;
         this.bountyType = bountyType;
+        this.githubUserId = githubUserId;
+        this.issueNumber = issueNumber;
+        this.repoOwner = repoOwner;
+        this.repoName = repoName;
     }
 
     /**
@@ -169,6 +185,34 @@ public class Bounty implements Serializable {
         return this.bountyType;
     }
 
+    /**
+     * Getter for <code>public.bounty.github_user_id</code>.
+     */
+    public Long getGithubUserId() {
+        return this.githubUserId;
+    }
+
+    /**
+     * Getter for <code>public.bounty.issue_number</code>.
+     */
+    public Long getIssueNumber() {
+        return this.issueNumber;
+    }
+
+    /**
+     * Getter for <code>public.bounty.repo_owner</code>.
+     */
+    public String getRepoOwner() {
+        return this.repoOwner;
+    }
+
+    /**
+     * Getter for <code>public.bounty.repo_name</code>.
+     */
+    public String getRepoName() {
+        return this.repoName;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bounty (");
@@ -186,6 +230,10 @@ public class Bounty implements Serializable {
         sb.append(", ").append(Arrays.toString(tags));
         sb.append(", ").append(experience);
         sb.append(", ").append(bountyType);
+        sb.append(", ").append(githubUserId);
+        sb.append(", ").append(issueNumber);
+        sb.append(", ").append(repoOwner);
+        sb.append(", ").append(repoName);
 
         sb.append(")");
         return sb.toString();

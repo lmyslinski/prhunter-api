@@ -18,7 +18,11 @@ data class Bounty(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val repoId: Long,
+    val repoOwner: String,
+    val repoName: String,
     val issueId: Long,
+    val issueNumber: Long,
+    val githubUserId: Long,
     val title: String,
     val body: String,
     @Type(type = "string-array")
@@ -41,6 +45,7 @@ fun Bounty.toView(ethPrice: BigDecimal): BountyView =
         this.id!!,
         this.repoId,
         this.issueId,
+        this.githubUserId,
         this.title,
         this.body,
         this.languages,

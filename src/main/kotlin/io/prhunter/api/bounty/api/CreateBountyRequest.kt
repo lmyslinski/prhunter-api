@@ -5,8 +5,9 @@ import io.prhunter.api.bounty.Experience
 import java.math.BigDecimal
 
 data class CreateBountyRequest(
-    val repoId: Long,
-    val issueId: Long,
+    val repoOwner: String,
+    val repoName: String,
+    val issueNumber: Long,
     val title: String,
     val body: String,
     val languages: List<String>,

@@ -8,6 +8,8 @@ import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
 import io.prhunter.generated.tables.GithubUser;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.SpringSession;
+import io.prhunter.generated.tables.SpringSessionAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +54,16 @@ public class Public extends SchemaImpl {
     public final Installation INSTALLATION = Installation.INSTALLATION;
 
     /**
+     * The table <code>public.spring_session</code>.
+     */
+    public final SpringSession SPRING_SESSION = SpringSession.SPRING_SESSION;
+
+    /**
+     * The table <code>public.spring_session_attributes</code>.
+     */
+    public final SpringSessionAttributes SPRING_SESSION_ATTRIBUTES = SpringSessionAttributes.SPRING_SESSION_ATTRIBUTES;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -76,6 +88,8 @@ public class Public extends SchemaImpl {
             Bounty.BOUNTY,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             GithubUser.GITHUB_USER,
-            Installation.INSTALLATION);
+            Installation.INSTALLATION,
+            SpringSession.SPRING_SESSION,
+            SpringSessionAttributes.SPRING_SESSION_ATTRIBUTES);
     }
 }
