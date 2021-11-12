@@ -10,6 +10,7 @@ data class BountyView(
     val id: Long,
     val repoId: Long,
     val issueId: Long,
+    val githubUserId: Long,
     val title: String,
     val body: String,
     val languages: Array<String>,
