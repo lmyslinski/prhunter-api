@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.client.web.HttpSessionOAuth2Authoriza
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -50,6 +53,9 @@ class HttpSecurityConfig(
             csrf {
                 disable()
             }
+            cors {
+                
+            }
             oauth2Login {
                 defaultSuccessUrl(githubSecrets.successUrl, false)
                 authorizationEndpoint {
@@ -68,21 +74,6 @@ class HttpSecurityConfig(
             addFilterBefore(githubRequestModifierFilter, OAuth2LoginAuthenticationFilter::class.java)
             addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
-        }
-    }
-
-    @Bean
-    fun corsConfigurer(): WebMvcConfigurer {
-        return object : WebMvcConfigurer {
-            override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/**")
-                    .allowedOrigins(
-                        "http://localhost:3000",
-                        "http://127.0.0.1:3000",
-                        "https://prhunter.io"
-                    )
-                    .allowedMethods("*")
-            }
         }
     }
 }
