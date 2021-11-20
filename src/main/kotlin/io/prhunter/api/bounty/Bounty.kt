@@ -44,7 +44,10 @@ fun Bounty.toView(ethPrice: BigDecimal): BountyView =
     BountyView(
         this.id!!,
         this.repoId,
+        this.repoOwner,
+        this.repoName,
         this.issueId,
+        this.issueNumber,
         this.githubUserId,
         this.title,
         this.body,
