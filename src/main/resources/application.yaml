@@ -54,7 +54,7 @@ auth:
 
 logging:
   level:
-    io.ktor: info
+    io.ktor: warn
     org.springframework: info
     org.springframework.security: info
     org.zalando.logbook: info

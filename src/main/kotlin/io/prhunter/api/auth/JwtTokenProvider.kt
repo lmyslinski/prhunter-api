@@ -43,7 +43,7 @@ class JwtTokenProvider(@Autowired private val authSecrets: AuthSecrets) {
         return UsernamePasswordAuthenticationToken(userDetails, "", authorities)
     }
 
-    fun getUsernameFromToken(token: String?): String {
+    fun getUsernameFromToken(token: String): String {
         return getClaimFromToken(token, Claims::getSubject)
     }
 
@@ -68,7 +68,7 @@ class JwtTokenProvider(@Autowired private val authSecrets: AuthSecrets) {
         return expiration.before(Date())
     }
 
-    fun validateToken(token: String?, userDetails: UserDetails): Boolean {
+    fun validateToken(token: String, userDetails: UserDetails): Boolean {
         val username = getUsernameFromToken(token)
         return username == userDetails.username && !isTokenExpired(token)
     }

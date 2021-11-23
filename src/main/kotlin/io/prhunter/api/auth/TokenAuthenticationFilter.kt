@@ -42,7 +42,7 @@ class TokenAuthenticationFilter(
         } else {
             log.debug("couldn't find bearer string, will ignore the header")
         }
-        if (username != null && SecurityContextHolder.getContext().authentication == null) {
+        if (username != null && authToken != null && SecurityContextHolder.getContext().authentication == null) {
             val userDetails = userDetailsService.loadUserByUsername(username)
             if (jwtTokenProvider.validateToken(authToken, userDetails)) {
                 val authentication: UsernamePasswordAuthenticationToken = jwtTokenProvider.getAuthentication(authToken, userDetails)
