@@ -2,7 +2,6 @@ package io.prhunter.api.github
 
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.RepositoryList
-import io.prhunter.api.installation.Installation
 import org.springframework.stereotype.Service
 
 @Service

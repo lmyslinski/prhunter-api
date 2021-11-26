@@ -24,7 +24,9 @@ object GithubJwtService {
 
     fun generateJwtKey(githubAppId: String, privateKeyFile: File): String {
         val pk = readPKCS1PrivateKeyFromFile(privateKeyFile)
-        return Jwts.builder().setIssuer(githubAppId)
+        return Jwts
+            .builder()
+            .setIssuer(githubAppId)
             .signWith(pk, SignatureAlgorithm.RS256)
             .setIssuedAt(Date(System.currentTimeMillis() - 1000))
             .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 5))

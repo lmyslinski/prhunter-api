@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
-private val log = KotlinLogging.logger {}
-
 @Service
 class CoinGeckoApiService(
     private val coinGeckoApiClient: CoinGeckoApiClient
