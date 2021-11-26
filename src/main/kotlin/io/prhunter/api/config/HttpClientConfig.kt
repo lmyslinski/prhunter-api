@@ -20,7 +20,7 @@ class HttpClientConfig(
         return HttpClient(Java) {
             install(Logging) {
                 logger = Logger.DEFAULT
-                level = LogLevel.INFO
+                level = LogLevel.NONE
             }
             install(JsonFeature){
                 serializer = JacksonSerializer(objectMapper)

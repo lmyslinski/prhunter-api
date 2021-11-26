@@ -37,7 +37,7 @@ class TokenAuthenticationFilter(
             } catch (e: ExpiredJwtException) {
                 log.warn("the token is expired and not valid anymore", e)
             } catch (e: SignatureException) {
-                log.error("Authentication Failed. Username or Password not valid.")
+                log.error("Authentication Failed. JWT Signature is invalid.")
             }
         } else {
             log.debug("couldn't find bearer string, will ignore the header")
