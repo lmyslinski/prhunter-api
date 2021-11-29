@@ -6,7 +6,8 @@ import java.math.BigDecimal
 
 data class UpdateBountyRequest(
     val title: String,
-    val body: String,
+    val problemStatement: String,
+    val acceptanceCriteria: String,
     val languages: List<String>,
     val tags: List<String>,
     val experience: Experience,

@@ -24,7 +24,8 @@ data class Bounty(
     val issueNumber: Long,
     val githubUserId: Long,
     val title: String,
-    val body: String,
+    val problemStatement: String,
+    val acceptanceCriteria: String,
     @Type(type = "string-array")
     val languages: Array<String>,
     @Type(type = "string-array")
@@ -50,7 +51,8 @@ fun Bounty.toView(ethPrice: BigDecimal): BountyView =
         this.issueNumber,
         this.githubUserId,
         this.title,
-        this.body,
+        this.problemStatement,
+        this.acceptanceCriteria,
         this.languages,
         this.tags,
         this.experience,
