@@ -22,7 +22,7 @@ public class Bounty implements Serializable {
     private final Long          repoId;
     private final Long          issueId;
     private final String        title;
-    private final String        body;
+    private final String        problemStatement;
     private final String[]      languages;
     private final BigDecimal    bountyValue;
     private final String        bountyCurrency;
@@ -35,13 +35,14 @@ public class Bounty implements Serializable {
     private final Long          issueNumber;
     private final String        repoOwner;
     private final String        repoName;
+    private final String        acceptanceCriteria;
 
     public Bounty(Bounty value) {
         this.id = value.id;
         this.repoId = value.repoId;
         this.issueId = value.issueId;
         this.title = value.title;
-        this.body = value.body;
+        this.problemStatement = value.problemStatement;
         this.languages = value.languages;
         this.bountyValue = value.bountyValue;
         this.bountyCurrency = value.bountyCurrency;
@@ -54,6 +55,7 @@ public class Bounty implements Serializable {
         this.issueNumber = value.issueNumber;
         this.repoOwner = value.repoOwner;
         this.repoName = value.repoName;
+        this.acceptanceCriteria = value.acceptanceCriteria;
     }
 
     public Bounty(
@@ -61,7 +63,7 @@ public class Bounty implements Serializable {
         Long          repoId,
         Long          issueId,
         String        title,
-        String        body,
+        String        problemStatement,
         String[]      languages,
         BigDecimal    bountyValue,
         String        bountyCurrency,
@@ -73,13 +75,14 @@ public class Bounty implements Serializable {
         Long          githubUserId,
         Long          issueNumber,
         String        repoOwner,
-        String        repoName
+        String        repoName,
+        String        acceptanceCriteria
     ) {
         this.id = id;
         this.repoId = repoId;
         this.issueId = issueId;
         this.title = title;
-        this.body = body;
+        this.problemStatement = problemStatement;
         this.languages = languages;
         this.bountyValue = bountyValue;
         this.bountyCurrency = bountyCurrency;
@@ -92,6 +95,7 @@ public class Bounty implements Serializable {
         this.issueNumber = issueNumber;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
+        this.acceptanceCriteria = acceptanceCriteria;
     }
 
     /**
@@ -123,10 +127,10 @@ public class Bounty implements Serializable {
     }
 
     /**
-     * Getter for <code>public.bounty.body</code>.
+     * Getter for <code>public.bounty.problem_statement</code>.
      */
-    public String getBody() {
-        return this.body;
+    public String getProblemStatement() {
+        return this.problemStatement;
     }
 
     /**
@@ -213,6 +217,13 @@ public class Bounty implements Serializable {
         return this.repoName;
     }
 
+    /**
+     * Getter for <code>public.bounty.acceptance_criteria</code>.
+     */
+    public String getAcceptanceCriteria() {
+        return this.acceptanceCriteria;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bounty (");
@@ -221,7 +232,7 @@ public class Bounty implements Serializable {
         sb.append(", ").append(repoId);
         sb.append(", ").append(issueId);
         sb.append(", ").append(title);
-        sb.append(", ").append(body);
+        sb.append(", ").append(problemStatement);
         sb.append(", ").append(Arrays.toString(languages));
         sb.append(", ").append(bountyValue);
         sb.append(", ").append(bountyCurrency);
@@ -234,6 +245,7 @@ public class Bounty implements Serializable {
         sb.append(", ").append(issueNumber);
         sb.append(", ").append(repoOwner);
         sb.append(", ").append(repoName);
+        sb.append(", ").append(acceptanceCriteria);
 
         sb.append(")");
         return sb.toString();

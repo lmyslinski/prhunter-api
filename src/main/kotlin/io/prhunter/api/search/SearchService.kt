@@ -50,8 +50,10 @@ class SearchService(
     }
 
     private fun getTitleOrBodyFilter(searchRequest: SearchRequest): Condition? {
-        return if (!searchRequest.titleOrBody.isNullOrEmpty()) {
-            BOUNTY.TITLE.contains(searchRequest.titleOrBody).or(BOUNTY.BODY.contains(searchRequest.titleOrBody))
+        return if (!searchRequest.contentContains.isNullOrEmpty()) {
+            BOUNTY.TITLE.contains(searchRequest.contentContains)
+                .or(BOUNTY.PROBLEM_STATEMENT.contains(searchRequest.contentContains))
+                .or(BOUNTY.ACCEPTANCE_CRITERIA.contains(searchRequest.contentContains))
         } else null
     }
 

@@ -14,7 +14,7 @@ object TestDataProvider {
     val TEST_USER = GithubUser(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
     val BOUNTIES = listOf(
         Bounty(
-            1L, 1L, "test-owner", "test-name", 1, 1, 1,"title", "body", arrayOf("scala"), tags = arrayOf("new", "first"),
+            1L, 1L, "test-owner", "test-name", 1, 1, 1,"title", "statement", "acceptance",  arrayOf("scala"), tags = arrayOf("new", "first"),
             Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = NOW.minus(
                 1,
@@ -22,7 +22,7 @@ object TestDataProvider {
             )
         ),
         Bounty(
-            2L, 2L, "test-owner", "test-name-2", 2, 2, 23,"title", "body", arrayOf("java"), tags = arrayOf("new", "first"),
+            2L, 2L, "test-owner", "test-name-2", 2, 2, 23,"title", "statement", "acceptance", arrayOf("java"), tags = arrayOf("new", "first"),
             Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(20), "ETH", updatedAt = NOW.minus(
                 2,
@@ -30,7 +30,7 @@ object TestDataProvider {
             )
         ),
         Bounty(
-            3L, 2L, "test-owner", "test-name-3", 3, 3, 23,"title", "body",
+            3L, 2L, "test-owner", "test-name-3", 3, 3, 23,"title", "statement", "acceptance",
             arrayOf("javascript"),
             tags = arrayOf("new", "first"),
             Experience.Beginner,
@@ -43,7 +43,7 @@ object TestDataProvider {
             )
         ),
         Bounty(
-            4L, 2L, "test-owner", "test-name-4", 4, 4, 22,"title", "body",
+            4L, 2L, "test-owner", "test-name-4", 4, 4, 22,"title", "statement", "acceptance",
             arrayOf("other"),
             tags = arrayOf("react", "ror"),
             Experience.Intermediate,

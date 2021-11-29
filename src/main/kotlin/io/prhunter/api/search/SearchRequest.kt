@@ -17,7 +17,7 @@ data class SearchRequest(
         val price: PriceFilterParams? = null,
         val tags: List<String>? = null,
         val bountyType: BountyType? = null,
-        val titleOrBody: String? = null,
+        val contentContains: String? = null,
 )
 
 data class LocationFilterParams(

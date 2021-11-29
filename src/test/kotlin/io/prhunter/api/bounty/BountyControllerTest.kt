@@ -11,7 +11,6 @@ import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.client.*
-import io.prhunter.api.user.GithubUser
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -25,8 +24,6 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import java.math.BigDecimal
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -42,7 +39,7 @@ class BountyControllerTest(
         "test-repo",
         1234,
         "test-body",
-        "body",
+        "statement", "acceptance",
         listOf("scala", "kotlin"),
         listOf("new", "first"),
         Experience.Beginner,
@@ -52,7 +49,7 @@ class BountyControllerTest(
     )
     private val updateBountyRequest = UpdateBountyRequest(
         "new-title",
-        "new-desc",
+        "statement-new", "acceptance-new",
         listOf("kotlin", "javascript"),
         listOf("updated"),
         Experience.Advanced,
@@ -281,7 +278,8 @@ class BountyControllerTest(
         Assertions.assertEquals(before.repoId, after.repoId)
         Assertions.assertEquals(before.createdAt, after.createdAt)
 
-        Assertions.assertEquals(updateBountyRequest.body, after.body)
+        Assertions.assertEquals(updateBountyRequest.problemStatement, after.problemStatement)
+        Assertions.assertEquals(updateBountyRequest.acceptanceCriteria, after.acceptanceCriteria)
         Assertions.assertEquals(updateBountyRequest.bountyValue, after.bountyValue)
         Assertions.assertEquals(updateBountyRequest.bountryCurrency, after.bountyCurrency)
         Assertions.assertEquals(updateBountyRequest.title, after.title)

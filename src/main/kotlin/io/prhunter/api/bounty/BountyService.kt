@@ -32,7 +32,8 @@ class BountyService(
             issueNumber = createBountyRequest.issueNumber,
             githubUserId = githubUser.id,
             title = createBountyRequest.title,
-            body = createBountyRequest.body,
+            problemStatement = createBountyRequest.problemStatement,
+            acceptanceCriteria = createBountyRequest.acceptanceCriteria,
             bountyValue = createBountyRequest.bountyValue,
             bountyCurrency = createBountyRequest.bountyCurrency,
             languages = createBountyRequest.languages.toTypedArray(),
@@ -62,7 +63,8 @@ class BountyService(
             throw RepoAdminAccessRequired()
         }
         val updatedBounty = bounty.copy(
-            body = updateBountyRequest.body,
+            problemStatement = updateBountyRequest.problemStatement,
+            acceptanceCriteria = updateBountyRequest.acceptanceCriteria,
             title = updateBountyRequest.title,
             languages = updateBountyRequest.languages.toTypedArray(),
             bountyCurrency = updateBountyRequest.bountryCurrency,

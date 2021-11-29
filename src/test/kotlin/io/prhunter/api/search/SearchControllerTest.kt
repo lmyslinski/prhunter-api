@@ -13,8 +13,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import java.math.BigDecimal
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -137,7 +135,7 @@ class SearchControllerTest {
 
     @Test
     fun `should filter by title or body correctly`() {
-        val results = search(SearchRequest(titleOrBody = "test"))
+        val results = search(SearchRequest(contentContains = "test"))
         Assertions.assertEquals(2, results.total)
         Assertions.assertArrayEquals(arrayOf<Long>(1,3), results.content.map { it.issueId }.toTypedArray())
     }

@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row17;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -71,9 +71,9 @@ public class Bounty extends TableImpl<BountyRecord> {
     public final TableField<BountyRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
-     * The column <code>public.bounty.body</code>.
+     * The column <code>public.bounty.problem_statement</code>.
      */
-    public final TableField<BountyRecord, String> BODY = createField(DSL.name("body"), SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<BountyRecord, String> PROBLEM_STATEMENT = createField(DSL.name("problem_statement"), SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>public.bounty.languages</code>.
@@ -134,6 +134,11 @@ public class Bounty extends TableImpl<BountyRecord> {
      * The column <code>public.bounty.repo_name</code>.
      */
     public final TableField<BountyRecord, String> REPO_NAME = createField(DSL.name("repo_name"), SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.bounty.acceptance_criteria</code>.
+     */
+    public final TableField<BountyRecord, String> ACCEPTANCE_CRITERIA = createField(DSL.name("acceptance_criteria"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
 
     private Bounty(Name alias, Table<BountyRecord> aliased) {
         this(alias, aliased, null);
@@ -215,11 +220,11 @@ public class Bounty extends TableImpl<BountyRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row17 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, Long, Long, String, String> fieldsRow() {
-        return (Row17) super.fieldsRow();
+    public Row18<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, Long, Long, String, String, String> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }
