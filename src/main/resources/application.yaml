@@ -3,6 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/prhunter
     username: localdev
     password: localdev
+    hikari:
+      maximumPoolSize: 5
   jpa:
     properties:
       hibernate:
@@ -10,6 +12,7 @@ spring:
         types:
             print:
               banner: false
+
   security:
     oauth2:
       client:
