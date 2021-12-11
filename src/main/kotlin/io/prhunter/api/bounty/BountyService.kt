@@ -9,9 +9,12 @@ import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.Issue
 import io.prhunter.api.user.GithubUser
+import mu.KotlinLogging
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.Instant
+
+private val log = KotlinLogging.logger {}
 
 @Service
 class BountyService(
@@ -77,10 +80,11 @@ class BountyService(
         return bountyRepository.save(updatedBounty)
     }
 
-    private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, accessToken: String): Issue {
+    private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, userAccessToken: String): Issue {
         try{
-            return githubService.getIssue(repoOwner, repoName, issueNumber, accessToken)
+            return githubService.getIssue(repoOwner, repoName, issueNumber, userAccessToken)
         }catch (ex: Throwable){
+            log.error( "Could not fetch issue ${repoOwner}/${repoName}/${issueNumber}", ex)
             throw RepoAdminAccessRequired()
         }
 
@@ -91,6 +95,7 @@ class BountyService(
         try{
             return githubService.getRepository(owner, repoName, userAccessToken)
         }catch (ex: Throwable){
+            log.error( "Could not fetch repository ${owner}/${repoName}", ex)
             throw RepoAdminAccessRequired()
 //            val hasAdminAccess = userRepoList.find { it.id == repoId }?.permissions?.admin ?: false
         }

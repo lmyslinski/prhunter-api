@@ -30,11 +30,11 @@ class GithubRestClient(
         }
     }
 
-    suspend fun getIssue(repoOwner: String, repoName: String, issueNumber: Long, accessToken: String): Issue {
+    suspend fun getIssue(repoOwner: String, repoName: String, issueNumber: Long, userToken: String): Issue {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$repoOwner/$repoName/issues/$issueNumber") {
             headers {
                 header("accept", "application/vnd.github.v3+json")
-                header("Authorization", "Bearer $accessToken")
+                header("Authorization", "Bearer $userToken")
             }
         }
 
