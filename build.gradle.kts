@@ -118,7 +118,7 @@ jib {
         image = "registry.digitalocean.com/prhunter/api:${versionDetails().gitHashFull}"
     }
     container {
-        jvmFlags = listOf("-Xms512m", "-Xmx1500m")
+        jvmFlags = listOf("-Xms512m", "-Xmx1500m", "-Djava.security.egd=file:/dev/./urandom")
     }
 }
 
