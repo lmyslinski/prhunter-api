@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter
@@ -69,6 +70,9 @@ class HttpSecurityConfig(
             }
             httpBasic {
                 disable()
+            }
+            sessionManagement {
+                sessionCreationPolicy = SessionCreationPolicy.NEVER
             }
 
             addFilterBefore(githubRequestModifierFilter, OAuth2LoginAuthenticationFilter::class.java)
