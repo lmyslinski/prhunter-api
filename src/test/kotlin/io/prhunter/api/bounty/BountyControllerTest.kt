@@ -6,10 +6,14 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
 import io.prhunter.api.TestDataProvider
+import io.prhunter.api.auth.AuthService
+import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
+import io.prhunter.api.github.auth.GithubToken
+import io.prhunter.api.github.auth.GithubTokenRepository
 import io.prhunter.api.github.client.*
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,7 +34,8 @@ import java.math.BigDecimal
 class BountyControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,
-    @Autowired val bountyRepository: BountyRepository
+    @Autowired val bountyRepository: BountyRepository,
+    @Autowired val githubTokenRepository: GithubTokenRepository
 ) {
 
     private val createBountyRequest = CreateBountyRequest(
@@ -63,9 +68,13 @@ class BountyControllerTest(
     @MockkBean
     private val coinGeckoApiService: CoinGeckoApiService? = null
 
+    @MockkBean
+    private val authService: AuthService? = null
+
     @BeforeEach
     fun setup() {
         bountyRepository.saveAll(TestDataProvider.BOUNTIES)
+        githubTokenRepository.save(GithubToken(TestDataProvider.TEST_USER.id, 1L, "gh-token"))
         every { coinGeckoApiService!!.getCurrentEthUsdPrice() }.returns(BigDecimal.ONE)
     }
 
@@ -76,7 +85,7 @@ class BountyControllerTest(
 
     @Test
     fun `should create a new bounty if signed in and issue owner`() {
-
+        TestDataProvider.setAuthenticatedContext()
         coEvery { githubRestClient!!.getRepository(any(), any(), any()) }.returns(
             GHRepoData(
                 1L,
@@ -124,6 +133,7 @@ class BountyControllerTest(
 
     @Test
     fun `should return 403 for create bounty if not issue owner`() {
+        TestDataProvider.setAuthenticatedContext()
         coEvery { githubRestClient!!.getRepository(any(), any(), any()) }.returns(
             GHRepoData(
                 1L,
@@ -152,6 +162,7 @@ class BountyControllerTest(
 
     @Test
     fun `should return 403 for create bounty if not repo owner`() {
+        TestDataProvider.setAuthenticatedContext()
         coEvery {
             githubRestClient!!.getRepository(
                 any(),
@@ -228,6 +239,8 @@ class BountyControllerTest(
 
     @Test
     fun `should return 403 for update bounty if not issue owner`() {
+        val differentUser = FirebaseUser("333", "aa", "bb")
+        TestDataProvider.setAuthenticatedContext(differentUser)
         val expected = bountyRepository.findAll().sortedBy { it.updatedAt }.first()
         coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(listOf())
 

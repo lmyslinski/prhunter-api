@@ -4,6 +4,9 @@ import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -56,5 +59,14 @@ object TestDataProvider {
             )
         )
     )
+
+    fun setAuthenticatedContext(user: FirebaseUser = TEST_USER){
+        val authentication = UsernamePasswordAuthenticationToken(
+            user,
+            "",
+            listOf(SimpleGrantedAuthority("user"))
+        )
+        SecurityContextHolder.getContext().authentication = authentication
+    }
 
 }

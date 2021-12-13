@@ -6,10 +6,12 @@ import com.google.firebase.FirebaseOptions
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import java.util.*
 import javax.annotation.PostConstruct
 
 @Configuration
+@Profile("!test")
 class FirebaseConfig(
     @Value("\${firebase.privateKey}") private val privateKey: String,
 ) {

@@ -2,7 +2,11 @@ package io.prhunter.api.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.ninjasquad.springmockk.MockkBean
+import io.prhunter.api.TestDataProvider
+import io.prhunter.api.auth.AuthService
 import io.prhunter.api.auth.FirebaseUser
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -21,8 +25,12 @@ class UserControllerTest(
     @Autowired val objectMapper: ObjectMapper
 ) {
 
+    @MockkBean
+    private val authService: AuthService? = null
+
     @Test
     fun `should return github user view if signed in`() {
+        TestDataProvider.setAuthenticatedContext()
         val response = mockMvc.get("/user") {
             accept = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -31,7 +39,7 @@ class UserControllerTest(
         }.andReturn().response.contentAsString
 
         val actual = objectMapper.readValue<FirebaseUser>(response)
-//        Assertions.assertEquals(testUser.toView(), actual)
+        Assertions.assertEquals(TestDataProvider.TEST_USER, actual)
     }
 
     @Test
