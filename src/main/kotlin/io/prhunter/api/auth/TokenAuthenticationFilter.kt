@@ -1,12 +1,12 @@
 package io.prhunter.api.auth
 
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseToken
 import io.prhunter.api.auth.AuthConstants.HEADER_STRING
 import io.prhunter.api.auth.AuthConstants.TOKEN_PREFIX
 import mu.KotlinLogging
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -30,12 +30,12 @@ class TokenAuthenticationFilter : OncePerRequestFilter() {
                 val defaultAuth = FirebaseAuth.getInstance()
                 val token = defaultAuth.verifyIdToken(authToken)
                 val authentication = UsernamePasswordAuthenticationToken(
-                    token,
-                    token,
+                    token.toUser(),
+                    authToken,
                     listOf(SimpleGrantedAuthority("someRole"))
                 )
                 SecurityContextHolder.getContext().authentication = authentication
-                log.info { "Stored firebase security context" }
+                log.debug { "Stored firebase security context" }
             } catch (e: FirebaseAuthException) {
                 log.error("firebase authentication has failed", e)
             } catch (e: Throwable) {
@@ -48,4 +48,3 @@ class TokenAuthenticationFilter : OncePerRequestFilter() {
     }
 }
 
-data class FirebaseUser(val id: String, val name: String, val pictureUrl: String)

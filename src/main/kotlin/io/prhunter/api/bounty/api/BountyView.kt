@@ -12,7 +12,7 @@ data class BountyView(
     val repoName: String,
     val issueId: Long,
     val issueNumber: Long,
-    val githubUserId: Long,
+    val firebaseUserId: String,
     val title: String,
     val problemStatement: String,
     val acceptanceCriteria: String,

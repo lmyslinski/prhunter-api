@@ -12,15 +12,6 @@ spring:
         types:
             print:
               banner: false
-
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: ${GITHUB_CLIENT_ID:invalid}
-            client-secret: ${GITHUB_CLIENT_SECRET:invalid}
-            redirect-uri-template: ${GITHUB_REDIRECT_URL:invalid}
   main:
     banner-mode: off
             
@@ -38,26 +29,17 @@ server:
   servlet:
     contextPath: /
 
-
 firebase:
   privateKey: ${FIREBASE_PRIVATE_KEY:""}
 
 github:
   baseUrl: "https://api.github.com"
   appId: ${GITHUB_APP_ID:invalid}
-  successUrl: ${GITHUB_SUCCESS_URL:http://localhost:3000/oauth2/redirect}
-  clientId: ${GITHUB_CLIENT_ID:invalid}
-  clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
-  redirectUrl: ${GITHUB_REDIRECT_URL:invalid}
 
 twilio:
   apiKey: ${TWILIO_KEY:invalid}
-
-auth:
-  jwtSecret: ${JWT_SECRET:9c898633-a4f5-43fa-a81b-18de8cd969c7}
-
 
 logging:
   level:

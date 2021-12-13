@@ -1,19 +1,6 @@
 spring:
   datasource:
     url: jdbc:tc:postgresql:13:///prhunter
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            redirect-uri-template: http://localhost:8080/login/oauth2/code/github
-        provider:
-          github:
-            authorization-uri: "http://0.0.0.0:8090/login/oauth/authorize"
-            token-uri: "http://0.0.0.0:8090/oauth/token"
-            user-info-uri: "http://0.0.0.0:8090/userinfo"
-#            user-info-authentication-method: header
-#            user-name-attribute: sub
 
 server:
   servlet:
@@ -21,8 +8,6 @@ server:
 
 github:
   appId: ${GITHUB_APP_ID:invalid}
-  clientId: ${GITHUB_CLIENT_ID:invalid}
-  clientSecret: ${GITHUB_CLIENT_SECRET:invalid}
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 

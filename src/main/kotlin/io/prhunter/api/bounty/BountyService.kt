@@ -1,5 +1,6 @@
 package io.prhunter.api.bounty
 
+import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
@@ -22,7 +23,7 @@ class BountyService(
     val coinGeckoApiService: CoinGeckoApiService
 ) {
 
-    fun createBounty(createBountyRequest: CreateBountyRequest, user: String): Bounty {
+    fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): Bounty {
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         // TODO validate that this issue doesn't have a bounty active yet
@@ -32,7 +33,7 @@ class BountyService(
             repoName = createBountyRequest.repoName,
             issueId = issueData.id,
             issueNumber = createBountyRequest.issueNumber,
-            githubUserId = 0L,
+            firebaseUserId = user.id,
             title = createBountyRequest.title,
             problemStatement = createBountyRequest.problemStatement,
             acceptanceCriteria = createBountyRequest.acceptanceCriteria,
@@ -50,8 +51,8 @@ class BountyService(
         return bountyRepository.findById(id).orElseThrow { NotFoundException(id) }
     }
 
-    fun getUserBounties(githubUserId: Long): List<BountyView> {
-        return bountyRepository.findByGithubUserId(githubUserId)
+    fun getUserBounties(firebaseUserId: String): List<BountyView> {
+        return bountyRepository.findByFirebaseUserId(firebaseUserId)
             .map { it.toView(coinGeckoApiService.getCurrentEthUsdPrice()) }
     }
 
@@ -59,9 +60,9 @@ class BountyService(
         return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt"))
     }
 
-    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, user: String): Bounty {
+    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, user: FirebaseUser): Bounty {
         val bounty = getBounty(id)
-        if(0L != bounty.githubUserId){
+        if(user.id != bounty.firebaseUserId){
             throw RepoAdminAccessRequired()
         }
         val updatedBounty = bounty.copy(
@@ -79,9 +80,9 @@ class BountyService(
         return bountyRepository.save(updatedBounty)
     }
 
-    private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, userAccessToken: String): Issue {
+    private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, user: FirebaseUser): Issue {
         try{
-            return githubService.getIssue(repoOwner, repoName, issueNumber, userAccessToken)
+            return githubService.getIssue(repoOwner, repoName, issueNumber, user)
         }catch (ex: Throwable){
             log.error( "Could not fetch issue ${repoOwner}/${repoName}/${issueNumber}", ex)
             throw RepoAdminAccessRequired()
@@ -89,10 +90,10 @@ class BountyService(
 
     }
 
-    private fun getRepositoryAsUser(owner: String, repoName: String, userAccessToken: String): GHRepoData {
+    private fun getRepositoryAsUser(owner: String, repoName: String, user: FirebaseUser): GHRepoData {
         // check if the user has admin access to the repository linked in the request
         try{
-            return githubService.getRepository(owner, repoName, userAccessToken)
+            return githubService.getRepository(owner, repoName, user)
         }catch (ex: Throwable){
             log.error( "Could not fetch repository ${owner}/${repoName}", ex)
             throw RepoAdminAccessRequired()

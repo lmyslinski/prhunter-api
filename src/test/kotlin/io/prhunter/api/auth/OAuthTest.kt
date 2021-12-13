@@ -85,16 +85,6 @@ class OAuthTest(
     }
 
     @Test
-    fun `should fill in custom state when oauth triggered from install and redirect to JWT handler`() {
-        stubTokenResponse()
-        stubUserInfoResponse()
-        mockMvc.get("/login/oauth2/code/github?code=github&setup_action=install").andExpect {
-            status { is3xxRedirection() }
-            redirectedUrlPattern("${githubSecrets.successUrl}?token=**")
-        }
-    }
-
-    @Test
     fun `should sign in with oauth successfully`(){
         stubTokenResponse()
         stubUserInfoResponse()

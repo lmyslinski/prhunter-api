@@ -32,13 +32,16 @@ class GithubAuthServiceImpl(
         log.info { "Refreshing application JWT key" }
         val tmpPrivateKey = GithubJwtService.generateTmpPrivateKey(githubSecrets.privateKey)
         val jwtToken = GithubJwtService.generateJwtKey(githubSecrets.appId, tmpPrivateKey)
+        log.info { "New JWT Token: $jwtToken" }
         ghApp = GitHubBuilder().withJwtToken(jwtToken).build().app
     }
 
     override fun getInstallationAuthToken(installationId: Long): String {
         refreshJwtTokenIfStale()
         val appInstallation = ghApp!!.getInstallationById(installationId)
-        return appInstallation.createToken().create().token
+        val appToken = appInstallation.createToken().create().token
+            log.info { "New App Token: $appToken" }
+        return appToken
     }
 
 }
