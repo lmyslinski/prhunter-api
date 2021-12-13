@@ -91,5 +91,20 @@ class GithubRestClient(
         }
     }
 
+    suspend fun getGithubUserData(userToken: String): GithubUserData {
+        val response = httpClient.get<HttpResponse>("$githubBaseUrl/user") {
+            headers {
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $userToken")
+            }
+        }
+
+        if (response.status.value == 200) {
+            return objectMapper.readValue(response.readText())
+        } else {
+            throw RuntimeException("Could not get user repositories")
+        }
+    }
+
 
 }

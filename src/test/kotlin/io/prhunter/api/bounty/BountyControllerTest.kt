@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -101,7 +100,6 @@ class BountyControllerTest(
             content = objectMapper.writeValueAsString(createBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(oauth2Login().oauth2User(TestDataProvider.TEST_USER))
         }.andExpect {
             status { is2xxSuccessful() }
             content { contentType(MediaType.APPLICATION_JSON) }
@@ -147,7 +145,6 @@ class BountyControllerTest(
             content = objectMapper.writeValueAsString(createBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(oauth2Login().oauth2User(TestDataProvider.TEST_USER))
         }.andExpect {
             status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
         }
@@ -167,7 +164,6 @@ class BountyControllerTest(
             content = objectMapper.writeValueAsString(createBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(oauth2Login().oauth2User(TestDataProvider.TEST_USER))
         }.andExpect {
             status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
         }
@@ -239,7 +235,6 @@ class BountyControllerTest(
             content = objectMapper.writeValueAsString(updateBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(oauth2Login().oauth2User(TestDataProvider.TEST_USER))
         }.andExpect {
             status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
         }
@@ -267,7 +262,6 @@ class BountyControllerTest(
             content = objectMapper.writeValueAsString(updateBountyRequest)
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
-            with(oauth2Login().oauth2User(TestDataProvider.TEST_USER))
         }.andExpect {
             status { isEqualTo(HttpStatus.NO_CONTENT.value()) }
         }

@@ -18,7 +18,8 @@ class RepositoryController(
 
     @GetMapping()
     fun listRepositories(principal: Principal): List<GHRepoData> {
-        return githubService.listUserInstallationRepositories("")
+        val currentUser = RequestUtil.getUserFromRequest(principal)
+        return githubService.listUserInstallationRepositories(currentUser)
     }
 
     @GetMapping("/{owner}/{repo}/issues")

@@ -20,8 +20,8 @@ class GithubService(
     private val githubRestClient: GithubRestClient
 ) {
 
-    fun listUserInstallationRepositories(currentUser: String): List<GHRepoData> {
-        val installations = installationService.getInstallationsByUserId(0L)
+    fun listUserInstallationRepositories(currentUser: FirebaseUser): List<GHRepoData> {
+        val installations = installationService.getInstallationsByUserId(githubTokenService.getGithubUserId(currentUser))
         return if (installations.isNotEmpty()) {
             installations.map { installation ->
                 runBlocking {
@@ -48,13 +48,6 @@ class GithubService(
         val token = githubTokenService.getTokenForUser(user)
         return runBlocking {
             githubRestClient.getRepository(owner, repo, token)
-        }
-    }
-
-    // https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
-    fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
-        return runBlocking {
-            githubRestClient.listAuthenticatedUserRepos(userToken)
         }
     }
 }

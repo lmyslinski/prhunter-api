@@ -7,5 +7,6 @@ import javax.persistence.Id
 data class GithubToken(
     @Id
     var firebaseUserId: String,
+    var githubUserId: Long,
     var accessToken: String
 )
