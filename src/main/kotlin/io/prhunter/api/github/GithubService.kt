@@ -5,7 +5,7 @@ import io.prhunter.api.github.client.GHRepoPermissionData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.user.GithubUser
+//import io.prhunter.api.user.GithubUser
 import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 
@@ -16,8 +16,8 @@ class GithubService(
     private val githubRestClient: GithubRestClient
 ) {
 
-    fun listUserInstallationRepositories(currentUser: GithubUser): List<GHRepoData> {
-        val installations = installationService.getInstallationsByUserId(currentUser.id)
+    fun listUserInstallationRepositories(currentUser: String): List<GHRepoData> {
+        val installations = installationService.getInstallationsByUserId(0L)
         return if (installations.isNotEmpty()) {
             installations.map { installation ->
                 runBlocking {

@@ -8,7 +8,6 @@ import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.Issue
-import io.prhunter.api.user.GithubUser
 import mu.KotlinLogging
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -23,9 +22,9 @@ class BountyService(
     val coinGeckoApiService: CoinGeckoApiService
 ) {
 
-    fun createBounty(createBountyRequest: CreateBountyRequest, githubUser: GithubUser): Bounty {
-        val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, githubUser.accessToken)
-        val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, githubUser.accessToken)
+    fun createBounty(createBountyRequest: CreateBountyRequest, user: String): Bounty {
+        val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
+        val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         // TODO validate that this issue doesn't have a bounty active yet
         val bounty = Bounty(
             repoId = repoData.id,
@@ -33,7 +32,7 @@ class BountyService(
             repoName = createBountyRequest.repoName,
             issueId = issueData.id,
             issueNumber = createBountyRequest.issueNumber,
-            githubUserId = githubUser.id,
+            githubUserId = 0L,
             title = createBountyRequest.title,
             problemStatement = createBountyRequest.problemStatement,
             acceptanceCriteria = createBountyRequest.acceptanceCriteria,
@@ -60,9 +59,9 @@ class BountyService(
         return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt"))
     }
 
-    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, githubUser: GithubUser): Bounty {
+    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, user: String): Bounty {
         val bounty = getBounty(id)
-        if(githubUser.id != bounty.githubUserId){
+        if(0L != bounty.githubUserId){
             throw RepoAdminAccessRequired()
         }
         val updatedBounty = bounty.copy(

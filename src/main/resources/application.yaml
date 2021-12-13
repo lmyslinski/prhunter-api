@@ -38,6 +38,10 @@ server:
   servlet:
     contextPath: /
 
+
+firebase:
+  privateKey: ${FIREBASE_PRIVATE_KEY:""}
+
 github:
   baseUrl: "https://api.github.com"
   appId: ${GITHUB_APP_ID:invalid}

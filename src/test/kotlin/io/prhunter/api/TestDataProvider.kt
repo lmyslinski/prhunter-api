@@ -3,7 +3,7 @@ package io.prhunter.api
 import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
-import io.prhunter.api.user.GithubUser
+import io.prhunter.api.user.User
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit
 object TestDataProvider {
 
     val NOW = Instant.now()
-    val TEST_USER = GithubUser(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
+    val TEST_USER = User(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
     val BOUNTIES = listOf(
         Bounty(
             1L, 1L, "test-owner", "test-name", 1, 1, 1,"title", "statement", "acceptance",  arrayOf("scala"), tags = arrayOf("new", "first"),

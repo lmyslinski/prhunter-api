@@ -24,7 +24,7 @@ class UserControllerTest(
     @Autowired val objectMapper: ObjectMapper
 ) {
 
-    private val testUser = GithubUser(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
+    private val testUser = User(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
 
     @Test
     fun `should return github user view if signed in`() {

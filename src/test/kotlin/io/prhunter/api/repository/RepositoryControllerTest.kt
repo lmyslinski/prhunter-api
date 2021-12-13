@@ -9,7 +9,7 @@ import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.RepositoryList
 import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.user.GithubUser
+import io.prhunter.api.user.User
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +32,7 @@ class RepositoryControllerTest(
     @Autowired val installationService: InstallationService
 ) {
 
-    private val testUser = GithubUser(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
+    private val testUser = User(23L, "test-user", null, "Johny Cash", "tmp-token", Instant.now(), Instant.now())
     private val testInstallation = Installation(1329L, 22L, "user", testUser.id, "owner")
 
     @MockkBean
