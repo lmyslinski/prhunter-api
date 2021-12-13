@@ -65,6 +65,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
     implementation("org.bouncycastle:bcprov-jdk15on:1.69")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.69")
+    implementation("com.google.firebase:firebase-admin:8.1.0")
 
     implementation("com.vladmihalcea:hibernate-types-55:2.12.1")
     implementation("org.jooq:jooq:3.14.7")
