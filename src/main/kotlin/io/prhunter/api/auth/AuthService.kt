@@ -22,5 +22,4 @@ class AuthService {
         )
         SecurityContextHolder.getContext().authentication = authentication
     }
-
 }
