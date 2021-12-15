@@ -38,6 +38,8 @@ class GithubAuthServiceImpl(
 
     override fun getInstallationAuthToken(installationId: Long): String {
         refreshJwtTokenIfStale()
+        // TODO we only need to refresh this token once every hour
+        // we can keep it as it is right now and later store it in Redis
         val appInstallation = ghApp!!.getInstallationById(installationId)
         val appToken = appInstallation.createToken().create().token
             log.info { "New App Token: $appToken" }

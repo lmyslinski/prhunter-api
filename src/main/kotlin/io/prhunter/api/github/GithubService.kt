@@ -31,7 +31,8 @@ class GithubService(
         } else listOf()
     }
 
-    fun listRepositoryIssues(owner: String, repo: String, token: String): List<Issue> {
+    fun listRepositoryIssues(owner: String, repo: String, user: FirebaseUser): List<Issue> {
+        val token = githubTokenService.getTokenForUser(user)
         return runBlocking {
             githubRestClient.listIssues(owner, repo, token)
         }
