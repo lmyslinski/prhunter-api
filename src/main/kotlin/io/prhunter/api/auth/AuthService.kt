@@ -1,7 +1,6 @@
 package io.prhunter.api.auth
 
 import com.google.firebase.auth.FirebaseAuth
-import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder

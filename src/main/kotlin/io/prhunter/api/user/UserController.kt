@@ -1,7 +1,8 @@
 package io.prhunter.api.user
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserRecord
 import io.prhunter.api.RequestUtil
-import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.api.BountyView
 import org.springframework.http.ResponseEntity
@@ -15,9 +16,11 @@ class UserController(
 ) {
 
     @GetMapping("/user")
-    fun getUser(principal: Principal): ResponseEntity<FirebaseUser> {
+    fun getUser(principal: Principal): ResponseEntity<UserRecord> {
         val user = RequestUtil.getUserFromRequest(principal)
-        return ResponseEntity.ok(user)
+        val defaultAuth = FirebaseAuth.getInstance()
+        val userRecord = defaultAuth.getUser(user.id)
+        return ResponseEntity.ok(userRecord)
     }
 
     @GetMapping("/user/bounties")
