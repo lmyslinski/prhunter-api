@@ -116,9 +116,9 @@ public class Bounty extends TableImpl<BountyRecord> {
     public final TableField<BountyRecord, String> BOUNTY_TYPE = createField(DSL.name("bounty_type"), SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
-     * The column <code>public.bounty.github_user_id</code>.
+     * The column <code>public.bounty.firebase_user_id</code>.
      */
-    public final TableField<BountyRecord, Long> GITHUB_USER_ID = createField(DSL.name("github_user_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<BountyRecord, String> FIREBASE_USER_ID = createField(DSL.name("firebase_user_id"), SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>public.bounty.issue_number</code>.
@@ -224,7 +224,7 @@ public class Bounty extends TableImpl<BountyRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, Long, Long, String, String, String> fieldsRow() {
+    public Row18<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, String, Long, String, String, String> fieldsRow() {
         return (Row18) super.fieldsRow();
     }
 }

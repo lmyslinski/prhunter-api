@@ -31,7 +31,7 @@ public class Bounty implements Serializable {
     private final String[]      tags;
     private final String        experience;
     private final String        bountyType;
-    private final Long          githubUserId;
+    private final String        firebaseUserId;
     private final Long          issueNumber;
     private final String        repoOwner;
     private final String        repoName;
@@ -51,7 +51,7 @@ public class Bounty implements Serializable {
         this.tags = value.tags;
         this.experience = value.experience;
         this.bountyType = value.bountyType;
-        this.githubUserId = value.githubUserId;
+        this.firebaseUserId = value.firebaseUserId;
         this.issueNumber = value.issueNumber;
         this.repoOwner = value.repoOwner;
         this.repoName = value.repoName;
@@ -72,7 +72,7 @@ public class Bounty implements Serializable {
         String[]      tags,
         String        experience,
         String        bountyType,
-        Long          githubUserId,
+        String        firebaseUserId,
         Long          issueNumber,
         String        repoOwner,
         String        repoName,
@@ -91,7 +91,7 @@ public class Bounty implements Serializable {
         this.tags = tags;
         this.experience = experience;
         this.bountyType = bountyType;
-        this.githubUserId = githubUserId;
+        this.firebaseUserId = firebaseUserId;
         this.issueNumber = issueNumber;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
@@ -190,10 +190,10 @@ public class Bounty implements Serializable {
     }
 
     /**
-     * Getter for <code>public.bounty.github_user_id</code>.
+     * Getter for <code>public.bounty.firebase_user_id</code>.
      */
-    public Long getGithubUserId() {
-        return this.githubUserId;
+    public String getFirebaseUserId() {
+        return this.firebaseUserId;
     }
 
     /**
@@ -241,7 +241,7 @@ public class Bounty implements Serializable {
         sb.append(", ").append(Arrays.toString(tags));
         sb.append(", ").append(experience);
         sb.append(", ").append(bountyType);
-        sb.append(", ").append(githubUserId);
+        sb.append(", ").append(firebaseUserId);
         sb.append(", ").append(issueNumber);
         sb.append(", ").append(repoOwner);
         sb.append(", ").append(repoName);

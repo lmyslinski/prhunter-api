@@ -6,10 +6,8 @@ package io.prhunter.generated;
 
 import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
-import io.prhunter.generated.tables.GithubUser;
+import io.prhunter.generated.tables.GithubToken;
 import io.prhunter.generated.tables.Installation;
-import io.prhunter.generated.tables.SpringSession;
-import io.prhunter.generated.tables.SpringSessionAttributes;
 
 
 /**
@@ -29,22 +27,12 @@ public class Tables {
     public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
-     * The table <code>public.github_user</code>.
+     * The table <code>public.github_token</code>.
      */
-    public static final GithubUser GITHUB_USER = GithubUser.GITHUB_USER;
+    public static final GithubToken GITHUB_TOKEN = GithubToken.GITHUB_TOKEN;
 
     /**
      * The table <code>public.installation</code>.
      */
     public static final Installation INSTALLATION = Installation.INSTALLATION;
-
-    /**
-     * The table <code>public.spring_session</code>.
-     */
-    public static final SpringSession SPRING_SESSION = SpringSession.SPRING_SESSION;
-
-    /**
-     * The table <code>public.spring_session_attributes</code>.
-     */
-    public static final SpringSessionAttributes SPRING_SESSION_ATTRIBUTES = SpringSessionAttributes.SPRING_SESSION_ATTRIBUTES;
 }
