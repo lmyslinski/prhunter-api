@@ -14,12 +14,18 @@ import java.security.Principal
 @RequestMapping("/bounty")
 class BountyController(
     private val bountyService: BountyService,
-    private val coinGeckoApiService: CoinGeckoApiService
+    private val coinGeckoApiService: CoinGeckoApiService,
+    private val featuredBountyService: FeaturedBountyService
 ) {
 
     @GetMapping
     fun listBounties(): List<BountyView> {
         return bountyService.list().map { it.toView(coinGeckoApiService.getCurrentEthUsdPrice()) }
+    }
+
+    @GetMapping("/featured")
+    fun getFeaturedBounties(): List<BountyView> {
+        return featuredBountyService.getFeaturedBounties()
     }
 
     @PostMapping

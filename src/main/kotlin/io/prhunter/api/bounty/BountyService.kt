@@ -100,5 +100,4 @@ class BountyService(
 //            val hasAdminAccess = userRepoList.find { it.id == repoId }?.permissions?.admin ?: false
         }
     }
-
 }
