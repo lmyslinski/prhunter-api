@@ -11,6 +11,7 @@ import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
+import io.prhunter.api.common.ApiError
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.auth.GithubToken
 import io.prhunter.api.github.auth.GithubTokenRepository
@@ -96,7 +97,7 @@ class BountyControllerTest(
         )
         coEvery { githubRestClient!!.getIssue(any(), any(), any(), any()) }.returns(
             Issue(
-                1L,
+                5L,
                 "test-name",
                 "full-name",
                 "state",
@@ -118,6 +119,42 @@ class BountyControllerTest(
 
         Assertions.assertNotNull(actual.id)
         Assertions.assertEquals(createBountyRequest.title, actual.title)
+    }
+
+    @Test
+    fun `should return 400 if bounty already exists for an issue`(){
+        TestDataProvider.setAuthenticatedContext()
+        coEvery { githubRestClient!!.getRepository(any(), any(), any()) }.returns(
+            GHRepoData(
+                1L,
+                "test-name",
+                "full-name",
+                false
+            )
+        )
+        coEvery { githubRestClient!!.getIssue(any(), any(), any(), any()) }.returns(
+            Issue(
+                1L,
+                "test-name",
+                "full-name",
+                "state",
+                "body",
+                0L
+            )
+        )
+
+        val response = mockMvc.post("/bounty") {
+            content = objectMapper.writeValueAsString(createBountyRequest)
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { is4xxClientError() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+        }.andReturn().response.contentAsString
+
+        // need to figure out localdatetime deserialization
+//        val apiError: ApiError = objectMapper.readValue(response)
+//        Assertions.assertEquals("This issue already has a bounty. You cannot have multiple bounties for the same issue.", apiError.message)
     }
 
     @Test

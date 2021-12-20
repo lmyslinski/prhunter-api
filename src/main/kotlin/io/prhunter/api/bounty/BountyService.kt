@@ -4,6 +4,7 @@ import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
+import io.prhunter.api.common.errors.BountyAlreadyExists
 import io.prhunter.api.common.errors.NotFoundException
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.GithubService
@@ -26,7 +27,7 @@ class BountyService(
     fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): Bounty {
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
-        // TODO validate that this issue doesn't have a bounty active yet
+        validateNoBountyFoundForIssue(issueData.id)
         val bounty = Bounty(
             repoId = repoData.id,
             repoOwner = createBountyRequest.repoOwner,
@@ -98,6 +99,14 @@ class BountyService(
             log.error( "Could not fetch repository ${owner}/${repoName}", ex)
             throw RepoAdminAccessRequired()
 //            val hasAdminAccess = userRepoList.find { it.id == repoId }?.permissions?.admin ?: false
+        }
+    }
+
+    private fun validateNoBountyFoundForIssue(issueId: Long) {
+        val existingBountyOpt = bountyRepository.findByIssueId(issueId)
+        if(existingBountyOpt != null){
+            log.error("Found a duplicate bounty for issue $issueId")
+            throw BountyAlreadyExists()
         }
     }
 }
