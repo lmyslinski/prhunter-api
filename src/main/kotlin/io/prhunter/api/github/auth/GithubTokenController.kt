@@ -17,13 +17,17 @@ class GithubTokenController(
 
     @PostMapping("/github/token")
     fun updateUserGithubAccessToken(@RequestBody githubTokenRequest: GithubTokenRequest){
-        log.info { "Received user GH token: $githubTokenRequest" }
+        log.debug { "Received user GH token: $githubTokenRequest" }
         val ghUserData = runBlocking {
             githubClient.getGithubUserData(githubTokenRequest.accessToken)
         }
+        val tokenOpt = githubTokenRepository.findByFirebaseUserIdOrGithubUserId(githubTokenRequest.firebaseUserId, ghUserData.id)
+        if(tokenOpt != null){
+            githubTokenRepository.deleteById(githubTokenRequest.firebaseUserId)
+        }
         val ghToken = GithubToken(githubTokenRequest.firebaseUserId, ghUserData.id, githubTokenRequest.accessToken)
         githubTokenRepository.save(ghToken)
-        log.info { "User GH token updated" }
+        log.debug { "User GH token updated" }
     }
 }
 
