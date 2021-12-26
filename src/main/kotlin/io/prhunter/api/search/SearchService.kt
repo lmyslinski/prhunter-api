@@ -27,9 +27,11 @@ class SearchService(
             getExperienceFilter(searchRequest),
             getLanguageFilter(searchRequest),
             getPriceFilter(searchRequest),
+            getCurrencyFilter(searchRequest),
             getBountyTypeFilter(searchRequest),
             getTitleOrBodyFilter(searchRequest),
             getTagsFilter(searchRequest),
+
         )
         val selectQuery = dslContext.selectFrom(BOUNTY).where(getWhereCond(conditions))
             .orderBy(getOrderBy(searchRequest))
@@ -74,11 +76,15 @@ class SearchService(
         } else null
     }
 
+    private fun getCurrencyFilter(searchRequest: SearchRequest): Condition? {
+        return if (searchRequest.currency != null) {
+            BOUNTY.BOUNTY_CURRENCY.eq(searchRequest.currency.name)
+        } else null
+    }
+
     private fun getPriceFilter(searchRequest: SearchRequest): Condition? {
         return if (searchRequest.price != null) {
-            BOUNTY.BOUNTY_CURRENCY.eq(searchRequest.price.currency.name).and(
                 BOUNTY.BOUNTY_VALUE.between(searchRequest.price.min, searchRequest.price.to)
-            )
         } else null
     }
 

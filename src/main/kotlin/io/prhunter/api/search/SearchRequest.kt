@@ -18,6 +18,7 @@ data class SearchRequest(
         val tags: List<String>? = null,
         val bountyType: BountyType? = null,
         val contentContains: String? = null,
+        val currency: BountyCurrency? = null
 )
 
 data class LocationFilterParams(
@@ -30,7 +31,7 @@ data class PriceFilterParams(
         val min: BigDecimal? = BigDecimal.valueOf(0L),
         @Schema(description = "Optional, defaults to a very big number", example = "34.4")
         val to: BigDecimal? = BigDecimal.valueOf(Long.MAX_VALUE),
-        val currency: BountyCurrency
+
 )
 
 data class SortableImpl(

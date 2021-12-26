@@ -70,8 +70,8 @@ class SearchControllerTest {
                 price = PriceFilterParams(
                     BigDecimal.valueOf(11L),
                     BigDecimal.valueOf(21L),
-                    BountyCurrency.ETH
-                )
+                ),
+                currency = BountyCurrency.ETH
             )
         )
         Assertions.assertEquals(1, results.total)
@@ -84,7 +84,6 @@ class SearchControllerTest {
             SearchRequest(
                 price = PriceFilterParams(
                     to = BigDecimal.valueOf(21L),
-                    currency = BountyCurrency.ETH
                 )
             )
         )
@@ -98,7 +97,6 @@ class SearchControllerTest {
             SearchRequest(
                 price = PriceFilterParams(
                     min = BigDecimal.valueOf(11L),
-                    currency = BountyCurrency.ETH
                 )
             )
         )
@@ -110,9 +108,7 @@ class SearchControllerTest {
     fun `should filter by currency only`() {
         val results = search(
             SearchRequest(
-                price = PriceFilterParams(
-                    currency = BountyCurrency.ETH
-                )
+                currency = BountyCurrency.ETH
             )
         )
         Assertions.assertEquals(3, results.total)
