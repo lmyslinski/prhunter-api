@@ -5,7 +5,9 @@ import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.common.errors.BountyAlreadyExists
+import io.prhunter.api.common.errors.IssueAdminAccessRequired
 import io.prhunter.api.common.errors.NotFoundException
+import io.prhunter.api.common.errors.RepoAdminAccessRequired
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.client.GHRepoData
@@ -86,7 +88,7 @@ class BountyService(
             return githubService.getIssue(repoOwner, repoName, issueNumber, user)
         }catch (ex: Throwable){
             log.error( "Could not fetch issue ${repoOwner}/${repoName}/${issueNumber}", ex)
-            throw RepoAdminAccessRequired()
+            throw IssueAdminAccessRequired()
         }
 
     }
