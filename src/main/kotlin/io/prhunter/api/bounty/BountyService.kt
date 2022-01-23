@@ -9,10 +9,12 @@ import io.prhunter.api.common.errors.IssueAdminAccessRequired
 import io.prhunter.api.common.errors.NotFoundException
 import io.prhunter.api.common.errors.RepoAdminAccessRequired
 import io.prhunter.api.crypto.CoinGeckoApiService
+import io.prhunter.api.crypto.CryptoCurrency
 import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.Issue
 import mu.KotlinLogging
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -26,7 +28,7 @@ class BountyService(
     val coinGeckoApiService: CoinGeckoApiService
 ) {
 
-    fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): Bounty {
+    fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): BountyView {
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         validateNoBountyFoundForIssue(issueData.id)
@@ -47,23 +49,37 @@ class BountyService(
             experience = createBountyRequest.experience,
             bountyType = createBountyRequest.bountyType
         )
-        return bountyRepository.save(bounty)
+        return toView(bountyRepository.save(bounty))
     }
 
     fun getBounty(id: Long): Bounty {
         return bountyRepository.findById(id).orElseThrow { NotFoundException(id) }
     }
 
+    fun getBountyView(id: Long): BountyView? {
+        return toView(getBounty(id))
+    }
+
+    fun getBountyByIssueId(issueId: Long): BountyView? {
+        val bounty = bountyRepository.findByIssueId(issueId)
+        return if(bounty != null){
+             toView(bounty)
+        }else null
+    }
+
     fun getUserBounties(firebaseUserId: String): List<BountyView> {
-        return bountyRepository.findByFirebaseUserId(firebaseUserId)
-            .map { it.toView(coinGeckoApiService.getCurrentEthUsdPrice()) }
+        return bountyRepository.findByFirebaseUserId(firebaseUserId).map{toView(it)}
     }
 
-    fun list(): List<Bounty> {
-        return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt"))
+    fun getFeaturedBounties(): List<BountyView> {
+        return bountyRepository.findAll(PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "updatedAt"))).content.map { toView(it) }
     }
 
-    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, user: FirebaseUser): Bounty {
+    fun list(): List<BountyView> {
+        return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")).map { toView(it) }
+    }
+
+    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, user: FirebaseUser): BountyView {
         val bounty = getBounty(id)
         if(user.id != bounty.firebaseUserId){
             throw RepoAdminAccessRequired()
@@ -80,7 +96,7 @@ class BountyService(
             experience = updateBountyRequest.experience,
             bountyType = updateBountyRequest.bountyType
         )
-        return bountyRepository.save(updatedBounty)
+        return toView(bountyRepository.save(updatedBounty))
     }
 
     private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, user: FirebaseUser): Issue {
@@ -110,5 +126,30 @@ class BountyService(
             log.error("Found a duplicate bounty for issue $issueId")
             throw BountyAlreadyExists()
         }
+    }
+
+    fun toView(bounty: Bounty): BountyView {
+        val priceUSD = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(bounty.bountyCurrency))
+        return BountyView(
+            bounty.id!!,
+            bounty.repoId,
+            bounty.repoOwner,
+            bounty.repoName,
+            bounty.issueId,
+            bounty.issueNumber,
+            bounty.firebaseUserId,
+            bounty.title,
+            bounty.problemStatement,
+            bounty.acceptanceCriteria,
+            bounty.languages,
+            bounty.tags,
+            bounty.experience,
+            bounty.bountyType,
+            bounty.bountyValue,
+            bounty.bountyValue*priceUSD,
+            bounty.bountyCurrency,
+            bounty.createdAt,
+            bounty.updatedAt
+        )
     }
 }

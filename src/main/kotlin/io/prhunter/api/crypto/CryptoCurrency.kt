@@ -1,7 +1,6 @@
 package io.prhunter.api.crypto
 
-enum class CryptoCurrency {
-    ETHEREUM,
-    BSC,
-
+enum class CryptoCurrency(val ticker: String) {
+    ETH("ethereum"),
+    BNB("binancecoin"),
 }

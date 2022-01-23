@@ -1,9 +1,8 @@
 package io.prhunter.api.search
 
 import io.prhunter.api.bounty.Bounty
+import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.api.BountyView
-import io.prhunter.api.bounty.toView
-import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.generated.tables.Bounty.BOUNTY
 import org.jooq.Condition
 import org.jooq.DSLContext
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest
 @Service
 class SearchService(
     private val dslContext: DSLContext,
-    private val coinGeckoApiService: CoinGeckoApiService
+    private val bountyService: BountyService
 ) {
 
     fun search(request: HttpServletRequest, searchRequest: SearchRequest): PageResponse<BountyView> {
@@ -40,8 +39,7 @@ class SearchService(
 
         val total = selectQuery.fetch().size
         val results = selectQuery.fetchInto(Bounty::class.java)
-        val ethPrice = coinGeckoApiService.getCurrentEthUsdPrice()
-        val bountyViews = results.map { it.toView(ethPrice) }
+        val bountyViews = results.map { bountyService.toView(it) }
         return PageResponse(bountyViews, pageable.pageNumber + 1, total)
     }
 

@@ -3,7 +3,6 @@ package io.prhunter.api.crypto
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
@@ -16,10 +15,10 @@ class CoinGeckoApiService(
         .expireAfterWrite(1, TimeUnit.HOURS)
         .build()
 
-    fun getCurrentEthUsdPrice(): BigDecimal {
-        return cache.get(CryptoCurrency.ETHEREUM) {
+    fun getCurrentPrice(currency: CryptoCurrency): BigDecimal {
+        return cache.get(currency) {
             runBlocking {
-                coinGeckoApiClient.fetchPrice("ethereum")
+                coinGeckoApiClient.fetchPrice(currency.ticker)
             }
         }
     }

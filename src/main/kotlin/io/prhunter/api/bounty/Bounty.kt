@@ -40,26 +40,3 @@ data class Bounty(
     val updatedAt: Instant = Instant.now()
 )
 
-
-fun Bounty.toView(ethPrice: BigDecimal): BountyView =
-    BountyView(
-        this.id!!,
-        this.repoId,
-        this.repoOwner,
-        this.repoName,
-        this.issueId,
-        this.issueNumber,
-        this.firebaseUserId,
-        this.title,
-        this.problemStatement,
-        this.acceptanceCriteria,
-        this.languages,
-        this.tags,
-        this.experience,
-        this.bountyType,
-        this.bountyValue,
-        this.bountyValue*ethPrice,
-        this.bountyCurrency,
-        this.createdAt,
-        this.updatedAt
-    )
