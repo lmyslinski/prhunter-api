@@ -2,7 +2,6 @@ package io.prhunter.api.bounty.api
 
 import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
-import org.web3j.protocol.core.methods.response.Transaction
 import java.math.BigDecimal
 
 data class CreateBountyRequest(
@@ -18,5 +17,5 @@ data class CreateBountyRequest(
     val bountyType: BountyType,
     val bountyValue: BigDecimal,
     val bountyCurrency: String,
-    val transaction: Transaction
+    val blockHash: String
 )

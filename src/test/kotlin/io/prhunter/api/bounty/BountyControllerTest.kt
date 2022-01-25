@@ -11,11 +11,12 @@ import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
-import io.prhunter.api.common.ApiError
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.auth.GithubToken
 import io.prhunter.api.github.auth.GithubTokenRepository
-import io.prhunter.api.github.client.*
+import io.prhunter.api.github.client.GHRepoData
+import io.prhunter.api.github.client.GithubRestClient
+import io.prhunter.api.github.client.Issue
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -50,7 +51,8 @@ class BountyControllerTest(
         Experience.Beginner,
         BountyType.Feature,
         BigDecimal.valueOf(100L),
-        "USD"
+        "ETH",
+        "0x0"
     )
     private val updateBountyRequest = UpdateBountyRequest(
         "new-title",
@@ -76,7 +78,7 @@ class BountyControllerTest(
     fun setup() {
         bountyRepository.saveAll(TestDataProvider.BOUNTIES)
         githubTokenRepository.save(GithubToken(TestDataProvider.TEST_USER.id, 1L, "gh-token"))
-        every { coinGeckoApiService!!.getCurrentEthUsdPrice() }.returns(BigDecimal.ONE)
+        every { coinGeckoApiService!!.getCurrentPrice(any()) }.returns(BigDecimal.ONE)
     }
 
     @AfterEach
@@ -122,7 +124,7 @@ class BountyControllerTest(
     }
 
     @Test
-    fun `should return 400 if bounty already exists for an issue`(){
+    fun `should return 400 if bounty already exists for an issue`() {
         TestDataProvider.setAuthenticatedContext()
         coEvery { githubRestClient!!.getRepository(any(), any(), any()) }.returns(
             GHRepoData(
@@ -247,20 +249,20 @@ class BountyControllerTest(
         Assertions.assertEquals(actual.last(), resorted.last())
     }
 
-//     TODO FIX POST MVP
+    //     TODO FIX POST MVP
     @Test
     @Disabled
     fun `should get a single bounty successfully`() {
-        val expected = bountyRepository.findAll().sortedBy { it.updatedAt }.first().toView(BigDecimal.ZERO)
-        mockMvc.get("/bounty/${expected.id}").andExpect {
-            status {
-                isOk()
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                }
-                content { json(objectMapper.writeValueAsString(expected)) }
-            }
-        }
+//        val expected = bountyRepository.findAll().sortedBy { it.updatedAt }.first().toView(BigDecimal.ZERO)
+//        mockMvc.get("/bounty/${expected.id}").andExpect {
+//            status {
+//                isOk()
+//                content {
+//                    contentType(MediaType.APPLICATION_JSON)
+//                }
+//                content { json(objectMapper.writeValueAsString(expected)) }
+//            }
+//        }
     }
 
     @Test
@@ -294,41 +296,41 @@ class BountyControllerTest(
     @Test
     @Disabled
     fun `should update bounty successfully`() {
-        val before = bountyRepository.findAll().sortedBy { it.updatedAt }.first()
-
-        coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(
-            listOf(
-                GHRepoPermissionData(
-                    before.repoId,
-                    "",
-                    "",
-                    false,
-                    Permissions(true, true, true, true, true)
-                )
-            )
-        )
-
-        mockMvc.put("/bounty/${before.id}") {
-            content = objectMapper.writeValueAsString(updateBountyRequest)
-            contentType = MediaType.APPLICATION_JSON
-            accept = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isEqualTo(HttpStatus.NO_CONTENT.value()) }
-        }
-
-        val after = bountyRepository.findById(before.id!!).get().toView(BigDecimal.ZERO)
-        Assertions.assertEquals(before.id, after.id)
-        Assertions.assertEquals(before.issueId, after.issueId)
-        Assertions.assertEquals(before.repoId, after.repoId)
-        Assertions.assertEquals(before.createdAt, after.createdAt)
-
-        Assertions.assertEquals(updateBountyRequest.problemStatement, after.problemStatement)
-        Assertions.assertEquals(updateBountyRequest.acceptanceCriteria, after.acceptanceCriteria)
-        Assertions.assertEquals(updateBountyRequest.bountyValue, after.bountyValue)
-        Assertions.assertEquals(updateBountyRequest.bountryCurrency, after.bountyCurrency)
-        Assertions.assertEquals(updateBountyRequest.title, after.title)
-        Assertions.assertArrayEquals(updateBountyRequest.languages.toTypedArray(), after.languages)
-
-        Assertions.assertNotEquals(before.updatedAt, after.updatedAt)
+//        val before = bountyRepository.findAll().sortedBy { it.updatedAt }.first()
+//
+//        coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(
+//            listOf(
+//                GHRepoPermissionData(
+//                    before.repoId,
+//                    "",
+//                    "",
+//                    false,
+//                    Permissions(true, true, true, true, true)
+//                )
+//            )
+//        )
+//
+//        mockMvc.put("/bounty/${before.id}") {
+//            content = objectMapper.writeValueAsString(updateBountyRequest)
+//            contentType = MediaType.APPLICATION_JSON
+//            accept = MediaType.APPLICATION_JSON
+//        }.andExpect {
+//            status { isEqualTo(HttpStatus.NO_CONTENT.value()) }
+//        }
+//
+//        val after = bountyRepository.findById(before.id!!).get().toView(BigDecimal.ZERO)
+//        Assertions.assertEquals(before.id, after.id)
+//        Assertions.assertEquals(before.issueId, after.issueId)
+//        Assertions.assertEquals(before.repoId, after.repoId)
+//        Assertions.assertEquals(before.createdAt, after.createdAt)
+//
+//        Assertions.assertEquals(updateBountyRequest.problemStatement, after.problemStatement)
+//        Assertions.assertEquals(updateBountyRequest.acceptanceCriteria, after.acceptanceCriteria)
+//        Assertions.assertEquals(updateBountyRequest.bountyValue, after.bountyValue)
+//        Assertions.assertEquals(updateBountyRequest.bountryCurrency, after.bountyCurrency)
+//        Assertions.assertEquals(updateBountyRequest.title, after.title)
+//        Assertions.assertArrayEquals(updateBountyRequest.languages.toTypedArray(), after.languages)
+//
+//        Assertions.assertNotEquals(before.updatedAt, after.updatedAt)
     }
 }
