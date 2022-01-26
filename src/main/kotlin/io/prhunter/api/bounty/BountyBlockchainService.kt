@@ -1,25 +1,20 @@
 package io.prhunter.api.bounty
 
+import io.prhunter.api.contract.ContractService
 import mu.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.admin.Admin
-import org.web3j.protocol.http.HttpService
+import org.web3j.protocol.core.methods.request.EthFilter
 
 
 @Service
-class BountyBlockchainService(val bountyRepository: BountyRepository) {
+class BountyBlockchainService(val bountyRepository: BountyRepository, val contractService: ContractService) {
 
     companion object{
-        const val EVERY_30_SECONDS = "0/10 * * * * *"
+        const val EVERY_30_SECONDS = "0/2 * * * * *"
     }
 
     private val log = KotlinLogging.logger {}
-    var web3j = Web3j.build(HttpService("<your_node_url>"))
-
-
-
 
     @Scheduled(cron = EVERY_30_SECONDS)
     fun updateBountyStates(){
@@ -28,12 +23,8 @@ class BountyBlockchainService(val bountyRepository: BountyRepository) {
         log.info { "Found ${allBounties.size} bounties in pending state" }
         if(allBounties.isNotEmpty()){
             val first = allBounties.first()
-            val receipt = web3j.ethGetTransactionByHash(first.transactionHash).send()
-            if(receipt == null){
-                log.info { "Transaction is not completed yet" }
-            }else{
-                log.info { "Transaction completed: ${receipt.rawResponse}"}
-            }
+            var qq = contractService.bountyFactory.bountyCreatedEventFlowable(EthFilter()).blockingFirst()
+            log.info { "First: $qq" }
         }
     }
 }
