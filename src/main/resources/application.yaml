@@ -38,6 +38,10 @@ github:
   webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 
+etherScan:
+  apiKey: ${ETHERSCAN_API_KEY:invalid}
+  network: ${ETHERSCAN_NETWORK:ropsten}
+
 twilio:
   apiKey: ${TWILIO_KEY:invalid}
 

@@ -1,7 +1,6 @@
 package io.prhunter.api.bounty
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType
-import io.prhunter.api.bounty.api.BountyView
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import java.math.BigDecimal
@@ -36,6 +35,9 @@ data class Bounty(
     val bountyType: BountyType,
     val bountyValue: BigDecimal,
     val bountyCurrency: String,
+    @Enumerated(EnumType.STRING)
+    val bountyStatus: BountyStatus,
+    val transactionHash: String,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now()
 )

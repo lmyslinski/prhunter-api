@@ -17,5 +17,5 @@ data class CreateBountyRequest(
     val bountyType: BountyType,
     val bountyValue: BigDecimal,
     val bountyCurrency: String,
-    val blockHash: String
+    val transactionHash: String
 )

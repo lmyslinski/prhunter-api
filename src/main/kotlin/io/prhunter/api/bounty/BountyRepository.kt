@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 interface BountyRepository : JpaRepository<Bounty, Long>{
     fun findByFirebaseUserId(firebaseUserId: String): List<Bounty>
     fun findByIssueId(issueId: Long): Bounty?
+    fun findAllByBountyStatus(status: BountyStatus): List<Bounty>
 }

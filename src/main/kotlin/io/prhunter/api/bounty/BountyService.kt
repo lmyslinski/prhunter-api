@@ -47,7 +47,9 @@ class BountyService(
             languages = createBountyRequest.languages.toTypedArray(),
             tags = createBountyRequest.tags.toTypedArray(),
             experience = createBountyRequest.experience,
-            bountyType = createBountyRequest.bountyType
+            bountyType = createBountyRequest.bountyType,
+            bountyStatus = BountyStatus.PENDING,
+            transactionHash = createBountyRequest.transactionHash
         )
         return toView(bountyRepository.save(bounty))
     }
