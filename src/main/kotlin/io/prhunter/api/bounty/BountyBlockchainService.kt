@@ -3,8 +3,10 @@ package io.prhunter.api.bounty
 import mu.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import org.web3j.protocol.Web3j
 import org.web3j.protocol.admin.Admin
 import org.web3j.protocol.http.HttpService
+
 
 @Service
 class BountyBlockchainService(val bountyRepository: BountyRepository) {
@@ -14,7 +16,9 @@ class BountyBlockchainService(val bountyRepository: BountyRepository) {
     }
 
     private val log = KotlinLogging.logger {}
-    val web3j: Admin = Admin.build(HttpService("https://mainnet.infura.io/v3/373543e00dc9456b98aec7048949799c"))
+    var web3j = Web3j.build(HttpService("<your_node_url>"))
+
+
 
 
     @Scheduled(cron = EVERY_30_SECONDS)
