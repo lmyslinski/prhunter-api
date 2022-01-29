@@ -1,0 +1,1 @@
+ALTER TABLE "bounty" ADD COLUMN completed_by VARCHAR DEFAULT NULL;

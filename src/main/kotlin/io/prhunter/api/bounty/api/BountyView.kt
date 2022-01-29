@@ -1,5 +1,6 @@
 package io.prhunter.api.bounty.api
 
+import io.prhunter.api.bounty.BountyStatus
 import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
 import java.math.BigDecimal
@@ -23,6 +24,7 @@ data class BountyView(
     val bountyValue: BigDecimal,
     val bountyValueUsd: BigDecimal,
     val bountyCurrency: String,
+    val bountyStatus: BountyStatus,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now()
 )

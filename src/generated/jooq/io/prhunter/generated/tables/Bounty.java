@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row18;
+import org.jooq.Row21;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -140,6 +140,21 @@ public class Bounty extends TableImpl<BountyRecord> {
      */
     public final TableField<BountyRecord, String> ACCEPTANCE_CRITERIA = createField(DSL.name("acceptance_criteria"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
 
+    /**
+     * The column <code>public.bounty.transaction_hash</code>.
+     */
+    public final TableField<BountyRecord, String> TRANSACTION_HASH = createField(DSL.name("transaction_hash"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'0x0'::character varying", SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.bounty.bounty_status</code>.
+     */
+    public final TableField<BountyRecord, String> BOUNTY_STATUS = createField(DSL.name("bounty_status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'PENDING'::character varying", SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.bounty.completed_by</code>.
+     */
+    public final TableField<BountyRecord, String> COMPLETED_BY = createField(DSL.name("completed_by"), SQLDataType.VARCHAR, this, "");
+
     private Bounty(Name alias, Table<BountyRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -220,11 +235,11 @@ public class Bounty extends TableImpl<BountyRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row18 type methods
+    // Row21 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, String, Long, String, String, String> fieldsRow() {
-        return (Row18) super.fieldsRow();
+    public Row21<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, String, Long, String, String, String, String, String, String> fieldsRow() {
+        return (Row21) super.fieldsRow();
     }
 }

@@ -37,6 +37,7 @@ data class Bounty(
     val bountyCurrency: String,
     @Enumerated(EnumType.STRING)
     val bountyStatus: BountyStatus,
+    val completedBy: String? = null,
     val transactionHash: String,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now()

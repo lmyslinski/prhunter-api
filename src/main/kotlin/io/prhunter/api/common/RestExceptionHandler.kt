@@ -17,7 +17,6 @@ import java.time.LocalDateTime
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 class RestExceptionHandler(private val objectMapper: ObjectMapper) : ResponseEntityExceptionHandler(), AuthenticationFailureHandler {

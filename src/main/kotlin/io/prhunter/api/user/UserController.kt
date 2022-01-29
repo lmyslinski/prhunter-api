@@ -29,4 +29,11 @@ class UserController(
         val userBounties = bountyService.getUserBounties(firebaseUser.id)
         return ResponseEntity.ok(userBounties);
     }
+
+    @GetMapping("/user/completed")
+    fun getUserCompletedBounties(principal: Principal): ResponseEntity<List<BountyView>> {
+        val firebaseUser = RequestUtil.getUserFromRequest(principal)
+        val userBounties = bountyService.getCompletedBy(firebaseUser.id)
+        return ResponseEntity.ok(userBounties);
+    }
 }

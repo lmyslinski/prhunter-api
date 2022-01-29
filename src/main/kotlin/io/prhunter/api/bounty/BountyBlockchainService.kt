@@ -16,7 +16,7 @@ class BountyBlockchainService(val bountyRepository: BountyRepository, val contra
 
     private val log = KotlinLogging.logger {}
 
-    @Scheduled(cron = EVERY_30_SECONDS)
+//    @Scheduled(cron = EVERY_30_SECONDS)
     fun updateBountyStates(){
         log.info { "Updating pending bounties" }
         val allBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)

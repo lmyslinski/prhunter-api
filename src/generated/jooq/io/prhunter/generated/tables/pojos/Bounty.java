@@ -36,6 +36,9 @@ public class Bounty implements Serializable {
     private final String        repoOwner;
     private final String        repoName;
     private final String        acceptanceCriteria;
+    private final String        transactionHash;
+    private final String        bountyStatus;
+    private final String        completedBy;
 
     public Bounty(Bounty value) {
         this.id = value.id;
@@ -56,6 +59,9 @@ public class Bounty implements Serializable {
         this.repoOwner = value.repoOwner;
         this.repoName = value.repoName;
         this.acceptanceCriteria = value.acceptanceCriteria;
+        this.transactionHash = value.transactionHash;
+        this.bountyStatus = value.bountyStatus;
+        this.completedBy = value.completedBy;
     }
 
     public Bounty(
@@ -76,7 +82,10 @@ public class Bounty implements Serializable {
         Long          issueNumber,
         String        repoOwner,
         String        repoName,
-        String        acceptanceCriteria
+        String        acceptanceCriteria,
+        String        transactionHash,
+        String        bountyStatus,
+        String        completedBy
     ) {
         this.id = id;
         this.repoId = repoId;
@@ -96,6 +105,9 @@ public class Bounty implements Serializable {
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.acceptanceCriteria = acceptanceCriteria;
+        this.transactionHash = transactionHash;
+        this.bountyStatus = bountyStatus;
+        this.completedBy = completedBy;
     }
 
     /**
@@ -224,6 +236,27 @@ public class Bounty implements Serializable {
         return this.acceptanceCriteria;
     }
 
+    /**
+     * Getter for <code>public.bounty.transaction_hash</code>.
+     */
+    public String getTransactionHash() {
+        return this.transactionHash;
+    }
+
+    /**
+     * Getter for <code>public.bounty.bounty_status</code>.
+     */
+    public String getBountyStatus() {
+        return this.bountyStatus;
+    }
+
+    /**
+     * Getter for <code>public.bounty.completed_by</code>.
+     */
+    public String getCompletedBy() {
+        return this.completedBy;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bounty (");
@@ -246,6 +279,9 @@ public class Bounty implements Serializable {
         sb.append(", ").append(repoOwner);
         sb.append(", ").append(repoName);
         sb.append(", ").append(acceptanceCriteria);
+        sb.append(", ").append(transactionHash);
+        sb.append(", ").append(bountyStatus);
+        sb.append(", ").append(completedBy);
 
         sb.append(")");
         return sb.toString();

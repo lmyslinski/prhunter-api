@@ -49,7 +49,7 @@ class BountyService(
             experience = createBountyRequest.experience,
             bountyType = createBountyRequest.bountyType,
             bountyStatus = BountyStatus.PENDING,
-            transactionHash = createBountyRequest.transactionHash
+            transactionHash = createBountyRequest.transactionHash,
         )
         return toView(bountyRepository.save(bounty))
     }
@@ -101,6 +101,10 @@ class BountyService(
         return toView(bountyRepository.save(updatedBounty))
     }
 
+    fun getCompletedBy(firebaseUserId: String): List<BountyView> {
+        return bountyRepository.findByCompletedBy(firebaseUserId).map { toView(it) }
+    }
+
     private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, user: FirebaseUser): Issue {
         try{
             return githubService.getIssue(repoOwner, repoName, issueNumber, user)
@@ -150,8 +154,10 @@ class BountyService(
             bounty.bountyValue,
             bounty.bountyValue*priceUSD,
             bounty.bountyCurrency,
+            bounty.bountyStatus,
             bounty.createdAt,
             bounty.updatedAt
         )
     }
+
 }

@@ -13,7 +13,7 @@ plugins {
     id("com.google.cloud.tools.jib") version "3.1.4"
     id("com.palantir.git-version") version "0.12.3"
     id("java")
-    id("nu.studer.jooq") version "5.2"
+    id("nu.studer.jooq") version "6.0.1"
 }
 
 sourceSets.main {
@@ -70,7 +70,7 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:8.1.0")
 
     implementation("com.vladmihalcea:hibernate-types-55:2.12.1")
-    implementation("org.jooq:jooq:3.14.7")
+    implementation("org.jooq:jooq:3.16.3")
     jooqGenerator("org.postgresql:postgresql:42.2.14")
 
     testImplementation("io.mockk:mockk:1.9.3")
