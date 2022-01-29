@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run locally" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="prhunter-api.main" />
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="true" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        <ENTRY IS_ENABLED="true" PARSER="env" PATH=".env-localhost" />
+      </ENTRIES>
+    </extension>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.prhunter.api.ApiApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -46,7 +46,7 @@ class BountyController(
 
     @GetMapping("/issue/{issueId}")
     fun bountyExists(@PathVariable issueId: Long): ResponseEntity<Any> {
-        val bountyView = bountyService.getBountyByIssueId(issueId)
+        val bountyView = bountyService.getBountyViewByIssueId(issueId)
         return if (bountyView == null) {
             ResponseEntity.status(200).body("")
         } else {

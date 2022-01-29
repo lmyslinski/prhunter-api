@@ -1,11 +1,8 @@
 package io.prhunter.api.github.webhooks
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.github.GithubSecrets
-import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.github.webhooks.model.WebhookBody
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,37 +18,26 @@ private val log = KotlinLogging.logger {}
 class WebhookController(
     private val objectMapper: ObjectMapper,
     private val installationService: InstallationService,
-    private val githubSecrets: GithubSecrets
+    private val githubSecrets: GithubSecrets,
+    private val pullRequestHandler: PullRequestHandler,
+    private val installationHandler: InstallationHandler,
 ) {
 
     @PostMapping()
-    fun handleWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
+    fun receiveWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
         log.debug { "Webhook received: $eventBody" }
         validateWebhook()
-        val eventTree = objectMapper.readTree(eventBody)
-        when (eventTree.get("action").asText()) {
-            "created" -> {
-                val webhookDetails = objectMapper.readValue<WebhookBody>(eventBody)
-                installationService.registerInstallation(
-                    Installation(
-                        webhookDetails.installation.id,
-                        webhookDetails.installation.account.id,
-                        webhookDetails.installation.account.type,
-                        webhookDetails.sender.id,
-                        webhookDetails.sender.type
-                    )
-                )
-            }
-            "deleted" -> {
-                val webhookDetails = objectMapper.readValue<WebhookBody>(eventBody)
-                val installationId = webhookDetails.installation.id
-                installationService.removeInstallation(installationId)
-            }
-            else -> {
-                log.info { "Webhook ignored" }
-            }
+        handleWebhook(eventBody)
+        return ResponseEntity.ok().body("")
+    }
+
+    private fun handleWebhook(body: String){
+        val eventTree = objectMapper.readTree(body)
+        if(eventTree.get("installation") != null){
+            installationHandler.handle(body)
+        }else if (eventTree.get("pull_request") != null){
+            pullRequestHandler.handle(body)
         }
-        return ResponseEntity.ok().body("Webhook handled successfully")
     }
 
     private fun validateWebhook(){

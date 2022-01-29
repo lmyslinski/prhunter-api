@@ -1,0 +1,1 @@
+ALTER TABLE "bounty" ADD COLUMN completed_at TIMESTAMP DEFAULT NULL;

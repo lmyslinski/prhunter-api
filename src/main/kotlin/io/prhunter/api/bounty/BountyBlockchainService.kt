@@ -27,4 +27,9 @@ class BountyBlockchainService(val bountyRepository: BountyRepository, val contra
             log.info { "First: $qq" }
         }
     }
+
+    // if there is an event for a new contract that has been created
+    // monitor that contract
+    // if it's not persisted to the chain within, let's say 6h, it becomes failed
+
 }

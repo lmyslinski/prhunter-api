@@ -2,8 +2,9 @@ package io.prhunter.api.bounty
 
 enum class BountyStatus {
     PENDING,
-    CANCELLED,
+    FAILED,
     ACTIVE,
-    EXPIRED,
-    COMPLETED
+    COMPLETED,
+    EXPIRED
+
 }
