@@ -8,6 +8,7 @@ import io.prhunter.api.bounty.api.BountyView
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
@@ -38,8 +39,8 @@ class UserController(
         return ResponseEntity.ok(userBounties);
     }
 
-    @PutMapping
-    fun updateUserDetails(){
-
+    @PutMapping("/user")
+    fun updateUserDetails(@RequestBody updateUserAccount: UpdateUserAccount): ResponseEntity<String> {
+        return ResponseEntity.ok("")
     }
 }
