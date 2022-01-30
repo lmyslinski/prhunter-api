@@ -62,8 +62,8 @@ class BountyService(
         return toView(getBounty(id))
     }
 
-    fun getBountyByIssueId(issueId: Long): Bounty? {
-        return bountyRepository.findByIssueId(issueId)
+    fun getBountyByIssueNumber(issueNumber: Long): Bounty? {
+        return bountyRepository.findByIssueNumber(issueNumber)
     }
 
     fun getBountyViewByIssueId(issueId: Long): BountyView? {

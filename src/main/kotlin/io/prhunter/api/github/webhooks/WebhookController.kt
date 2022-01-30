@@ -42,6 +42,7 @@ class WebhookController(
             val merged = pull_request.get("merged")
             if (action.textValue() == "closed" && issueUrl != null && merged.asBoolean()) {
                 val webhookHook = objectMapper.readValue<PullRequestWebhook>(body)
+                // what if a PR closes multiple issues?
                 pullRequestHandler.handlePullRequestMerged(webhookHook)
                 handled = true
             }

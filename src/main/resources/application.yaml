@@ -43,6 +43,7 @@ twilio:
 
 logging:
   level:
+    io.prhunter: debug
     io.ktor: info
     org.springframework: info
     org.springframework.security: info

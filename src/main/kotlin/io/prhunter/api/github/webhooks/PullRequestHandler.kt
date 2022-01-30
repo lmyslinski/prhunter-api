@@ -1,7 +1,5 @@
 package io.prhunter.api.github.webhooks
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.BountyStatus
 import io.prhunter.api.github.GithubAppInstallationService
@@ -24,7 +22,7 @@ class PullRequestHandler(
         val issue = runBlocking {
             githubAppInstallationService.fetchIssue(details.pullRequest.issueUrl!!, details.installation.id)
         }
-        val bounty = bountyService.getBountyByIssueId(issue.id)
+        val bounty = bountyService.getBountyByIssueNumber(issue.number)
 
         // verify that bounty exists for this issue
         if(bounty == null){
