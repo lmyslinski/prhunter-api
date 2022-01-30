@@ -22,7 +22,7 @@ class PullRequestHandler(
         val issue = runBlocking {
             githubAppInstallationService.fetchIssue(details.pullRequest.issueUrl!!, details.installation.id)
         }
-        val bounty = bountyService.getBountyByIssueNumber(issue.number)
+        val bounty = bountyService.getBountyByIssueId(issue.id)
 
         // verify that bounty exists for this issue
         if(bounty == null){

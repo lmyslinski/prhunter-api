@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.github.GithubSecrets
 import io.prhunter.api.github.webhooks.model.InstallationWebhook
+import io.prhunter.api.github.webhooks.model.IssueWebhook
 import io.prhunter.api.github.webhooks.model.PullRequestWebhook
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
@@ -20,7 +21,8 @@ class WebhookController(
     private val objectMapper: ObjectMapper,
     private val githubSecrets: GithubSecrets,
     private val pullRequestHandler: PullRequestHandler,
-    private val installationHandler: InstallationHandler
+    private val installationHandler: InstallationHandler,
+    private val issueHandler: IssueHandler
 ) {
 
     @PostMapping()
@@ -41,9 +43,9 @@ class WebhookController(
             val issueUrl = pull_request.get("issue_url")
             val merged = pull_request.get("merged")
             if (action.textValue() == "closed" && issueUrl != null && merged.asBoolean()) {
-                val webhookHook = objectMapper.readValue<PullRequestWebhook>(body)
+                val webhook = objectMapper.readValue<PullRequestWebhook>(body)
                 // what if a PR closes multiple issues?
-                pullRequestHandler.handlePullRequestMerged(webhookHook)
+                pullRequestHandler.handlePullRequestMerged(webhook)
                 handled = true
             }
         }
@@ -56,8 +58,17 @@ class WebhookController(
             val sender = eventTree.get("sender")
 
             if (action != null && repos != null && installation != null && sender != null) {
-                val webhookHook = objectMapper.readValue<InstallationWebhook>(body)
-                installationHandler.handle(webhookHook)
+                val webhook = objectMapper.readValue<InstallationWebhook>(body)
+                installationHandler.handle(webhook)
+                handled = true
+            }
+        }
+
+        if(eventTree.get("issue") != null){
+            val action = eventTree.get("action")
+            if(action.textValue() == "closed"){
+                val webhook = objectMapper.readValue<IssueWebhook>(body)
+                issueHandler.handleIssueClosed(webhook)
                 handled = true
             }
         }

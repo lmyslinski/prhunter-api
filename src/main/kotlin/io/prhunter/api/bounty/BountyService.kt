@@ -62,8 +62,8 @@ class BountyService(
         return toView(getBounty(id))
     }
 
-    fun getBountyByIssueNumber(issueNumber: Long): Bounty? {
-        return bountyRepository.findByIssueNumber(issueNumber)
+    fun getBountyByIssueId(issueId: Long): Bounty? {
+        return bountyRepository.findByIssueId(issueId)
     }
 
     fun getBountyViewByIssueId(issueId: Long): BountyView? {
@@ -165,6 +165,10 @@ class BountyService(
     }
 
     fun completeBounty(bounty: Bounty, firebaseUserId: String) {
+        // Missing steps to make this actually work:
+        // 1. Add user wallet registration on the backend
+        // 2. Make sure that issue is closed before a PR webhook comes in
+        // 2. Add webhook signature signing verification so that we can't just get someone to send us a request
         log.info { "Bounty was completed successfully" }
     }
 
