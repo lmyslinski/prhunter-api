@@ -1,7 +1,9 @@
 package io.prhunter.api.github.webhooks
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.github.GithubSecrets
+import io.prhunter.api.github.webhooks.model.PullRequestWebhook
 import io.prhunter.api.installation.InstallationService
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
@@ -17,10 +19,10 @@ private val log = KotlinLogging.logger {}
 @RequestMapping("/webhook")
 class WebhookController(
     private val objectMapper: ObjectMapper,
-    private val installationService: InstallationService,
-    private val githubSecrets: GithubSecrets,
+//    private val installationService: InstallationService,
+//    private val githubSecrets: GithubSecrets,
     private val pullRequestHandler: PullRequestHandler,
-    private val installationHandler: InstallationHandler,
+//    private val installationHandler: InstallationHandler,
 ) {
 
     @PostMapping()
@@ -33,11 +35,24 @@ class WebhookController(
 
     private fun handleWebhook(body: String){
         val eventTree = objectMapper.readTree(body)
-        if(eventTree.get("installation") != null){
-            installationHandler.handle(body)
-        }else if (eventTree.get("pull_request") != null){
-            pullRequestHandler.handle(body)
+        // add issue closed handler
+
+        if(eventTree.get("pull_request") != null){
+            val pull_request = eventTree.get("pull_request")
+            val action = eventTree.get("action")
+            val issueUrl = pull_request.get("issueUrl")
+            val merged = pull_request.get("merged")
+            if(issueUrl != null && merged.asBoolean() && action.asText() == "merged"){
+                val details = objectMapper.readValue<PullRequestWebhook>(body)
+                pullRequestHandler.handlePullRequestMerged(details)
+            }
         }
+
+//        if (eventTree.get("pull_request") != null){
+//            pullRequestHandler.handle(body)
+//        }else if(eventTree.get("installation") != null){
+//            installationHandler.handle(body)
+//        }
     }
 
     private fun validateWebhook(){

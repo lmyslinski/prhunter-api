@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.io.ClassPathResource
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -31,7 +32,7 @@ internal class WebhookControllerTest(
     fun `should register an app`() {
         every { installationService!!.registerInstallation(any())}.returns(mockk())
         val input = InstallationWebhook(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"), "created")
-        mockMvc.post("/webhook") {
+        mockMvc.post("/github/webhook") {
             content = objectMapper.writeValueAsString(input)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -45,7 +46,7 @@ internal class WebhookControllerTest(
     fun `should delete an app`(){
         every { installationService!!.removeInstallation(any())} just Runs
         val input = InstallationWebhook(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"), "deleted")
-        mockMvc.post("/webhook") {
+        mockMvc.post("/github/webhook") {
             content = objectMapper.writeValueAsString(input)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -53,6 +54,17 @@ internal class WebhookControllerTest(
         }
 
         verify { installationService!!.removeInstallation(any()) }
+    }
+
+    @Test
+    fun `should handle pull request opened request correctly`(){
+        val pullRequestBody = ClassPathResource("/github/webhook/pull-request-opened.json").file.readText()
+        mockMvc.post("/github/webhook") {
+            content = objectMapper.writeValueAsString(pullRequestBody)
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
     }
 
 }

@@ -164,4 +164,8 @@ class BountyService(
         )
     }
 
+    fun completeBounty(bounty: Bounty, firebaseUserId: String) {
+        log.info { "Bounty was completed successfully" }
+    }
+
 }

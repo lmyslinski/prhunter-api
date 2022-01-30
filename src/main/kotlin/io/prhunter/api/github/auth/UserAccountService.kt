@@ -2,20 +2,21 @@ package io.prhunter.api.github.auth
 
 import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.common.errors.GithubAuthMissing
+import io.prhunter.api.user.UserAccountRepository
 import org.springframework.stereotype.Service
 
 @Service
-class GithubTokenService(
-    private val githubUserRepository: GithubTokenRepository
+class UserAccountService(
+    private val userAccountRepository: UserAccountRepository
 ) {
 
     fun getTokenForUser(user: FirebaseUser): String {
-        return githubUserRepository.findByFirebaseUserId(user.id)?.accessToken
+        return userAccountRepository.findByFirebaseUserId(user.id)?.githubAccessToken
             ?: throw GithubAuthMissing()
     }
 
     fun getGithubUserId(user: FirebaseUser): Long {
-        return githubUserRepository.findByFirebaseUserId(user.id)?.githubUserId
+        return userAccountRepository.findByFirebaseUserId(user.id)?.githubUserId
             ?: throw GithubAuthMissing()
     }
 }

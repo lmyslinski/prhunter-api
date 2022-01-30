@@ -12,8 +12,8 @@ import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
-import io.prhunter.api.github.auth.GithubToken
-import io.prhunter.api.github.auth.GithubTokenRepository
+import io.prhunter.api.user.UserAccount
+import io.prhunter.api.user.UserAccountRepository
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
@@ -37,7 +37,7 @@ class BountyControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,
     @Autowired val bountyRepository: BountyRepository,
-    @Autowired val githubTokenRepository: GithubTokenRepository
+    @Autowired val userAccountRepository: UserAccountRepository
 ) {
 
     private val createBountyRequest = CreateBountyRequest(
@@ -77,7 +77,7 @@ class BountyControllerTest(
     @BeforeEach
     fun setup() {
         bountyRepository.saveAll(TestDataProvider.BOUNTIES)
-        githubTokenRepository.save(GithubToken(TestDataProvider.TEST_USER.id, 1L, "gh-token"))
+        userAccountRepository.save(UserAccount(TestDataProvider.TEST_USER.id, 1L, "gh-token"))
         every { coinGeckoApiService!!.getCurrentPrice(any()) }.returns(BigDecimal.ONE)
     }
 

@@ -1,6 +1,8 @@
 package io.prhunter.api.github.auth
 
 import io.prhunter.api.github.client.GithubRestClient
+import io.prhunter.api.user.UserAccount
+import io.prhunter.api.user.UserAccountRepository
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,7 +13,7 @@ private val log = KotlinLogging.logger {}
 
 @RestController
 class GithubTokenController(
-    val githubTokenRepository: GithubTokenRepository,
+    val userAccountRepository: UserAccountRepository,
     val githubClient: GithubRestClient
 ) {
 
@@ -21,12 +23,12 @@ class GithubTokenController(
         val ghUserData = runBlocking {
             githubClient.getGithubUserData(githubTokenRequest.accessToken)
         }
-        val tokenOpt = githubTokenRepository.findByFirebaseUserIdOrGithubUserId(githubTokenRequest.firebaseUserId, ghUserData.id)
+        val tokenOpt = userAccountRepository.findByFirebaseUserIdOrGithubUserId(githubTokenRequest.firebaseUserId, ghUserData.id)
         if(tokenOpt != null){
-            githubTokenRepository.deleteById(githubTokenRequest.firebaseUserId)
+            userAccountRepository.deleteById(githubTokenRequest.firebaseUserId)
         }
-        val ghToken = GithubToken(githubTokenRequest.firebaseUserId, ghUserData.id, githubTokenRequest.accessToken)
-        githubTokenRepository.save(ghToken)
+        val ghToken = UserAccount(githubTokenRequest.firebaseUserId, ghUserData.id, githubTokenRequest.accessToken)
+        userAccountRepository.save(ghToken)
         log.debug { "User GH token updated" }
     }
 }

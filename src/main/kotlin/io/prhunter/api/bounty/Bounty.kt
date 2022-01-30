@@ -36,7 +36,7 @@ data class Bounty(
     val bountyValue: BigDecimal,
     val bountyCurrency: String,
     @Enumerated(EnumType.STRING)
-    val bountyStatus: BountyStatus,
+    val bountyStatus: BountyStatus = BountyStatus.PENDING,
     val completedBy: String? = null,
     val completedAt: Instant? = null,
     val transactionHash: String,

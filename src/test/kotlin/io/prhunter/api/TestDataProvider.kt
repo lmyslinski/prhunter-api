@@ -22,7 +22,7 @@ object TestDataProvider {
             BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = NOW.minus(
                 1,
                 ChronoUnit.MINUTES
-            )
+            ), transactionHash = "0x0"
         ),
         Bounty(
             2L, 2L, "test-owner", "test-name-2", 2, 2, "12345","title", "statement", "acceptance", arrayOf("java"), tags = arrayOf("new", "first"),
@@ -30,7 +30,7 @@ object TestDataProvider {
             BountyType.Feature, BigDecimal.valueOf(20), "ETH", updatedAt = NOW.minus(
                 2,
                 ChronoUnit.MINUTES
-            )
+            ), transactionHash = "0x0"
         ),
         Bounty(
             3L, 2L, "test-owner", "test-name-3", 3, 3, "12345","title", "statement", "acceptance",
@@ -43,7 +43,7 @@ object TestDataProvider {
             updatedAt = NOW.minus(
                 3,
                 ChronoUnit.MINUTES
-            )
+            ), transactionHash = "0x0"
         ),
         Bounty(
             4L, 2L, "test-owner", "test-name-4", 4, 4, "12345","title", "statement", "acceptance",
@@ -56,7 +56,7 @@ object TestDataProvider {
             updatedAt = NOW.minus(
                 4,
                 ChronoUnit.MINUTES
-            )
+            ), transactionHash = "0x0"
         )
     )
 
