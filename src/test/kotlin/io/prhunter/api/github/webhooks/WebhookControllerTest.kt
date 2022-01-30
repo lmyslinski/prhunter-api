@@ -1,12 +1,10 @@
 package io.prhunter.api.github.webhooks
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.*
-import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.github.webhooks.model.AccountDetails
-import io.prhunter.api.github.webhooks.model.InstallationWebhook
-import io.prhunter.api.github.webhooks.model.InstallationDetails
+import io.mockk.Called
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -22,49 +20,92 @@ import org.springframework.test.web.servlet.post
 @ActiveProfiles("test")
 internal class WebhookControllerTest(
     @Autowired val mockMvc: MockMvc,
-    @Autowired val objectMapper: ObjectMapper,
 ) {
 
     @MockkBean
-    private val installationService: InstallationService? = null
+    private val installationHandler: InstallationHandler? = null
+
+    @MockkBean
+    private val pullRequestHandler: PullRequestHandler? = null
 
     @Test
-    fun `should register an app`() {
-        every { installationService!!.registerInstallation(any())}.returns(mockk())
-        val input = InstallationWebhook(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"), "created")
-        mockMvc.post("/github/webhook") {
-            content = objectMapper.writeValueAsString(input)
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isOk() }
-        }
-
-        verify { installationService!!.registerInstallation(any()) }
-    }
-
-    @Test
-    fun `should delete an app`(){
-        every { installationService!!.removeInstallation(any())} just Runs
-        val input = InstallationWebhook(InstallationDetails(1L, AccountDetails(2L, "User")), AccountDetails(3L, "Organisation"), "deleted")
-        mockMvc.post("/github/webhook") {
-            content = objectMapper.writeValueAsString(input)
-            contentType = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isOk() }
-        }
-
-        verify { installationService!!.removeInstallation(any()) }
-    }
-
-    @Test
-    fun `should handle pull request opened request correctly`(){
+    fun `should handle pull request opened request correctly`() {
         val pullRequestBody = ClassPathResource("/github/webhook/pull-request-opened.json").file.readText()
-        mockMvc.post("/github/webhook") {
-            content = objectMapper.writeValueAsString(pullRequestBody)
+        mockMvc.post("/webhook") {
+            content = pullRequestBody
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
         }
+        verify { pullRequestHandler!! wasNot Called }
+        confirmVerified(pullRequestHandler!!)
+    }
+
+    @Test
+    fun `should handle pull request closed request correctly`() {
+        val pullRequestBody = ClassPathResource("/github/webhook/pull-request-opened.json").file.readText()
+        mockMvc.post("/webhook") {
+            content = pullRequestBody
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
+        verify { pullRequestHandler!! wasNot Called }
+        confirmVerified(pullRequestHandler!!)
+    }
+
+    @Test
+    fun `should handle pull request merged request correctly`() {
+        val pullRequestBody = ClassPathResource("/github/webhook/pull-request-merged.json").file.readText()
+        every { pullRequestHandler?.handlePullRequestMerged(any()) } returns Unit
+        mockMvc.post("/webhook") {
+            content = pullRequestBody
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
+        verify(exactly = 1) { pullRequestHandler?.handlePullRequestMerged(any()) }
+        confirmVerified(pullRequestHandler!!)
+    }
+
+    @Test
+    fun `should handle installation created request correctly`() {
+        val installationRequest = ClassPathResource("/github/webhook/installation-created.json").file.readText()
+        every { installationHandler?.handle(any()) } returns Unit
+        mockMvc.post("/webhook") {
+            content = installationRequest
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
+        verify(exactly = 1) { installationHandler?.handle(any()) }
+        confirmVerified(installationHandler!!)
+    }
+
+    @Test
+    fun `should handle installation deleted request correctly`() {
+        val installationRequest = ClassPathResource("/github/webhook/installation-deleted.json").file.readText()
+        every { installationHandler?.handle(any()) } returns Unit
+        mockMvc.post("/webhook") {
+            content = installationRequest
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
+        verify(exactly = 1) { installationHandler?.handle(any()) }
+        confirmVerified(installationHandler!!)
+    }
+
+    @Test
+    fun `should handle issue edited request successfully`(){
+        val issueRequest = ClassPathResource("/github/webhook/issue-edited.json").file.readText()
+        mockMvc.post("/webhook") {
+            content = issueRequest
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+        }
+        // we don't have issue handling for now so just ignore it
     }
 
 }

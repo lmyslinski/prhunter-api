@@ -1,7 +1,6 @@
 package io.prhunter.api.github.webhooks
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.github.webhooks.model.InstallationWebhook
 import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
@@ -12,26 +11,24 @@ private val log = KotlinLogging.logger {}
 
 @Service
 class InstallationHandler(
-    val objectMapper: ObjectMapper,
-    val installationService: InstallationService
+    private val installationService: InstallationService
 ) {
 
-    fun handle(body: String) {
-        val webhookDetails = objectMapper.readValue<InstallationWebhook>(body)
-        when(webhookDetails.action){
+    fun handle(webhook: InstallationWebhook) {
+        when (webhook.action) {
             "created" -> installationService.registerInstallation(
                 Installation(
-                    webhookDetails.installation.id,
-                    webhookDetails.installation.account.id,
-                    webhookDetails.installation.account.type,
-                    webhookDetails.sender.id,
-                    webhookDetails.sender.type
+                    webhook.installation.id,
+                    webhook.installation.account.id,
+                    webhook.installation.account.type,
+                    webhook.sender.id,
+                    webhook.sender.type
                 )
             )
             "deleted" -> {
-                installationService.removeInstallation(webhookDetails.installation.id)
+                installationService.removeInstallation(webhook.installation.id)
             }
-            else ->{
+            else -> {
                 log.info { "Installation webhook ignored" }
             }
         }
