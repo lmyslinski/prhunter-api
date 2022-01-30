@@ -39,6 +39,7 @@ public class Bounty implements Serializable {
     private final String        transactionHash;
     private final String        bountyStatus;
     private final String        completedBy;
+    private final LocalDateTime completedAt;
 
     public Bounty(Bounty value) {
         this.id = value.id;
@@ -62,6 +63,7 @@ public class Bounty implements Serializable {
         this.transactionHash = value.transactionHash;
         this.bountyStatus = value.bountyStatus;
         this.completedBy = value.completedBy;
+        this.completedAt = value.completedAt;
     }
 
     public Bounty(
@@ -85,7 +87,8 @@ public class Bounty implements Serializable {
         String        acceptanceCriteria,
         String        transactionHash,
         String        bountyStatus,
-        String        completedBy
+        String        completedBy,
+        LocalDateTime completedAt
     ) {
         this.id = id;
         this.repoId = repoId;
@@ -108,6 +111,7 @@ public class Bounty implements Serializable {
         this.transactionHash = transactionHash;
         this.bountyStatus = bountyStatus;
         this.completedBy = completedBy;
+        this.completedAt = completedAt;
     }
 
     /**
@@ -257,6 +261,13 @@ public class Bounty implements Serializable {
         return this.completedBy;
     }
 
+    /**
+     * Getter for <code>public.bounty.completed_at</code>.
+     */
+    public LocalDateTime getCompletedAt() {
+        return this.completedAt;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bounty (");
@@ -282,6 +293,7 @@ public class Bounty implements Serializable {
         sb.append(", ").append(transactionHash);
         sb.append(", ").append(bountyStatus);
         sb.append(", ").append(completedBy);
+        sb.append(", ").append(completedAt);
 
         sb.append(")");
         return sb.toString();

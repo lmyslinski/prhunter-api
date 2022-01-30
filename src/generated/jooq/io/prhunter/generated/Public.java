@@ -6,8 +6,8 @@ package io.prhunter.generated;
 
 import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
-import io.prhunter.generated.tables.GithubToken;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.UserAccount;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,14 +42,14 @@ public class Public extends SchemaImpl {
     public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
-     * The table <code>public.github_token</code>.
-     */
-    public final GithubToken GITHUB_TOKEN = GithubToken.GITHUB_TOKEN;
-
-    /**
      * The table <code>public.installation</code>.
      */
     public final Installation INSTALLATION = Installation.INSTALLATION;
+
+    /**
+     * The table <code>public.user_account</code>.
+     */
+    public final UserAccount USER_ACCOUNT = UserAccount.USER_ACCOUNT;
 
     /**
      * No further instances allowed
@@ -75,7 +75,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Bounty.BOUNTY,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
-            GithubToken.GITHUB_TOKEN,
-            Installation.INSTALLATION);
+            Installation.INSTALLATION,
+            UserAccount.USER_ACCOUNT);
     }
 }

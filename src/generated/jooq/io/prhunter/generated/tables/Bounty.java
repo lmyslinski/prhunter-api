@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row21;
+import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -155,6 +155,11 @@ public class Bounty extends TableImpl<BountyRecord> {
      */
     public final TableField<BountyRecord, String> COMPLETED_BY = createField(DSL.name("completed_by"), SQLDataType.VARCHAR, this, "");
 
+    /**
+     * The column <code>public.bounty.completed_at</code>.
+     */
+    public final TableField<BountyRecord, LocalDateTime> COMPLETED_AT = createField(DSL.name("completed_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
     private Bounty(Name alias, Table<BountyRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -235,11 +240,11 @@ public class Bounty extends TableImpl<BountyRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row21 type methods
+    // Row22 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row21<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, String, Long, String, String, String, String, String, String> fieldsRow() {
-        return (Row21) super.fieldsRow();
+    public Row22<Integer, Long, Long, String, String, String[], BigDecimal, String, LocalDateTime, LocalDateTime, String[], String, String, String, Long, String, String, String, String, String, String, LocalDateTime> fieldsRow() {
+        return (Row22) super.fieldsRow();
     }
 }

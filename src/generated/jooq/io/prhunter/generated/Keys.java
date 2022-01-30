@@ -6,12 +6,12 @@ package io.prhunter.generated;
 
 import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
-import io.prhunter.generated.tables.GithubToken;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.UserAccount;
 import io.prhunter.generated.tables.records.BountyRecord;
 import io.prhunter.generated.tables.records.FlywaySchemaHistoryRecord;
-import io.prhunter.generated.tables.records.GithubTokenRecord;
 import io.prhunter.generated.tables.records.InstallationRecord;
+import io.prhunter.generated.tables.records.UserAccountRecord;
 
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -32,6 +32,6 @@ public class Keys {
 
     public static final UniqueKey<BountyRecord> BOUNTY_PKEY = Internal.createUniqueKey(Bounty.BOUNTY, DSL.name("bounty_pkey"), new TableField[] { Bounty.BOUNTY.ID }, true);
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
-    public static final UniqueKey<GithubTokenRecord> GITHUB_TOKEN_PKEY = Internal.createUniqueKey(GithubToken.GITHUB_TOKEN, DSL.name("github_token_pkey"), new TableField[] { GithubToken.GITHUB_TOKEN.FIREBASE_USER_ID }, true);
     public static final UniqueKey<InstallationRecord> INSTALLATION_PKEY = Internal.createUniqueKey(Installation.INSTALLATION, DSL.name("installation_pkey"), new TableField[] { Installation.INSTALLATION.ID }, true);
+    public static final UniqueKey<UserAccountRecord> GITHUB_TOKEN_PKEY = Internal.createUniqueKey(UserAccount.USER_ACCOUNT, DSL.name("github_token_pkey"), new TableField[] { UserAccount.USER_ACCOUNT.FIREBASE_USER_ID }, true);
 }
