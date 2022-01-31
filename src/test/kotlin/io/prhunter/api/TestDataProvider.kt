@@ -19,7 +19,7 @@ object TestDataProvider {
         Bounty(
             1L, 1L, "test-owner", "test-name", 1, 1, "12345","title", "statement", "acceptance",  arrayOf("scala"), tags = arrayOf("new", "first"),
             Experience.Beginner,
-            BountyType.Feature, BigDecimal.valueOf(10), "ETH", updatedAt = NOW.minus(
+            BountyType.Feature, BigDecimal.valueOf(10), BigDecimal.valueOf(10),"ETH", updatedAt = NOW.minus(
                 1,
                 ChronoUnit.MINUTES
             ), transactionHash = "0x0"
@@ -27,7 +27,7 @@ object TestDataProvider {
         Bounty(
             2L, 2L, "test-owner", "test-name-2", 2, 2, "12345","title", "statement", "acceptance", arrayOf("java"), tags = arrayOf("new", "first"),
             Experience.Beginner,
-            BountyType.Feature, BigDecimal.valueOf(20), "ETH", updatedAt = NOW.minus(
+            BountyType.Feature, BigDecimal.valueOf(20), BigDecimal.valueOf(20),"ETH", updatedAt = NOW.minus(
                 2,
                 ChronoUnit.MINUTES
             ), transactionHash = "0x0"
@@ -38,6 +38,7 @@ object TestDataProvider {
             tags = arrayOf("new", "first"),
             Experience.Beginner,
             BountyType.Feature,
+            BigDecimal.valueOf(30),
             BigDecimal.valueOf(30),
             "ETH",
             updatedAt = NOW.minus(
@@ -51,6 +52,7 @@ object TestDataProvider {
             tags = arrayOf("react", "ror"),
             Experience.Intermediate,
             BountyType.Meta,
+            BigDecimal.valueOf(30),
             BigDecimal.valueOf(30),
             "ETH",
             updatedAt = NOW.minus(

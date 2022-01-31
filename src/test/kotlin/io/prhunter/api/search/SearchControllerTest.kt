@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.TestDataProvider
 import io.prhunter.api.bounty.*
+import io.prhunter.api.crypto.CryptoCurrency
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -71,7 +72,7 @@ class SearchControllerTest {
                     BigDecimal.valueOf(11L),
                     BigDecimal.valueOf(21L),
                 ),
-                currency = BountyCurrency.ETH
+                currency = CryptoCurrency.ETH
             )
         )
         Assertions.assertEquals(1, results.total)
@@ -108,7 +109,7 @@ class SearchControllerTest {
     fun `should filter by currency only`() {
         val results = search(
             SearchRequest(
-                currency = BountyCurrency.ETH
+                currency = CryptoCurrency.ETH
             )
         )
         Assertions.assertEquals(3, results.total)

@@ -82,7 +82,7 @@ class SearchService(
 
     private fun getPriceFilter(searchRequest: SearchRequest): Condition? {
         return if (searchRequest.price != null) {
-                BOUNTY.BOUNTY_VALUE.between(searchRequest.price.min, searchRequest.price.to)
+                BOUNTY.BOUNTY_VALUE_USD.between(searchRequest.price.min, searchRequest.price.to)
         } else null
     }
 

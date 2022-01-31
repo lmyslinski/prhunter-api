@@ -40,6 +40,7 @@ public class Bounty implements Serializable {
     private final String        bountyStatus;
     private final String        completedBy;
     private final LocalDateTime completedAt;
+    private final BigDecimal    bountyValueUsd;
 
     public Bounty(Bounty value) {
         this.id = value.id;
@@ -64,6 +65,7 @@ public class Bounty implements Serializable {
         this.bountyStatus = value.bountyStatus;
         this.completedBy = value.completedBy;
         this.completedAt = value.completedAt;
+        this.bountyValueUsd = value.bountyValueUsd;
     }
 
     public Bounty(
@@ -88,7 +90,8 @@ public class Bounty implements Serializable {
         String        transactionHash,
         String        bountyStatus,
         String        completedBy,
-        LocalDateTime completedAt
+        LocalDateTime completedAt,
+        BigDecimal    bountyValueUsd
     ) {
         this.id = id;
         this.repoId = repoId;
@@ -112,6 +115,7 @@ public class Bounty implements Serializable {
         this.bountyStatus = bountyStatus;
         this.completedBy = completedBy;
         this.completedAt = completedAt;
+        this.bountyValueUsd = bountyValueUsd;
     }
 
     /**
@@ -268,6 +272,13 @@ public class Bounty implements Serializable {
         return this.completedAt;
     }
 
+    /**
+     * Getter for <code>public.bounty.bounty_value_usd</code>.
+     */
+    public BigDecimal getBountyValueUsd() {
+        return this.bountyValueUsd;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bounty (");
@@ -294,6 +305,7 @@ public class Bounty implements Serializable {
         sb.append(", ").append(bountyStatus);
         sb.append(", ").append(completedBy);
         sb.append(", ").append(completedAt);
+        sb.append(", ").append(bountyValueUsd);
 
         sb.append(")");
         return sb.toString();

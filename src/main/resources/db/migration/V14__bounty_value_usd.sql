@@ -1,0 +1,1 @@
+ALTER TABLE "bounty" ADD COLUMN "bounty_value_usd" DECIMAL NOT NULL DEFAULT 0.0

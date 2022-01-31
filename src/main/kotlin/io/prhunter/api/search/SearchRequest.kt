@@ -1,9 +1,8 @@
 package io.prhunter.api.search
 
-import io.prhunter.api.bounty.BountyCurrency
 import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
-import io.swagger.v3.oas.annotations.Parameter
+import io.prhunter.api.crypto.CryptoCurrency
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -18,7 +17,7 @@ data class SearchRequest(
         val tags: List<String>? = null,
         val bountyType: BountyType? = null,
         val contentContains: String? = null,
-        val currency: BountyCurrency? = null
+        val currency: CryptoCurrency? = null
 )
 
 data class LocationFilterParams(

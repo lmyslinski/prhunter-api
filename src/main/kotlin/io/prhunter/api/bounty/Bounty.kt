@@ -34,6 +34,7 @@ data class Bounty(
     @Enumerated(EnumType.STRING)
     val bountyType: BountyType,
     val bountyValue: BigDecimal,
+    var bountyValueUsd: BigDecimal,
     val bountyCurrency: String,
     @Enumerated(EnumType.STRING)
     val bountyStatus: BountyStatus = BountyStatus.PENDING,
