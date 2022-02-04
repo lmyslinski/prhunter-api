@@ -48,7 +48,7 @@ logging:
     org.springframework: info
     org.springframework.security: info
     org.zalando.logbook: info
-    org.web3j: debug
+    org.web3j: info
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

@@ -13,7 +13,11 @@ class ContractService {
 
     private val log = KotlinLogging.logger {}
     private val web3j = Web3j.build(HttpService("https://eth-ropsten.alchemyapi.io/v2/c2fNFavCNrrK4dSnkfBGmJ7oSNqfxZ6z"))
-    private val contractAddress = "0x5Ad2A671E49ebdc90C4c70f3d137a040aa6e1B99"
+    private val contractAddress = "0x06783aE8EF55191730244984CA2FDAEd197ebCc0"
+
+//    private val web3j = Web3j.build(HttpService("https://rinkeby.infura.io/v3/373543e00dc9456b98aec7048949799c"))
+//    private val contractAddress = "0x3f8E8137D857DF24522e8F696a2EaE5191D501b2"
+
     final val bountyFactory: BountyFactory = BountyFactory.load(
         contractAddress,
         web3j,

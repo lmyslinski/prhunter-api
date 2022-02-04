@@ -3,11 +3,11 @@ package io.prhunter.api.contract;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 import org.web3j.abi.EventEncoder;
+import org.web3j.abi.EventValues;
+import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
@@ -37,8 +37,6 @@ import org.web3j.tx.gas.ContractGasProvider;
 @SuppressWarnings("rawtypes")
 public class BountyFactory extends Contract {
     public static final String BINARY = "Bin file was not provided";
-
-    public static final String FUNC_ALLBOUNTIES = "allBounties";
 
     public static final String FUNC_CREATEBOUNTY = "createBounty";
 
@@ -72,22 +70,22 @@ public class BountyFactory extends Contract {
         for (Contract.EventValuesWithLog eventValues : valueList) {
             BountyCreatedEventResponse typedResponse = new BountyCreatedEventResponse();
             typedResponse.log = eventValues.getLog();
-            typedResponse.bounty = (String) eventValues.getNonIndexedValues().get(0).getValue();
+            typedResponse.bountyAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
             responses.add(typedResponse);
         }
         return responses;
     }
 
     public Flowable<BountyCreatedEventResponse> bountyCreatedEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, BountyCreatedEventResponse>() {
-            @Override
-            public BountyCreatedEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(BOUNTYCREATED_EVENT, log);
-                BountyCreatedEventResponse typedResponse = new BountyCreatedEventResponse();
-                typedResponse.log = log;
-                typedResponse.bounty = (String) eventValues.getNonIndexedValues().get(0).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).filter(log -> {
+            EventValues eventValues = staticExtractEventParameters(BOUNTYCREATED_EVENT, log);
+            return eventValues != null && !eventValues.getNonIndexedValues().isEmpty();
+        }).map(log -> {
+            EventValues eventValues = extractEventParameters(BOUNTYCREATED_EVENT, log);
+            BountyCreatedEventResponse typedResponse = new BountyCreatedEventResponse();
+            typedResponse.log = log;
+            typedResponse.bountyAddress = (String) eventValues.getNonIndexedValues().get(0).getValue();
+            return typedResponse;
         });
     }
 
@@ -95,13 +93,6 @@ public class BountyFactory extends Contract {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(BOUNTYCREATED_EVENT));
         return bountyCreatedEventFlowable(filter);
-    }
-
-    public RemoteFunctionCall<String> allBounties(String param0) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ALLBOUNTIES, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, param0)), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> createBounty(BigInteger _expiryTimestamp) {
@@ -138,6 +129,6 @@ public class BountyFactory extends Contract {
     }
 
     public static class BountyCreatedEventResponse extends BaseEventResponse {
-        public String bounty;
+        public String bountyAddress;
     }
 }
