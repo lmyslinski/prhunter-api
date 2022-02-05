@@ -31,7 +31,7 @@ class BountyService(
     fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): BountyView {
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
-        val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency));
+        val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice);
         validateNoBountyFoundForIssue(issueData.id)
         val bounty = Bounty(
@@ -52,9 +52,8 @@ class BountyService(
             experience = createBountyRequest.experience,
             bountyType = createBountyRequest.bountyType,
             bountyStatus = BountyStatus.PENDING,
-            transactionHash = createBountyRequest.transactionHash,
         )
-        return toView(bountyRepository.save(bounty))
+        return toView(bountyRepository.save(bounty));
     }
 
     fun getBounty(id: Long): Bounty {
@@ -160,9 +159,7 @@ class BountyService(
             bounty.bountyValue,
             bounty.bountyValueUsd,
             bounty.bountyCurrency,
-            bounty.bountyStatus,
             bounty.createdAt,
-            bounty.updatedAt
         )
     }
 

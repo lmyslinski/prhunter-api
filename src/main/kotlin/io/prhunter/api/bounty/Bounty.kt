@@ -15,7 +15,7 @@ import javax.persistence.*
 data class Bounty(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: String? = null,
     val repoId: Long,
     val repoOwner: String,
     val repoName: String,
@@ -40,7 +40,6 @@ data class Bounty(
     val bountyStatus: BountyStatus = BountyStatus.PENDING,
     val completedBy: String? = null,
     val completedAt: Instant? = null,
-    val transactionHash: String,
     val createdAt: Instant = Instant.now(),
     val updatedAt: Instant = Instant.now()
 )

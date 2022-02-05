@@ -22,7 +22,7 @@ class TokenAuthenticationFilter(private val authService: AuthService) : OncePerR
             val authToken = header.replace(TOKEN_PREFIX, "")
             try {
                 authService.signInWithFirebase(authToken)
-                log.debug { "Stored firebase security context" }
+                log.trace { "Stored firebase security context" }
             } catch (e: FirebaseAuthException) {
                 log.error("firebase authentication has failed", e)
             } catch (e: Throwable) {
