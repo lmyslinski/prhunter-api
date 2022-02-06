@@ -17,7 +17,7 @@ import mu.KotlinLogging
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import java.time.Instant
+import java.util.*
 
 private val log = KotlinLogging.logger {}
 
@@ -32,7 +32,7 @@ class BountyService(
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
-        val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice);
+        val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice)
         validateNoBountyFoundForIssue(issueData.id)
         val bounty = Bounty(
             repoId = repoData.id,
@@ -53,14 +53,16 @@ class BountyService(
             bountyType = createBountyRequest.bountyType,
             bountyStatus = BountyStatus.PENDING,
         )
-        return toView(bountyRepository.save(bounty));
+        val newBounty = toView(bountyRepository.save(bounty))
+        log.info { "Created a new pending bounty: ${newBounty.id}" }
+        return newBounty
     }
 
-    fun getBounty(id: Long): Bounty {
+    fun getBounty(id: UUID): Bounty {
         return bountyRepository.findById(id).orElseThrow { NotFoundException(id) }
     }
 
-    fun getBountyView(id: Long): BountyView? {
+    fun getBountyView(id: UUID): BountyView? {
         return toView(getBounty(id))
     }
 
@@ -80,14 +82,14 @@ class BountyService(
     }
 
     fun getFeaturedBounties(): List<BountyView> {
-        return bountyRepository.findAll(PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "updatedAt"))).content.map { toView(it) }
+        return bountyRepository.findAll(PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "createdAt"))).content.map { toView(it) }
     }
 
     fun list(): List<BountyView> {
-        return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")).map { toView(it) }
+        return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).map { toView(it) }
     }
 
-    fun updateBounty(id: Long, updateBountyRequest: UpdateBountyRequest, user: FirebaseUser): BountyView {
+    fun updateBounty(id: UUID, updateBountyRequest: UpdateBountyRequest, user: FirebaseUser): BountyView {
         val bounty = getBounty(id)
         if(user.id != bounty.firebaseUserId){
             throw RepoAdminAccessRequired()
@@ -99,7 +101,6 @@ class BountyService(
             languages = updateBountyRequest.languages.toTypedArray(),
             bountyCurrency = updateBountyRequest.bountryCurrency,
             bountyValue = updateBountyRequest.bountyValue,
-            updatedAt = Instant.now(),
             tags = updateBountyRequest.tags.toTypedArray(),
             experience = updateBountyRequest.experience,
             bountyType = updateBountyRequest.bountyType
@@ -159,6 +160,7 @@ class BountyService(
             bounty.bountyValue,
             bounty.bountyValueUsd,
             bounty.bountyCurrency,
+            bounty.bountyStatus,
             bounty.createdAt,
         )
     }

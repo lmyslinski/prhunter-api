@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.UUID;
 
 
 /**
@@ -18,16 +19,16 @@ public class Bounty implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer       id;
+    private final UUID          id;
     private final Long          repoId;
     private final Long          issueId;
     private final String        title;
+    private final String        acceptanceCriteria;
     private final String        problemStatement;
     private final String[]      languages;
     private final BigDecimal    bountyValue;
+    private final BigDecimal    bountyValueUsd;
     private final String        bountyCurrency;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
     private final String[]      tags;
     private final String        experience;
     private final String        bountyType;
@@ -35,24 +36,22 @@ public class Bounty implements Serializable {
     private final Long          issueNumber;
     private final String        repoOwner;
     private final String        repoName;
-    private final String        acceptanceCriteria;
-    private final String        transactionHash;
     private final String        bountyStatus;
     private final String        completedBy;
     private final LocalDateTime completedAt;
-    private final BigDecimal    bountyValueUsd;
+    private final LocalDateTime createdAt;
 
     public Bounty(Bounty value) {
         this.id = value.id;
         this.repoId = value.repoId;
         this.issueId = value.issueId;
         this.title = value.title;
+        this.acceptanceCriteria = value.acceptanceCriteria;
         this.problemStatement = value.problemStatement;
         this.languages = value.languages;
         this.bountyValue = value.bountyValue;
+        this.bountyValueUsd = value.bountyValueUsd;
         this.bountyCurrency = value.bountyCurrency;
-        this.createdAt = value.createdAt;
-        this.updatedAt = value.updatedAt;
         this.tags = value.tags;
         this.experience = value.experience;
         this.bountyType = value.bountyType;
@@ -60,25 +59,23 @@ public class Bounty implements Serializable {
         this.issueNumber = value.issueNumber;
         this.repoOwner = value.repoOwner;
         this.repoName = value.repoName;
-        this.acceptanceCriteria = value.acceptanceCriteria;
-        this.transactionHash = value.transactionHash;
         this.bountyStatus = value.bountyStatus;
         this.completedBy = value.completedBy;
         this.completedAt = value.completedAt;
-        this.bountyValueUsd = value.bountyValueUsd;
+        this.createdAt = value.createdAt;
     }
 
     public Bounty(
-        Integer       id,
+        UUID          id,
         Long          repoId,
         Long          issueId,
         String        title,
+        String        acceptanceCriteria,
         String        problemStatement,
         String[]      languages,
         BigDecimal    bountyValue,
+        BigDecimal    bountyValueUsd,
         String        bountyCurrency,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
         String[]      tags,
         String        experience,
         String        bountyType,
@@ -86,23 +83,21 @@ public class Bounty implements Serializable {
         Long          issueNumber,
         String        repoOwner,
         String        repoName,
-        String        acceptanceCriteria,
-        String        transactionHash,
         String        bountyStatus,
         String        completedBy,
         LocalDateTime completedAt,
-        BigDecimal    bountyValueUsd
+        LocalDateTime createdAt
     ) {
         this.id = id;
         this.repoId = repoId;
         this.issueId = issueId;
         this.title = title;
+        this.acceptanceCriteria = acceptanceCriteria;
         this.problemStatement = problemStatement;
         this.languages = languages;
         this.bountyValue = bountyValue;
+        this.bountyValueUsd = bountyValueUsd;
         this.bountyCurrency = bountyCurrency;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.tags = tags;
         this.experience = experience;
         this.bountyType = bountyType;
@@ -110,18 +105,16 @@ public class Bounty implements Serializable {
         this.issueNumber = issueNumber;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
-        this.acceptanceCriteria = acceptanceCriteria;
-        this.transactionHash = transactionHash;
         this.bountyStatus = bountyStatus;
         this.completedBy = completedBy;
         this.completedAt = completedAt;
-        this.bountyValueUsd = bountyValueUsd;
+        this.createdAt = createdAt;
     }
 
     /**
      * Getter for <code>public.bounty.id</code>.
      */
-    public Integer getId() {
+    public UUID getId() {
         return this.id;
     }
 
@@ -147,6 +140,13 @@ public class Bounty implements Serializable {
     }
 
     /**
+     * Getter for <code>public.bounty.acceptance_criteria</code>.
+     */
+    public String getAcceptanceCriteria() {
+        return this.acceptanceCriteria;
+    }
+
+    /**
      * Getter for <code>public.bounty.problem_statement</code>.
      */
     public String getProblemStatement() {
@@ -168,24 +168,17 @@ public class Bounty implements Serializable {
     }
 
     /**
+     * Getter for <code>public.bounty.bounty_value_usd</code>.
+     */
+    public BigDecimal getBountyValueUsd() {
+        return this.bountyValueUsd;
+    }
+
+    /**
      * Getter for <code>public.bounty.bounty_currency</code>.
      */
     public String getBountyCurrency() {
         return this.bountyCurrency;
-    }
-
-    /**
-     * Getter for <code>public.bounty.created_at</code>.
-     */
-    public LocalDateTime getCreatedAt() {
-        return this.createdAt;
-    }
-
-    /**
-     * Getter for <code>public.bounty.updated_at</code>.
-     */
-    public LocalDateTime getUpdatedAt() {
-        return this.updatedAt;
     }
 
     /**
@@ -238,20 +231,6 @@ public class Bounty implements Serializable {
     }
 
     /**
-     * Getter for <code>public.bounty.acceptance_criteria</code>.
-     */
-    public String getAcceptanceCriteria() {
-        return this.acceptanceCriteria;
-    }
-
-    /**
-     * Getter for <code>public.bounty.transaction_hash</code>.
-     */
-    public String getTransactionHash() {
-        return this.transactionHash;
-    }
-
-    /**
      * Getter for <code>public.bounty.bounty_status</code>.
      */
     public String getBountyStatus() {
@@ -273,10 +252,10 @@ public class Bounty implements Serializable {
     }
 
     /**
-     * Getter for <code>public.bounty.bounty_value_usd</code>.
+     * Getter for <code>public.bounty.created_at</code>.
      */
-    public BigDecimal getBountyValueUsd() {
-        return this.bountyValueUsd;
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
     }
 
     @Override
@@ -287,12 +266,12 @@ public class Bounty implements Serializable {
         sb.append(", ").append(repoId);
         sb.append(", ").append(issueId);
         sb.append(", ").append(title);
+        sb.append(", ").append(acceptanceCriteria);
         sb.append(", ").append(problemStatement);
         sb.append(", ").append(Arrays.toString(languages));
         sb.append(", ").append(bountyValue);
+        sb.append(", ").append(bountyValueUsd);
         sb.append(", ").append(bountyCurrency);
-        sb.append(", ").append(createdAt);
-        sb.append(", ").append(updatedAt);
         sb.append(", ").append(Arrays.toString(tags));
         sb.append(", ").append(experience);
         sb.append(", ").append(bountyType);
@@ -300,12 +279,10 @@ public class Bounty implements Serializable {
         sb.append(", ").append(issueNumber);
         sb.append(", ").append(repoOwner);
         sb.append(", ").append(repoName);
-        sb.append(", ").append(acceptanceCriteria);
-        sb.append(", ").append(transactionHash);
         sb.append(", ").append(bountyStatus);
         sb.append(", ").append(completedBy);
         sb.append(", ").append(completedAt);
-        sb.append(", ").append(bountyValueUsd);
+        sb.append(", ").append(createdAt);
 
         sb.append(")");
         return sb.toString();

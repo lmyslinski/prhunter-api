@@ -7,14 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -43,10 +40,6 @@ public class BountyFactory extends Contract {
     public static final String FUNC_ALLBOUNTIES = "allBounties";
 
     public static final String FUNC_CREATEBOUNTY = "createBounty";
-
-    public static final String FUNC_GETALL = "getAll";
-
-    public static final String FUNC_GETTOTALBOUNTIES = "getTotalBounties";
 
     public static final Event BOUNTYCREATED_EVENT = new Event("BountyCreated", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
@@ -101,42 +94,20 @@ public class BountyFactory extends Contract {
         return bountyCreatedEventFlowable(filter);
     }
 
-    public RemoteFunctionCall<String> allBounties(BigInteger param0) {
+    public RemoteFunctionCall<String> allBounties(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ALLBOUNTIES, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(param0)), 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(param0)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> createBounty(BigInteger _expiryTimestamp, String _bountySecret) {
+    public RemoteFunctionCall<TransactionReceipt> createBounty(BigInteger _expiryTimestamp, String _bountyId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CREATEBOUNTY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_expiryTimestamp), 
-                new org.web3j.abi.datatypes.Utf8String(_bountySecret)), 
+                new org.web3j.abi.datatypes.Utf8String(_bountyId)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
-    }
-
-    public RemoteFunctionCall<List> getAll() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETALL, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Address>>() {}));
-        return new RemoteFunctionCall<List>(function,
-                new Callable<List>() {
-                    @Override
-                    @SuppressWarnings("unchecked")
-                    public List call() throws Exception {
-                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
-                        return convertToNative(result);
-                    }
-                });
-    }
-
-    public RemoteFunctionCall<BigInteger> getTotalBounties() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOTALBOUNTIES, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     @Deprecated

@@ -102,7 +102,7 @@ class SearchService(
 
     private fun getOrderBy(searchRequest: SearchRequest): SortField<out Any> {
         val searchProperty = when (searchRequest.sortable?.property) {
-            else -> BOUNTY.UPDATED_AT
+            else -> BOUNTY.CREATED_AT
         }
         return if (searchRequest.sortable?.direction == "asc")
             searchProperty.asc()

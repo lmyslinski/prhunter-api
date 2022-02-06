@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import java.math.BigDecimal
 import java.time.Instant
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -14,8 +15,9 @@ import javax.persistence.*
 )
 data class Bounty(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: String? = null,
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Type(type = "pg-uuid")
+    val id: UUID? = null,
     val repoId: Long,
     val repoOwner: String,
     val repoName: String,
@@ -37,10 +39,9 @@ data class Bounty(
     var bountyValueUsd: BigDecimal,
     val bountyCurrency: String,
     @Enumerated(EnumType.STRING)
-    val bountyStatus: BountyStatus = BountyStatus.PENDING,
+    var bountyStatus: BountyStatus = BountyStatus.PENDING,
     val completedBy: String? = null,
     val completedAt: Instant? = null,
-    val createdAt: Instant = Instant.now(),
-    val updatedAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now()
 )
 

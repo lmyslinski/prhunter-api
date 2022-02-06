@@ -73,7 +73,7 @@ class WebhookController(
             }
         }
 
-        if(!handled){
+        if(!handled) {
             log.info { "A webhook event was ignored: $body" }
         }
     }

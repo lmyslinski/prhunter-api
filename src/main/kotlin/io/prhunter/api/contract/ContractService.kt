@@ -25,7 +25,7 @@ class ContractService(
     private val log = KotlinLogging.logger {}
     private val web3j =
         Web3j.build(HttpService("https://eth-ropsten.alchemyapi.io/v2/c2fNFavCNrrK4dSnkfBGmJ7oSNqfxZ6z"))
-    private val contractAddress = "0x4518188E9f6fB8C8D38eb74e44fC2c1F91B60227"
+    private val contractAddress = "0x153Bab3d11fE9e2f90b9747060855fEbCf31F92C"
     private final val bountyFactory: BountyFactory = BountyFactory.load(
         contractAddress,
         web3j,
@@ -36,12 +36,18 @@ class ContractService(
     @Suppress("UNCHECKED_CAST")
     @Scheduled(cron = EVERY_30_SECONDS)
     fun getMeBlockChainData() {
-        val allContracts: List<String> = bountyFactory.all.send() as List<String>
         val pendingBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)
-        val bountyContract = Bounty.load(allContracts.get(0), web3j, Credentials.create("d2db9150ba3248512c238b69e7f51a15014b1ba8919c7651c2e47c4b5c49ff6f"), DefaultGasProvider())
-        val secret = bountyContract.bountySecret().send()
-        // TODO migrate bounty secret to bounty id, use a mapping instead of array and access by key
-        log.info { allContracts }
+        pendingBounties.forEach{ bounty ->
+            val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
+            if(bountyAddressOpt != null){
+                val bountyContract = Bounty.load(bountyAddressOpt, web3j, Credentials.create("d2db9150ba3248512c238b69e7f51a15014b1ba8919c7651c2e47c4b5c49ff6f"), DefaultGasProvider())
+                if(bountyContract.bountyId().send() == bounty.id.toString()){
+                    log.info { "Bounty ${bounty.id} deployed successfully, activating" }
+                    bounty.bountyStatus = BountyStatus.ACTIVE
+                    bountyRepository.save(bounty)
+                }
+            }
+        }
     }
 
 }

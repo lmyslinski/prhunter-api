@@ -12,12 +12,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Row21;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,7 +53,7 @@ public class Bounty extends TableImpl<BountyRecord> {
     /**
      * The column <code>public.bounty.id</code>.
      */
-    public final TableField<BountyRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<BountyRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("gen_random_uuid()", SQLDataType.UUID)), this, "");
 
     /**
      * The column <code>public.bounty.repo_id</code>.
@@ -70,9 +71,14 @@ public class Bounty extends TableImpl<BountyRecord> {
     public final TableField<BountyRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
+     * The column <code>public.bounty.acceptance_criteria</code>.
+     */
+    public final TableField<BountyRecord, String> ACCEPTANCE_CRITERIA = createField(DSL.name("acceptance_criteria"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
+
+    /**
      * The column <code>public.bounty.problem_statement</code>.
      */
-    public final TableField<BountyRecord, String> PROBLEM_STATEMENT = createField(DSL.name("problem_statement"), SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<BountyRecord, String> PROBLEM_STATEMENT = createField(DSL.name("problem_statement"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.bounty.languages</code>.
@@ -85,19 +91,14 @@ public class Bounty extends TableImpl<BountyRecord> {
     public final TableField<BountyRecord, BigDecimal> BOUNTY_VALUE = createField(DSL.name("bounty_value"), SQLDataType.NUMERIC.nullable(false), this, "");
 
     /**
+     * The column <code>public.bounty.bounty_value_usd</code>.
+     */
+    public final TableField<BountyRecord, BigDecimal> BOUNTY_VALUE_USD = createField(DSL.name("bounty_value_usd"), SQLDataType.NUMERIC.nullable(false).defaultValue(DSL.field("0.0", SQLDataType.NUMERIC)), this, "");
+
+    /**
      * The column <code>public.bounty.bounty_currency</code>.
      */
     public final TableField<BountyRecord, String> BOUNTY_CURRENCY = createField(DSL.name("bounty_currency"), SQLDataType.VARCHAR.nullable(false), this, "");
-
-    /**
-     * The column <code>public.bounty.created_at</code>.
-     */
-    public final TableField<BountyRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
-
-    /**
-     * The column <code>public.bounty.updated_at</code>.
-     */
-    public final TableField<BountyRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.bounty.tags</code>.
@@ -135,16 +136,6 @@ public class Bounty extends TableImpl<BountyRecord> {
     public final TableField<BountyRecord, String> REPO_NAME = createField(DSL.name("repo_name"), SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
-     * The column <code>public.bounty.acceptance_criteria</code>.
-     */
-    public final TableField<BountyRecord, String> ACCEPTANCE_CRITERIA = createField(DSL.name("acceptance_criteria"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>public.bounty.transaction_hash</code>.
-     */
-    public final TableField<BountyRecord, String> TRANSACTION_HASH = createField(DSL.name("transaction_hash"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'0x0'::character varying", SQLDataType.VARCHAR)), this, "");
-
-    /**
      * The column <code>public.bounty.bounty_status</code>.
      */
     public final TableField<BountyRecord, String> BOUNTY_STATUS = createField(DSL.name("bounty_status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'PENDING'::character varying", SQLDataType.VARCHAR)), this, "");
@@ -160,9 +151,9 @@ public class Bounty extends TableImpl<BountyRecord> {
     public final TableField<BountyRecord, LocalDateTime> COMPLETED_AT = createField(DSL.name("completed_at"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
-     * The column <code>public.bounty.bounty_value_usd</code>.
+     * The column <code>public.bounty.created_at</code>.
      */
-    public final TableField<BountyRecord, BigDecimal> BOUNTY_VALUE_USD = createField(DSL.name("bounty_value_usd"), SQLDataType.NUMERIC.nullable(false).defaultValue(DSL.field("0.0", SQLDataType.NUMERIC)), this, "");
+    public final TableField<BountyRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     private Bounty(Name alias, Table<BountyRecord> aliased) {
         this(alias, aliased, null);
@@ -203,11 +194,6 @@ public class Bounty extends TableImpl<BountyRecord> {
     }
 
     @Override
-    public Identity<BountyRecord, Integer> getIdentity() {
-        return (Identity<BountyRecord, Integer>) super.getIdentity();
-    }
-
-    @Override
     public UniqueKey<BountyRecord> getPrimaryKey() {
         return Keys.BOUNTY_PKEY;
     }
@@ -241,5 +227,14 @@ public class Bounty extends TableImpl<BountyRecord> {
     @Override
     public Bounty rename(Name name) {
         return new Bounty(name, null);
+    }
+
+    // -------------------------------------------------------------------------
+    // Row21 type methods
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Row21<UUID, Long, Long, String, String, String, String[], BigDecimal, BigDecimal, String, String[], String, String, String, Long, String, String, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row21) super.fieldsRow();
     }
 }

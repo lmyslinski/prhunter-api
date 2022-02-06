@@ -39,7 +39,7 @@ import org.web3j.tx.gas.ContractGasProvider;
 public class Bounty extends Contract {
     public static final String BINARY = "Bin file was not provided";
 
-    public static final String FUNC_BOUNTYSECRET = "bountySecret";
+    public static final String FUNC_BOUNTYID = "bountyId";
 
     public static final String FUNC_CLAIMTIMEOUT = "claimTimeout";
 
@@ -176,8 +176,8 @@ public class Bounty extends Contract {
         return depositReceivedEventFlowable(filter);
     }
 
-    public RemoteFunctionCall<String> bountySecret() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BOUNTYSECRET, 
+    public RemoteFunctionCall<String> bountyId() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BOUNTYID, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);

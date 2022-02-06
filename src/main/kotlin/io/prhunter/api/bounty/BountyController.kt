@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
+import java.util.*
 
 @RestController
 @RequestMapping("/bounty")
@@ -40,7 +41,7 @@ class BountyController(
     }
 
     @GetMapping("/{id}")
-    fun getBounty(@PathVariable id: Long): BountyView? {
+    fun getBounty(@PathVariable id: UUID): BountyView? {
         return bountyService.getBountyView(id)
     }
 
@@ -56,7 +57,7 @@ class BountyController(
 
     @PutMapping("/{id}")
     fun updateBounty(
-        @PathVariable id: Long,
+        @PathVariable id: UUID,
         @RequestBody updateBountyRequest: UpdateBountyRequest,
         principal: Principal
     ): ResponseEntity<BountyView> {
