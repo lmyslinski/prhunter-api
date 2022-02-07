@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/prhunter
+    username: localdev
+    password: localdev
+    hikari:
+      maximumPoolSize: 5
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        types:
+            print:
+              banner: false
+  main:
+    banner-mode: off
+            
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      livenessState:
+        enabled: true
+      readinessState:
+        enabled: true
+
+server:
+  servlet:
+    contextPath: /
+
+firebase:
+  privateKey: ${FIREBASE_PRIVATE_KEY:""}
+
+github:
+  baseUrl: "https://api.github.com"
+  appId: ${GITHUB_APP_ID:invalid}
+  webhookSecret: ${GITHUB_WEBHOOK_SECRET:invalid}
+  privateKey: ${GITHUB_PRIVATE_KEY:invalid}
+
+twilio:
+  apiKey: ${TWILIO_KEY:invalid}
+
+logging:
+  level:
+    io.prhunter: debug
+    io.ktor: info
+    org.springframework: info
+    org.springframework.security: info
+    org.zalando.logbook: info
+    org.web3j: info
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
