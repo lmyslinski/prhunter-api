@@ -29,7 +29,7 @@ class TokenAuthenticationFilter(private val firebaseService: FirebaseService) : 
                 log.warn("the token is expired and not valid anymore", e)
             }
         } else {
-            log.debug("couldn't find bearer string, will ignore the header")
+            log.trace("couldn't find bearer string, will ignore the header")
         }
         chain.doFilter(req, res)
     }
