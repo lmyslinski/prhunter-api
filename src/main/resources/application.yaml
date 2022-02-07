@@ -41,14 +41,6 @@ github:
 twilio:
   apiKey: ${TWILIO_KEY:invalid}
 
-logging:
-  level:
-    io.prhunter: debug
-    io.ktor: info
-    org.springframework: info
-    org.springframework.security: info
-    org.zalando.logbook: info
-    org.web3j: info
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

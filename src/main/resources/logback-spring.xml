@@ -13,9 +13,14 @@
     </appender>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <logger name="io.prhunter" level="DEBUG"/>
+    <logger name="io.ktor" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.zalando.logbook" level="INFO"/>
 
     <springProfile name="!production">
         <!-- configuration to be enabled when the "production" profile is not active -->
@@ -30,6 +35,4 @@
             <appender-ref ref="json-stdout"/>
         </root>
     </springProfile>
-
-
 </configuration>
