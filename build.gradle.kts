@@ -98,7 +98,7 @@ dependencyManagement {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "16"
     }
 }
 
@@ -116,7 +116,7 @@ val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDe
 
 jib {
     from {
-        image = "openjdk:17-alpine"
+        image = "openjdk:16-alpine"
     }
     to {
         image = "registry.digitalocean.com/prhunter/api:${versionDetails().gitHashFull}"
