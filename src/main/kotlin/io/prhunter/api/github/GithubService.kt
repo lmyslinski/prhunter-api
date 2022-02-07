@@ -1,7 +1,8 @@
 package io.prhunter.api.github
 
 import io.prhunter.api.auth.FirebaseUser
-import io.prhunter.api.github.auth.UserAccountService
+import io.prhunter.api.common.errors.GithubAuthMissing
+import io.prhunter.api.user.UserAccountService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
@@ -19,7 +20,7 @@ class GithubService(
 ) {
 
     fun listUserInstallationRepositories(currentUser: FirebaseUser): List<GHRepoData> {
-        val installations = installationService.getInstallationsByUserId(userAccountService.getGithubUserId(currentUser))
+        val installations = installationService.getInstallationsByUserId(userAccountService.getUserAccount(currentUser.id).githubUserId ?: throw GithubAuthMissing())
         return if (installations.isNotEmpty()) {
             installations.map { installation ->
                 runBlocking {
@@ -30,21 +31,21 @@ class GithubService(
     }
 
     fun listRepositoryIssues(owner: String, repo: String, user: FirebaseUser): List<Issue> {
-        val token = userAccountService.getTokenForUser(user)
+        val token = userAccountService.getUserAccount(user.id).githubAccessToken ?: throw GithubAuthMissing()
         return runBlocking {
             githubRestClient.listIssues(owner, repo, token)
         }
     }
 
     fun getIssue(repoOwner: String, repoName: String, issueNumber: Long, user: FirebaseUser): Issue {
-        val token = userAccountService.getTokenForUser(user)
+        val token = userAccountService.getUserAccount(user.id).githubAccessToken ?: throw GithubAuthMissing()
         return runBlocking {
             githubRestClient.getIssue(repoOwner, repoName, issueNumber, token)
         }
     }
 
     fun getRepository(owner: String, repo: String, user: FirebaseUser): GHRepoData {
-        val token = userAccountService.getTokenForUser(user)
+        val token = userAccountService.getUserAccount(user.id).githubAccessToken ?: throw GithubAuthMissing()
         return runBlocking {
             githubRestClient.getRepository(owner, repo, token)
         }

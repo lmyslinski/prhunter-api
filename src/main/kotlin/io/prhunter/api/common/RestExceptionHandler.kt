@@ -9,17 +9,23 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
+import org.springframework.validation.FieldError
+import org.springframework.validation.ObjectError
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.time.LocalDateTime
+import java.util.function.Consumer
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-class RestExceptionHandler(private val objectMapper: ObjectMapper) : ResponseEntityExceptionHandler(), AuthenticationFailureHandler {
+class RestExceptionHandler(private val objectMapper: ObjectMapper) : ResponseEntityExceptionHandler(),
+    AuthenticationFailureHandler {
 
     override fun handleExceptionInternal(
         ex: Exception,
@@ -35,6 +41,13 @@ class RestExceptionHandler(private val objectMapper: ObjectMapper) : ResponseEnt
         logger.error(ex.message, ex)
         return ResponseEntity(apiError, apiError.status)
     }
+
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest
+    ): ResponseEntity<Any> = apiError(ex, HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(RuntimeException::class)
     protected fun handleGenericError(

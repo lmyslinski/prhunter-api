@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
-class AuthService {
+class FirebaseService {
 
     private val BASIC_ROLE: String = "user"
 
@@ -21,6 +21,14 @@ class AuthService {
             listOf(SimpleGrantedAuthority(BASIC_ROLE))
         )
         SecurityContextHolder.getContext().authentication = authentication
+    }
+
+    fun updateUserEmail(userId: String, email: String): UserRecord {
+        val defaultAuth = FirebaseAuth.getInstance()
+        val request = UserRecord.UpdateRequest(userId)
+        request.setEmail(email)
+        request.setEmailVerified(false)
+        return defaultAuth.updateUser(request)
     }
 
     fun getUserById(userId: String): UserRecord? {

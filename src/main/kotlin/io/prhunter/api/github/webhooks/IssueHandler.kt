@@ -15,7 +15,6 @@ class IssueHandler(
 ) {
     fun handleIssueClosed(issueWebhook: IssueWebhook){
         log.info { "An issue was closed"  }
-        GlobalScope.launch {  }
         // get bounty linked with this issue
         // cancel it if no PR was merged
 

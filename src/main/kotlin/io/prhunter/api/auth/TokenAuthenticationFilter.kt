@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
 private val log = KotlinLogging.logger {}
 
 @Component
-class TokenAuthenticationFilter(private val authService: AuthService) : OncePerRequestFilter() {
+class TokenAuthenticationFilter(private val firebaseService: FirebaseService) : OncePerRequestFilter() {
 
     private val TOKEN_PREFIX = "Bearer "
     private val HEADER_STRING = "Authorization"
@@ -21,7 +21,7 @@ class TokenAuthenticationFilter(private val authService: AuthService) : OncePerR
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             val authToken = header.replace(TOKEN_PREFIX, "")
             try {
-                authService.signInWithFirebase(authToken)
+                firebaseService.signInWithFirebase(authToken)
                 log.trace { "Stored firebase security context" }
             } catch (e: FirebaseAuthException) {
                 log.error("firebase authentication has failed", e)

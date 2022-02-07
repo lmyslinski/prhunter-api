@@ -6,7 +6,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
 import io.prhunter.api.TestDataProvider
-import io.prhunter.api.auth.AuthService
+import io.prhunter.api.auth.FirebaseService
 import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import java.math.BigDecimal
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -51,8 +52,7 @@ class BountyControllerTest(
         Experience.Beginner,
         BountyType.Feature,
         BigDecimal.valueOf(100L),
-        "ETH",
-        "0x0"
+        "ETH"
     )
     private val updateBountyRequest = UpdateBountyRequest(
         "new-title",
@@ -72,7 +72,7 @@ class BountyControllerTest(
     private val coinGeckoApiService: CoinGeckoApiService? = null
 
     @MockkBean
-    private val authService: AuthService? = null
+    private val firebaseService: FirebaseService? = null
 
     @BeforeEach
     fun setup() {
@@ -221,7 +221,7 @@ class BountyControllerTest(
 
     @Test
     fun `should return 404 if bounty not found`() {
-        mockMvc.get("/bounty/111").andExpect {
+        mockMvc.get("/bounty/${UUID.randomUUID()}").andExpect {
             status {
                 isNotFound()
                 content {
@@ -244,7 +244,7 @@ class BountyControllerTest(
         val actual: List<BountyView> = objectMapper.readValue(response.response.contentAsString)
         Assertions.assertEquals(3, actual.size)
 
-        val resorted = actual.sortedByDescending { it.updatedAt }
+        val resorted = actual.sortedByDescending { it.createdAt }
         Assertions.assertEquals(actual.first(), resorted.first())
         Assertions.assertEquals(actual.last(), resorted.last())
     }
@@ -280,7 +280,7 @@ class BountyControllerTest(
     fun `should return 403 for update bounty if not issue owner`() {
         val differentUser = FirebaseUser("333", "aa", "bb")
         TestDataProvider.setAuthenticatedContext(differentUser)
-        val expected = bountyRepository.findAll().sortedBy { it.updatedAt }.first()
+        val expected = bountyRepository.findAll().sortedBy { it.createdAt }.first()
         coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(listOf())
 
         mockMvc.put("/bounty/${expected.id}") {
