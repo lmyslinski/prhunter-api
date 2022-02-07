@@ -45,12 +45,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("io.github.microutils:kotlin-logging:2.0.8")
 
-//    implementation("ch.qos.logback:logback-classic:1.2.10")
-//    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
-//    implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
+    implementation("ch.qos.logback:logback-classic:1.2.10")
+    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
 
-//    implementation("com.fasterxml.jackson.core:jackson-core:2.13.1")
-//    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
 
     implementation("org.zalando:logbook:2.14.0")
     implementation("org.zalando:logbook-spring-boot-starter:2.14.0")

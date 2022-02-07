@@ -17,8 +17,19 @@
         </encoder>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="console"/>
-    </root>
+    <springProfile name="!production">
+        <!-- configuration to be enabled when the "production" profile is not active -->
+        <root level="info">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="production">
+        <!-- configuration to be enabled when the "production" profile is active -->
+        <root level="info">
+            <appender-ref ref="json-stdout"/>
+        </root>
+    </springProfile>
+
 
 </configuration>
