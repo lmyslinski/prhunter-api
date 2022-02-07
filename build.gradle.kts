@@ -22,7 +22,7 @@ sourceSets.main {
 
 group = "io.prhunter"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_16
 val ktorVersion = "1.6.5"
 
 repositories {
