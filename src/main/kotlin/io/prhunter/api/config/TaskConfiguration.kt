@@ -8,8 +8,10 @@ import io.prhunter.api.contract.ContractService
 import mu.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
+@Profile("!test")
 class TaskConfiguration {
 
     private val log = KotlinLogging.logger {}

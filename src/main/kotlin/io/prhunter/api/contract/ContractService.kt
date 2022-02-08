@@ -4,6 +4,7 @@ import io.prhunter.api.bounty.BountyRepository
 import io.prhunter.api.bounty.BountyStatus
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
@@ -11,6 +12,7 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
 
 @Service
+@Profile("!test")
 class ContractService(
     private val bountyRepository: BountyRepository,
     @Value("\${crypto.alchemyUrl}") val alchemyUrl: String,
