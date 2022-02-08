@@ -66,6 +66,7 @@ dependencies {
 
     implementation("org.kohsuke:github-api:1.135")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.4")
+    implementation("com.github.kagkarlsson:db-scheduler-spring-boot-starter:10.5")
     implementation("com.sendgrid:sendgrid-java:4.8.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("org.web3j:core:4.8.9")

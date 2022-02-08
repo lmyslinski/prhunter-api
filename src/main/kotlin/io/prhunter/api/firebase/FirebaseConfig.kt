@@ -18,6 +18,9 @@ class FirebaseConfig(
 
     @Bean
     fun firebaseApp(): FirebaseApp{
+        if(privateKey.isEmpty()){
+            throw RuntimeException("Configuration was set properly")
+        }
         val pkDecoded = Base64.getDecoder().decode(privateKey).inputStream()
         val options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(pkDecoded))
