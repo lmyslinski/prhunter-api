@@ -7,10 +7,12 @@ package io.prhunter.generated;
 import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.ScheduledTasks;
 import io.prhunter.generated.tables.UserAccount;
 import io.prhunter.generated.tables.records.BountyRecord;
 import io.prhunter.generated.tables.records.FlywaySchemaHistoryRecord;
 import io.prhunter.generated.tables.records.InstallationRecord;
+import io.prhunter.generated.tables.records.ScheduledTasksRecord;
 import io.prhunter.generated.tables.records.UserAccountRecord;
 
 import org.jooq.TableField;
@@ -33,5 +35,6 @@ public class Keys {
     public static final UniqueKey<BountyRecord> BOUNTY_PKEY = Internal.createUniqueKey(Bounty.BOUNTY, DSL.name("bounty_pkey"), new TableField[] { Bounty.BOUNTY.ID }, true);
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<InstallationRecord> INSTALLATION_PKEY = Internal.createUniqueKey(Installation.INSTALLATION, DSL.name("installation_pkey"), new TableField[] { Installation.INSTALLATION.ID }, true);
+    public static final UniqueKey<ScheduledTasksRecord> SCHEDULED_TASKS_PKEY = Internal.createUniqueKey(ScheduledTasks.SCHEDULED_TASKS, DSL.name("scheduled_tasks_pkey"), new TableField[] { ScheduledTasks.SCHEDULED_TASKS.TASK_NAME, ScheduledTasks.SCHEDULED_TASKS.TASK_INSTANCE }, true);
     public static final UniqueKey<UserAccountRecord> GITHUB_TOKEN_PKEY = Internal.createUniqueKey(UserAccount.USER_ACCOUNT, DSL.name("github_token_pkey"), new TableField[] { UserAccount.USER_ACCOUNT.FIREBASE_USER_ID }, true);
 }

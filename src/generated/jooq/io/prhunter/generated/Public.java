@@ -7,6 +7,7 @@ package io.prhunter.generated;
 import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.ScheduledTasks;
 import io.prhunter.generated.tables.UserAccount;
 
 import java.util.Arrays;
@@ -46,6 +47,11 @@ public class Public extends SchemaImpl {
     public final Installation INSTALLATION = Installation.INSTALLATION;
 
     /**
+     * The table <code>public.scheduled_tasks</code>.
+     */
+    public final ScheduledTasks SCHEDULED_TASKS = ScheduledTasks.SCHEDULED_TASKS;
+
+    /**
      * The table <code>public.user_account</code>.
      */
     public final UserAccount USER_ACCOUNT = UserAccount.USER_ACCOUNT;
@@ -69,6 +75,7 @@ public class Public extends SchemaImpl {
             Bounty.BOUNTY,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Installation.INSTALLATION,
+            ScheduledTasks.SCHEDULED_TASKS,
             UserAccount.USER_ACCOUNT);
     }
 }

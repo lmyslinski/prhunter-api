@@ -55,12 +55,12 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
     /**
      * The column <code>public.user_account.github_user_id</code>.
      */
-    public final TableField<UserAccountRecord, Long> GITHUB_USER_ID = createField(DSL.name("github_user_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UserAccountRecord, Long> GITHUB_USER_ID = createField(DSL.name("github_user_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.user_account.github_access_token</code>.
      */
-    public final TableField<UserAccountRecord, String> GITHUB_ACCESS_TOKEN = createField(DSL.name("github_access_token"), SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<UserAccountRecord, String> GITHUB_ACCESS_TOKEN = createField(DSL.name("github_access_token"), SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>public.user_account.eth_wallet_address</code>.

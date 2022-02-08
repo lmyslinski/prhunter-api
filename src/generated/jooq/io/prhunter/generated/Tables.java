@@ -7,6 +7,7 @@ package io.prhunter.generated;
 import io.prhunter.generated.tables.Bounty;
 import io.prhunter.generated.tables.FlywaySchemaHistory;
 import io.prhunter.generated.tables.Installation;
+import io.prhunter.generated.tables.ScheduledTasks;
 import io.prhunter.generated.tables.UserAccount;
 
 
@@ -30,6 +31,11 @@ public class Tables {
      * The table <code>public.installation</code>.
      */
     public static final Installation INSTALLATION = Installation.INSTALLATION;
+
+    /**
+     * The table <code>public.scheduled_tasks</code>.
+     */
+    public static final ScheduledTasks SCHEDULED_TASKS = ScheduledTasks.SCHEDULED_TASKS;
 
     /**
      * The table <code>public.user_account</code>.
