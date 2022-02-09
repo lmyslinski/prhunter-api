@@ -24,7 +24,7 @@ class TokenAuthenticationFilter(private val firebaseService: FirebaseService) : 
                 firebaseService.signInWithFirebase(authToken)
                 log.trace { "Stored firebase security context" }
             } catch (e: FirebaseAuthException) {
-                log.error("firebase authentication has failed", e)
+                log.warn("firebase authentication has failed", e)
             } catch (e: Throwable) {
                 log.warn("the token is expired and not valid anymore", e)
             }
