@@ -2,7 +2,7 @@ name: Release to prod
 
 on:
   release:
-    types: [created]
+    types: [published]
 
 env:
   DEPLOYMENT_NAME: api
@@ -25,7 +25,7 @@ jobs:
         - name: Tag the image with release tag
           run: docker tag registry.digitalocean.com/prhunter/$IMAGE:${{github.sha}} registry.digitalocean.com/prhunter/$IMAGE:${{github.ref_name}}
         - name: Push the updated release tag
-          run: docker push registry.digitalocean.com/prhunter/$IMAGE:${{github.ref.name}}
+          run: docker push registry.digitalocean.com/prhunter/$IMAGE:${{github.ref_name}}
 
     deploy-api-production:
       name: Deploy api to production
