@@ -60,3 +60,4 @@ jobs:
 #TODO:
 # - Verify that release was successfull
 # - Run sanity tests on prod after release
+# - Merge the release to master
