@@ -8,6 +8,7 @@ env:
   DEPLOYMENT_NAME: api
   IMAGE: api
 
+
 jobs:
     tag-docker-image:
       name: Tag release image
@@ -22,7 +23,7 @@ jobs:
         - name: Pull the release image
           run: docker pull registry.digitalocean.com/prhunter/$IMAGE:${{github.sha}}
         - name: Tag the image with release tag
-          run: docker tag registry.digitalocean.com/prhunter/$IMAGE:${{github.sha}} registry.digitalocean.com/prhunter/$IMAGE:${{github.ref.name}}
+          run: docker tag registry.digitalocean.com/prhunter/$IMAGE:${{github.sha}} registry.digitalocean.com/prhunter/$IMAGE:${{github.ref_name}}
         - name: Push the updated release tag
           run: docker push registry.digitalocean.com/prhunter/$IMAGE:${{github.ref.name}}
 
@@ -39,7 +40,7 @@ jobs:
         - run: |-
             doctl kubernetes cluster kubeconfig save prhunter-k8s
         - run: |-
-            kubectl --namespace=production set image deployment/$DEPLOYMENT_NAME $IMAGE=registry.digitalocean.com/prhunter/$IMAGE:${{github.ref.name}}
+            kubectl --namespace=production set image deployment/$DEPLOYMENT_NAME $IMAGE=registry.digitalocean.com/prhunter/$IMAGE:${{github.ref_name}}
             kubectl --namespace=production rollout status deployment/$DEPLOYMENT_NAME
             kubectl --namespace=production get services -o wide
 
