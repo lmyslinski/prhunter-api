@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env-localhost[.properties]
   datasource:
     url: jdbc:postgresql://localhost:5432/prhunter
     username: localdev
