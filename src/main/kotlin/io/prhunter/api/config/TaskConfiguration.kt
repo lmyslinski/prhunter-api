@@ -4,7 +4,7 @@ import com.github.kagkarlsson.scheduler.task.helper.RecurringTask
 import com.github.kagkarlsson.scheduler.task.helper.Tasks
 import com.github.kagkarlsson.scheduler.task.schedule.FixedDelay
 import io.prhunter.api.bounty.BountyPriceService
-import io.prhunter.api.contract.ContractService
+import io.prhunter.api.contract.EthContractService
 import mu.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,7 +28,7 @@ class TaskConfiguration {
     }
 
     @Bean
-    fun updatePendingContractsTask(contractService: ContractService) : RecurringTask<Void>? {
+    fun updatePendingContractsTask(contractService: EthContractService) : RecurringTask<Void>? {
         return Tasks
             .recurring("update-pending-contracts", FixedDelay.ofSeconds(30))
             .execute { _, _ ->
