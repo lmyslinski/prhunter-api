@@ -1,10 +1,10 @@
 package io.prhunter.api.github.webhooks
 
 import com.github.kagkarlsson.scheduler.Scheduler
+import com.github.kagkarlsson.scheduler.task.helper.OneTimeTask
 import com.github.kagkarlsson.scheduler.task.helper.Tasks
 import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.BountyStatus
-import io.prhunter.api.github.webhooks.model.IssueWebhook
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -19,16 +19,16 @@ class IssueHandler(
     private val scheduler: Scheduler
 ) {
 
-    private val issueCloseTask = Tasks.oneTime("issue-close-task", CloseIssueData::class.java).execute{ data, _ ->
+    private val issueCloseTask: OneTimeTask<CloseIssueData> = Tasks.oneTime("issue-close-task", CloseIssueData::class.java).execute{ data, _ ->
         closeTheIssueIfBountyNotCompleted(data.data.issueId)
     }
 
-    fun handleIssueClosed(issueWebhook: IssueWebhook){
+    fun handleIssueClosed(issueId: Long){
         log.debug { "An issue was closed"  }
-        val bounty = bountyService.getBountyByIssueId(issueWebhook.issue.id)
+        val bounty = bountyService.getBountyByIssueId(issueId)
         if(bounty != null){
-            log.debug { "Scheduling bounty closure for issue ${issueWebhook.issue.id}"  }
-            scheduleBountyClosure(issueWebhook.issue.id)
+            log.debug { "Scheduling bounty closure for issue $issueId"  }
+            scheduleBountyClosure(issueId)
         }
     }
 
