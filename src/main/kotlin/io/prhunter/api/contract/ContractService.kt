@@ -47,25 +47,23 @@ class ContractService(
         }
     }
 
-    fun payoutBounty(targetAddress: String, bounty: io.prhunter.api.bounty.Bounty){
-        val address = bountyFactory.allBounties(bounty.id.toString()).send()
-        val bountyContract = loadContract(address)
-        val tx = bountyContract.payoutBounty(targetAddress).send()
-        log.info { "Sent a payout transaction from bounty $address to $targetAddress" }
-    }
-
-    private fun loadContract(address: String): Bounty {
-        try{
-            return Bounty.load(address, web3j, credentials, DefaultGasProvider())
-        }catch(ex: ContractCallException){
+    fun payoutBounty(targetAddress: String, bounty: io.prhunter.api.bounty.Bounty) {
+        try {
+            val address = bountyFactory.allBounties(bounty.id.toString()).send()
+            val bountyContract = Bounty.load(address, web3j, credentials, DefaultGasProvider())
+            val tx = bountyContract.payoutBounty(targetAddress).send()
+            // TODO verify the TX was successful
+            // maybe add the TX in an event so that we can monitor what's going on
+            log.info { "Sent a payout transaction from bounty $address to $targetAddress" }
+        } catch (ex: Throwable) {
             log.error(ex) { "Fatal error, could not load bounty in order to payout bounty" }
         }
     }
 
     private fun getContractBountyId(bountyAddressOpt: String): String? {
-        return try{
+        return try {
             Bounty.load(bountyAddressOpt, web3j, credentials, DefaultGasProvider()).bountyId().send()
-        }catch(ex: ContractCallException){
+        } catch (ex: ContractCallException) {
             log.warn { "Could not load contract at $bountyAddressOpt" }
             null
         }
