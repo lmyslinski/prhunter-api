@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import org.web3j.tx.exceptions.ContractCallException
 import org.web3j.tx.gas.DefaultGasProvider
 
 @Service
@@ -36,13 +37,22 @@ class ContractService(
         pendingBounties.forEach { bounty ->
             val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
             if (bountyAddressOpt != null) {
-                val bountyContract = Bounty.load(bountyAddressOpt, web3j, credentials, DefaultGasProvider())
-                if (bountyContract.bountyId().send() == bounty.id.toString()) {
+                val contractId = loadContract(bountyAddressOpt)
+                if (contractId == bounty.id.toString()) {
                     log.info { "Bounty ${bounty.id} deployed successfully, activating" }
                     bounty.bountyStatus = BountyStatus.ACTIVE
                     bountyRepository.save(bounty)
                 }
             }
+        }
+    }
+
+    private fun loadContract(bountyAddressOpt: String): String? {
+        return try{
+            Bounty.load(bountyAddressOpt, web3j, credentials, DefaultGasProvider()).bountyId().send()
+        }catch(ex: ContractCallException){
+            log.warn { "Could not load contract at $bountyAddressOpt" }
+            null
         }
     }
 }

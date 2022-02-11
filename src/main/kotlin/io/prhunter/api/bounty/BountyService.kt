@@ -168,9 +168,15 @@ class BountyService(
     fun completeBounty(bounty: Bounty, firebaseUserId: String) {
         // Missing steps to make this actually work:
         // 1. Add user wallet registration on the backend
-        // 2. Make sure that issue is closed before a PR webhook comes in
+        // 2. Make sure that issue is not closed before a PR webhook comes in
         // 2. Add webhook signature signing verification so that we can't just get someone to send us a request
         log.info { "Bounty was completed successfully" }
+    }
+
+    fun cancelBounty(bounty: Bounty, reason: String) {
+        bounty.bountyStatus = BountyStatus.CANCELLED
+        bountyRepository.save(bounty)
+        log.info { "Bounty ${bounty.id} was cancelled due to: $reason" }
     }
 
 }
