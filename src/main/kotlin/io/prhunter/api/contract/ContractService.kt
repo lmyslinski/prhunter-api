@@ -37,7 +37,7 @@ class ContractService(
         pendingBounties.forEach { bounty ->
             val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
             if (bountyAddressOpt != null) {
-                val contractId = loadContract(bountyAddressOpt)
+                val contractId = getContractBountyId(bountyAddressOpt)
                 if (contractId == bounty.id.toString()) {
                     log.info { "Bounty ${bounty.id} deployed successfully, activating" }
                     bounty.bountyStatus = BountyStatus.ACTIVE
@@ -47,7 +47,22 @@ class ContractService(
         }
     }
 
-    private fun loadContract(bountyAddressOpt: String): String? {
+    fun payoutBounty(targetAddress: String, bounty: io.prhunter.api.bounty.Bounty){
+        val address = bountyFactory.allBounties(bounty.id.toString()).send()
+        val bountyContract = loadContract(address)
+        val tx = bountyContract.payoutBounty(targetAddress).send()
+        log.info { "Sent a payout transaction from bounty $address to $targetAddress" }
+    }
+
+    private fun loadContract(address: String): Bounty {
+        try{
+            return Bounty.load(address, web3j, credentials, DefaultGasProvider())
+        }catch(ex: ContractCallException){
+            log.error(ex) { "Fatal error, could not load bounty in order to payout bounty" }
+        }
+    }
+
+    private fun getContractBountyId(bountyAddressOpt: String): String? {
         return try{
             Bounty.load(bountyAddressOpt, web3j, credentials, DefaultGasProvider()).bountyId().send()
         }catch(ex: ContractCallException){

@@ -37,13 +37,14 @@ class PullRequestHandler(
         }
 
         // TODO verify that the PR sender has a PRHunter account with Github and a wallet linked
-        val githubToken = userAccountRepository.findByGithubUserId(details.sender.id)
+        val userAccount = userAccountRepository.findByGithubUserId(details.sender.id)
 
-        if(githubToken == null){
-            log.info { "The PR was merged by a user without a PRHunter account linked with Github. Ignoring" }
+
+        if(userAccount?.githubUserId == null || userAccount.ethWalletAddress == null){
+            log.info { "The PR was merged by a user without a wallet or github account linked. Ignoring" }
             return
         }
 
-        bountyService.completeBounty(bounty, githubToken.firebaseUserId)
+        bountyService.completeBounty(bounty, userAccount)
     }
 }

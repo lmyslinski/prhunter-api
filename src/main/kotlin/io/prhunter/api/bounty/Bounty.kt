@@ -40,8 +40,8 @@ data class Bounty(
     val bountyCurrency: String,
     @Enumerated(EnumType.STRING)
     var bountyStatus: BountyStatus = BountyStatus.PENDING,
-    val completedBy: String? = null,
-    val completedAt: Instant? = null,
+    var completedBy: String? = null,
+    var completedAt: Instant? = null,
     val createdAt: Instant = Instant.now()
 )
 
