@@ -32,17 +32,28 @@ class BountyService(
     private val contractService: ContractService
 ) {
 
-    fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): BountyView {
-        val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
+    // In order to solve the problem with multiple submissions and account for the user cancelling the metamask tx we accept this payload multiple times
+    fun getOrCreateBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): BountyView {
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
+        val bountyOpt = bountyRepository.findByIssueIdAndFirebaseUserIdAndBountyStatus(issueData.id, user.id, BountyStatus.PENDING)
+        return if(bountyOpt != null){
+            log.info { "Bounty already exists, returning the existing entity" }
+            toView(bountyOpt)
+        }else{
+            validateNoBountyFoundForIssue(issueData.id)
+            createBounty(createBountyRequest, issueData.id, user)
+        }
+    }
+
+    fun createBounty(createBountyRequest: CreateBountyRequest, issueId: Long, user: FirebaseUser): BountyView {
+        val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice)
-        validateNoBountyFoundForIssue(issueData.id)
         val bounty = Bounty(
             repoId = repoData.id,
             repoOwner = createBountyRequest.repoOwner,
             repoName = createBountyRequest.repoName,
-            issueId = issueData.id,
+            issueId = issueId,
             issueNumber = createBountyRequest.issueNumber,
             firebaseUserId = user.id,
             title = createBountyRequest.title,
@@ -175,6 +186,7 @@ class BountyService(
         bounty.bountyStatus = BountyStatus.COMPLETED
         bounty.completedBy = user.firebaseUserId
         bounty.completedAt = Instant.now()
+        bountyRepository.save(bounty)
 
         // Missing steps to make this actually work:
         // 1. Add user wallet registration on the backend

@@ -6,18 +6,23 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
 import io.prhunter.api.TestDataProvider
+import io.prhunter.api.TestDataProvider.BOUNTIES
+import io.prhunter.api.TestDataProvider.TEST_USER
 import io.prhunter.api.auth.FirebaseService
 import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
-import io.prhunter.api.user.UserAccount
-import io.prhunter.api.user.UserAccountRepository
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
-import org.junit.jupiter.api.*
+import io.prhunter.api.user.UserAccount
+import io.prhunter.api.user.UserAccountRepository
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -38,6 +43,7 @@ class BountyControllerTest(
     @Autowired val mockMvc: MockMvc,
     @Autowired val objectMapper: ObjectMapper,
     @Autowired val bountyRepository: BountyRepository,
+    @Autowired val bountyService: BountyService,
     @Autowired val userAccountRepository: UserAccountRepository
 ) {
 
@@ -76,8 +82,8 @@ class BountyControllerTest(
 
     @BeforeEach
     fun setup() {
-        bountyRepository.saveAll(TestDataProvider.BOUNTIES)
-        userAccountRepository.save(UserAccount(TestDataProvider.TEST_USER.id, 1L, "gh-token"))
+        bountyRepository.saveAll(BOUNTIES)
+        userAccountRepository.save(UserAccount(TEST_USER.id, 1L, "gh-token"))
         every { coinGeckoApiService!!.getCurrentPrice(any()) }.returns(BigDecimal.ONE)
     }
 
@@ -124,6 +130,53 @@ class BountyControllerTest(
     }
 
     @Test
+    fun `should accept create bounty retry and return existing bounty`() {
+        TestDataProvider.setAuthenticatedContext()
+        coEvery { githubRestClient!!.getRepository(any(), any(), any()) }.returns(
+            GHRepoData(
+                1L,
+                "test-name",
+                "full-name",
+                false
+            )
+        )
+        coEvery { githubRestClient!!.getIssue(any(), any(), any(), any()) }.returns(
+            Issue(
+                5L,
+                "test-name",
+                "full-name",
+                "state",
+                "body",
+                0L
+            )
+        )
+
+        mockMvc.post("/bounty") {
+            content = objectMapper.writeValueAsString(createBountyRequest)
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { is2xxSuccessful() }
+        }
+
+        val duplicateResponse = mockMvc.post("/bounty") {
+            content = objectMapper.writeValueAsString(createBountyRequest)
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { is2xxSuccessful() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+        }.andReturn().response.contentAsString
+
+        val actual = objectMapper.readValue<BountyView>(duplicateResponse)
+
+        Assertions.assertNotNull(actual.id)
+        Assertions.assertEquals(createBountyRequest.title, actual.title)
+        Assertions.assertEquals(bountyRepository.findAll().size, BOUNTIES.size+1)
+    }
+
+
+    @Test
     fun `should return 400 if bounty already exists for an issue`() {
         TestDataProvider.setAuthenticatedContext()
         coEvery { githubRestClient!!.getRepository(any(), any(), any()) }.returns(
@@ -144,6 +197,9 @@ class BountyControllerTest(
                 0L
             )
         )
+        val bounty = bountyRepository.findByIssueId(1L)
+        bounty!!.bountyStatus = BountyStatus.ACTIVE
+        bountyRepository.save(bounty!!)
 
         mockMvc.post("/bounty") {
             content = objectMapper.writeValueAsString(createBountyRequest)
@@ -231,10 +287,8 @@ class BountyControllerTest(
         }
     }
 
-    // TODO FIX POST MVP
-    @Test()
-    @Disabled
-    fun `should list all bounties sorted by updated at desc`() {
+    @Test
+    fun `should list all bounties sorted by created at desc`() {
         val response = mockMvc.get("/bounty").andExpect {
             status {
                 isOk()
@@ -242,27 +296,25 @@ class BountyControllerTest(
             }
         }.andReturn()
         val actual: List<BountyView> = objectMapper.readValue(response.response.contentAsString)
-        Assertions.assertEquals(3, actual.size)
+        Assertions.assertEquals(BOUNTIES.size, actual.size)
 
         val resorted = actual.sortedByDescending { it.createdAt }
         Assertions.assertEquals(actual.first(), resorted.first())
         Assertions.assertEquals(actual.last(), resorted.last())
     }
 
-    //     TODO FIX POST MVP
     @Test
-    @Disabled
     fun `should get a single bounty successfully`() {
-//        val expected = bountyRepository.findAll().sortedBy { it.updatedAt }.first().toView(BigDecimal.ZERO)
-//        mockMvc.get("/bounty/${expected.id}").andExpect {
-//            status {
-//                isOk()
-//                content {
-//                    contentType(MediaType.APPLICATION_JSON)
-//                }
-//                content { json(objectMapper.writeValueAsString(expected)) }
-//            }
-//        }
+        val expected = bountyRepository.findAll().sortedBy { it.createdAt }.first()
+        mockMvc.get("/bounty/${expected.id}").andExpect {
+            status {
+                isOk()
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    json((objectMapper.writeValueAsString(bountyService.toView((expected)))))
+                }
+            }
+        }
     }
 
     @Test
@@ -290,47 +342,5 @@ class BountyControllerTest(
         }.andExpect {
             status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
         }
-    }
-
-    // TODO FIX POST MVP
-    @Test
-    @Disabled
-    fun `should update bounty successfully`() {
-//        val before = bountyRepository.findAll().sortedBy { it.updatedAt }.first()
-//
-//        coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(
-//            listOf(
-//                GHRepoPermissionData(
-//                    before.repoId,
-//                    "",
-//                    "",
-//                    false,
-//                    Permissions(true, true, true, true, true)
-//                )
-//            )
-//        )
-//
-//        mockMvc.put("/bounty/${before.id}") {
-//            content = objectMapper.writeValueAsString(updateBountyRequest)
-//            contentType = MediaType.APPLICATION_JSON
-//            accept = MediaType.APPLICATION_JSON
-//        }.andExpect {
-//            status { isEqualTo(HttpStatus.NO_CONTENT.value()) }
-//        }
-//
-//        val after = bountyRepository.findById(before.id!!).get().toView(BigDecimal.ZERO)
-//        Assertions.assertEquals(before.id, after.id)
-//        Assertions.assertEquals(before.issueId, after.issueId)
-//        Assertions.assertEquals(before.repoId, after.repoId)
-//        Assertions.assertEquals(before.createdAt, after.createdAt)
-//
-//        Assertions.assertEquals(updateBountyRequest.problemStatement, after.problemStatement)
-//        Assertions.assertEquals(updateBountyRequest.acceptanceCriteria, after.acceptanceCriteria)
-//        Assertions.assertEquals(updateBountyRequest.bountyValue, after.bountyValue)
-//        Assertions.assertEquals(updateBountyRequest.bountryCurrency, after.bountyCurrency)
-//        Assertions.assertEquals(updateBountyRequest.title, after.title)
-//        Assertions.assertArrayEquals(updateBountyRequest.languages.toTypedArray(), after.languages)
-//
-//        Assertions.assertNotEquals(before.updatedAt, after.updatedAt)
     }
 }

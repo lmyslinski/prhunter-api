@@ -33,7 +33,7 @@ class BountyController(
         principal: Principal
     ): ResponseEntity<BountyView> {
         val firebaseUser = RequestUtil.getUserFromRequest(principal)
-        val bountyView = bountyService.createBounty(
+        val bountyView = bountyService.getOrCreateBounty(
             createBountyRequest,
             firebaseUser
         )

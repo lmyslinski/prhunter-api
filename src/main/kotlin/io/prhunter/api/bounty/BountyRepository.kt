@@ -8,7 +8,7 @@ import java.util.*
 interface BountyRepository : JpaRepository<Bounty, UUID>{
     fun findByFirebaseUserId(firebaseUserId: String): List<Bounty>
     fun findByIssueId(issueId: Long): Bounty?
-    fun findByIssueNumber(issueNumber: Long): Bounty?
+    fun findByIssueIdAndFirebaseUserIdAndBountyStatus(issueId: Long, firebaseUserId: String, bountyStatus: BountyStatus): Bounty?
     fun findAllByBountyStatus(status: BountyStatus): List<Bounty>
     fun findByCompletedBy(firebaseUserId: String): List<Bounty>
 }
