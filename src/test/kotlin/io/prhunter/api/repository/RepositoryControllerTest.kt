@@ -39,6 +39,22 @@ class RepositoryControllerTest(
     private val appInstallationService: GithubAppInstallationService? = null
 
     @Test
+    fun `should return an empty repo list if user has no github account linked`(){
+        TestDataProvider.setAuthenticatedContext()
+        userAccountRepository.save(UserAccount(TestDataProvider.TEST_USER.id ))
+
+        val response = mockMvc.get("/repo") {
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { is2xxSuccessful() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+        }.andReturn().response.contentAsString
+
+        val actual = objectMapper.readValue<List<GHRepoData>>(response)
+        Assertions.assertTrue(actual.isEmpty())
+    }
+
+    @Test
     fun `should list repositories for user installations`() {
         TestDataProvider.setAuthenticatedContext()
         userAccountRepository.save(UserAccount(TestDataProvider.TEST_USER.id, 123L, "gh-token"))

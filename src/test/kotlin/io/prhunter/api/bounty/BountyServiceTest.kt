@@ -18,7 +18,7 @@ class BountyServiceTest {
     private val githubService = mockk<GithubService>()
     private val bountyRepository = mockk<BountyRepository>()
     private val coinGeckoApiService = mockk<CoinGeckoApiService>()
-    private val bountyService = BountyService(bountyRepository, githubService, coinGeckoApiService)
+//    private val bountyService = BountyService(bountyRepository, githubService, coinGeckoApiService)
 
 //    @Test
 //    fun `should throw if user does not have admin access to the repository`() {

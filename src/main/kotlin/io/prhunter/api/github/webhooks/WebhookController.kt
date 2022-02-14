@@ -68,7 +68,7 @@ class WebhookController(
             val action = eventTree.get("action")
             if(action.textValue() == "closed"){
                 val webhook = objectMapper.readValue<IssueWebhook>(body)
-                issueHandler.handleIssueClosed(webhook)
+                issueHandler.handleIssueClosed(webhook.issue.id)
                 handled = true
             }
         }

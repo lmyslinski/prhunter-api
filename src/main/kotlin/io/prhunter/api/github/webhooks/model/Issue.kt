@@ -8,7 +8,9 @@ data class IssueWebhook(
 )
 
 data class IssueDetails(
-    val pullRequest: IssuePullRequestDetails?
+    val pullRequest: IssuePullRequestDetails?,
+    val id: Long,
+    val number: Long
 )
 
 data class IssuePullRequestDetails(

@@ -20,7 +20,10 @@ class GithubService(
 ) {
 
     fun listUserInstallationRepositories(currentUser: FirebaseUser): List<GHRepoData> {
-        val installations = installationService.getInstallationsByUserId(userAccountService.getUserAccount(currentUser.id).githubUserId ?: throw GithubAuthMissing())
+        val userGithubId = userAccountService.getUserAccount(currentUser.id).githubUserId
+        val installations = if(userGithubId != null){
+            installationService.getInstallationsByUserId(userGithubId)
+        }else listOf()
         return if (installations.isNotEmpty()) {
             installations.map { installation ->
                 runBlocking {

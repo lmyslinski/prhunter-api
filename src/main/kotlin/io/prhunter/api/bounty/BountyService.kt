@@ -8,24 +8,28 @@ import io.prhunter.api.common.errors.BountyAlreadyExists
 import io.prhunter.api.common.errors.IssueAdminAccessRequired
 import io.prhunter.api.common.errors.NotFoundException
 import io.prhunter.api.common.errors.RepoAdminAccessRequired
+import io.prhunter.api.contract.ContractService
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.crypto.CryptoCurrency
 import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.Issue
+import io.prhunter.api.user.UserAccount
 import mu.KotlinLogging
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.Instant
 import java.util.*
 
 private val log = KotlinLogging.logger {}
 
 @Service
 class BountyService(
-    val bountyRepository: BountyRepository,
-    val githubService: GithubService,
-    val coinGeckoApiService: CoinGeckoApiService
+    private val bountyRepository: BountyRepository,
+    private val githubService: GithubService,
+    private val coinGeckoApiService: CoinGeckoApiService,
+    private val contractService: ContractService
 ) {
 
     fun createBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): BountyView {
@@ -165,12 +169,24 @@ class BountyService(
         )
     }
 
-    fun completeBounty(bounty: Bounty, firebaseUserId: String) {
+    fun completeBounty(bounty: Bounty, user: UserAccount) {
+
+        contractService.payoutBounty(user.ethWalletAddress!!, bounty)
+        bounty.bountyStatus = BountyStatus.COMPLETED
+        bounty.completedBy = user.firebaseUserId
+        bounty.completedAt = Instant.now()
+
         // Missing steps to make this actually work:
         // 1. Add user wallet registration on the backend
-        // 2. Make sure that issue is closed before a PR webhook comes in
+        // 2. Make sure that issue is not closed before a PR webhook comes in
         // 2. Add webhook signature signing verification so that we can't just get someone to send us a request
         log.info { "Bounty was completed successfully" }
+    }
+
+    fun cancelBounty(bounty: Bounty, reason: String) {
+        bounty.bountyStatus = BountyStatus.CANCELLED
+        bountyRepository.save(bounty)
+        log.info { "Bounty ${bounty.id} was cancelled due to: $reason" }
     }
 
 }
