@@ -36,7 +36,7 @@ class EthContractService(
         val pendingBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)
         pendingBounties.forEach { bounty ->
             val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
-            if (bountyAddressOpt != null) {
+            if (bountyAddressOpt != null && bountyAddressOpt != "0x0000000000000000000000000000000000000000") {
                 val contractId = getContractBountyId(bountyAddressOpt)
                 if (contractId == bounty.id.toString()) {
                     log.info { "Bounty ${bounty.id} deployed successfully, activating" }
