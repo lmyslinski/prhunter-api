@@ -74,7 +74,7 @@ class WebhookController(
         }
 
         if(!handled) {
-            log.info { "A webhook event was ignored: $body" }
+            log.debug { "A webhook event was ignored: $body" }
         }
     }
 

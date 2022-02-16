@@ -21,9 +21,9 @@ class TaskConfiguration {
         return Tasks
             .recurring("update-bounty-usd-price", FixedDelay.ofHours(1))
             .execute { _, _ ->
-                log.debug { "Running scheduled bounty price task" }
+                log.trace { "Running scheduled bounty price task" }
                 bountyPriceService.updateCurrentBountyUsdPrices()
-                log.debug { "Bounty price task completed" }
+                log.trace { "Bounty price task completed" }
             }
     }
 
@@ -32,9 +32,9 @@ class TaskConfiguration {
         return Tasks
             .recurring("update-pending-contracts", FixedDelay.ofSeconds(30))
             .execute { _, _ ->
-                log.debug { "Running pending contracts task" }
+                log.trace { "Running pending contracts task" }
                 contractService.checkPendingContracts()
-                log.debug { "Pending contracts task completed" }
+                log.trace { "Pending contracts task completed" }
             }
     }
 
