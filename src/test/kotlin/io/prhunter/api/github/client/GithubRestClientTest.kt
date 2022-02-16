@@ -2,6 +2,7 @@ package io.prhunter.api.github.client
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import io.ktor.client.*
 import io.prhunter.api.WireMockContextInitializer
 import io.prhunter.api.config.JacksonConfig
@@ -91,5 +92,21 @@ class GithubRestClientTest {
 
         val expected = GHRepoPermissionData(302553476, "githubactions-modeldeployment-demo-githubalgo", "algorithmiaio/githubactions-modeldeployment-demo-githubalgo", false, Permissions(false, false,false, false, true))
         Assertions.assertEquals(expected, resp.first())
+    }
+
+    @Test
+    fun `should comment on an issue correctly`(){
+        val token = "12345"
+        val comment = "A new bounty was just created"
+        wireMockServer.stubFor(
+            post("/repos/owner1/repo1/issues/8/comments").withHeader("Authorization", equalTo("Bearer $token"))
+                .withRequestBody(equalToJson("{\"body\": \"${comment}\"}"))
+                .willReturn(aResponse().withStatus(201))
+        )
+        val client = GithubRestClient(HttpClient(), JacksonConfig().objectMapper(), wireMockServer.baseUrl())
+        runBlocking {
+            client.postIssueComment("owner1", "repo1", 8, comment, token)
+        }
+        // no exception so we're good
     }
 }

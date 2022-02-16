@@ -2,9 +2,9 @@ package io.prhunter.api.github.webhooks
 
 import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.BountyStatus
-import io.prhunter.api.github.GithubAppInstallationService
-import io.prhunter.api.user.UserAccountRepository
+import io.prhunter.api.github.GithubService
 import io.prhunter.api.github.webhooks.model.PullRequestWebhook
+import io.prhunter.api.user.UserAccountRepository
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
@@ -15,12 +15,12 @@ private val log = KotlinLogging.logger {}
 class PullRequestHandler(
     private val bountyService: BountyService,
     private val userAccountRepository: UserAccountRepository,
-    private val githubAppInstallationService: GithubAppInstallationService
+    private val githubService: GithubService
 ) {
 
     fun handlePullRequestMerged(details: PullRequestWebhook) {
         val issue = runBlocking {
-            githubAppInstallationService.fetchIssue(details.pullRequest.issueUrl!!, details.installation.id)
+            githubService.fetchIssue(details.pullRequest.issueUrl!!, details.installation.id)
         }
         val bounty = bountyService.getBountyByIssueId(issue.id)
 
