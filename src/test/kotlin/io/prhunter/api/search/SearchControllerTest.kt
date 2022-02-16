@@ -18,8 +18,6 @@ import java.math.BigDecimal
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-// TODO FIX POST MVP
-@Disabled
 class SearchControllerTest {
 
     @Autowired
@@ -42,19 +40,18 @@ class SearchControllerTest {
     }
 
     @Test
-    fun `should sort by updated at by default`() {
+    fun `should sort by created at by default`() {
         val results = search(SearchRequest())
         Assertions.assertEquals(1, results.pageNumber)
         Assertions.assertEquals(4, results.total)
-        // use issue id instead of id because it'd autoincrement
+        // use issue id instead of id because UUID and shit
         Assertions.assertArrayEquals(arrayOf<Long>(1, 4, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
     fun `should filter by experience correctly`() {
         val results = search(SearchRequest(experience = Experience.Beginner))
-        Assertions.assertEquals(2, results.total)
-        Assertions.assertArrayEquals(arrayOf<Long>(1, 3), results.content.map { it.issueId }.toTypedArray())
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
@@ -101,8 +98,7 @@ class SearchControllerTest {
                 )
             )
         )
-        Assertions.assertEquals(2, results.total)
-        Assertions.assertArrayEquals(arrayOf<Long>(3, 2), results.content.map { it.issueId }.toTypedArray())
+        Assertions.assertArrayEquals(arrayOf<Long>(4, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
@@ -112,29 +108,27 @@ class SearchControllerTest {
                 currency = CryptoCurrency.ETH
             )
         )
-        Assertions.assertEquals(3, results.total)
-        Assertions.assertArrayEquals(arrayOf<Long>(1, 3, 2), results.content.map { it.issueId }.toTypedArray())
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 4, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
     fun `should filter by tags correctly`() {
         val results = search(SearchRequest(tags = listOf("new")))
-        Assertions.assertEquals(2, results.total)
-        Assertions.assertArrayEquals(arrayOf<Long>(1, 2), results.content.map { it.issueId }.toTypedArray())
+        Assertions.assertEquals(3, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
     fun `should filter by bounty type correctly`() {
         val results = search(SearchRequest(bountyType = BountyType.Feature))
-        Assertions.assertEquals(1, results.total)
-        Assertions.assertArrayEquals(arrayOf<Long>(3), results.content.map { it.issueId }.toTypedArray())
+        Assertions.assertEquals(3, results.total)
+        Assertions.assertArrayEquals(arrayOf<Long>(1, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     @Test
     fun `should filter by title or body correctly`() {
-        val results = search(SearchRequest(contentContains = "test"))
-        Assertions.assertEquals(2, results.total)
-        Assertions.assertArrayEquals(arrayOf<Long>(1,3), results.content.map { it.issueId }.toTypedArray())
+        val results = search(SearchRequest(contentContains = "title-4"))
+        Assertions.assertArrayEquals(arrayOf<Long>(4, 3, 2), results.content.map { it.issueId }.toTypedArray())
     }
 
     private fun search(searchRequest: SearchRequest): PageResponse<Bounty> {

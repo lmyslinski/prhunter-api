@@ -26,15 +26,15 @@ object TestDataProvider {
             )
         ),
         Bounty(
-            UUID.fromString("ff6e2ea5-5970-4168-8028-78dfb42b780f"), 2L, "test-owner", "test-name-2", 2, 2, "12345","title", "statement", "acceptance", arrayOf("java"), tags = arrayOf("new", "first"),
+            UUID.fromString("ff6e2ea5-5970-4168-8028-78dfb42b780f"), 2L, "test-owner", "test-name-2", 2, 2, "12345","title-2", "statement", "title-4", arrayOf("java"), tags = arrayOf("new", "first"),
             Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(20), BigDecimal.valueOf(20),"ETH", createdAt = NOW.minus(
-                2,
+                10,
                 ChronoUnit.MINUTES
             )
         ),
         Bounty(
-            UUID.fromString("ce05f3f7-0f9c-4fec-86c6-ddb203125f6d"), 2L, "test-owner", "test-name-3", 3, 3, "12345","title", "statement", "acceptance",
+            UUID.fromString("ce05f3f7-0f9c-4fec-86c6-ddb203125f6d"), 2L, "test-owner", "test-name-3", 3, 3, "12345","title-3", "title-4", "acceptance",
             arrayOf("javascript"),
             tags = arrayOf("new", "first"),
             Experience.Beginner,
@@ -43,12 +43,12 @@ object TestDataProvider {
             BigDecimal.valueOf(30),
             "ETH",
             createdAt = NOW.minus(
-                3,
+                5,
                 ChronoUnit.MINUTES
             )
         ),
         Bounty(
-            UUID.fromString("8fe5bc6a-7e24-4153-9a27-88596ab98902"), 2L, "test-owner", "test-name-4", 4, 4, "12345","title", "statement", "acceptance",
+            UUID.fromString("8fe5bc6a-7e24-4153-9a27-88596ab98902"), 2L, "test-owner", "test-name-4", 4, 4, "12345","title-4", "statement", "acceptance",
             arrayOf("other"),
             tags = arrayOf("react", "ror"),
             Experience.Intermediate,

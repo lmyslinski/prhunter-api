@@ -28,6 +28,7 @@ class HttpSecurityConfig(
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/swagger-ui.html", permitAll)
+                authorize("/crypto/**", permitAll)
                 authorize("/bounty/search", permitAll)
                 authorize("/contact", permitAll)
                 authorize(HttpMethod.GET, "/bounty", permitAll)

@@ -30,7 +30,6 @@ class SearchService(
             getBountyTypeFilter(searchRequest),
             getTitleOrBodyFilter(searchRequest),
             getTagsFilter(searchRequest),
-
         )
         val selectQuery = dslContext.selectFrom(BOUNTY).where(getWhereCond(conditions))
             .orderBy(getOrderBy(searchRequest))
