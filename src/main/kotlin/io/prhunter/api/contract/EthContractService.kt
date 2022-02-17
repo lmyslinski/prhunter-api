@@ -80,4 +80,21 @@ class EthContractService(
             null
         }
     }
+
+    private fun getGasPrice(){
+        val network = getNetwork()
+        if(network == EthNetwork.MAINNET){
+            // get low safe gas price from https://ethgasstation.info/api/ethgasAPI.json?
+        }else{
+            // on ropsten just use high enough values
+        }
+    }
+
+    private fun getNetwork(): EthNetwork {
+        if(alchemyUrl.contains("ropsten")){
+            return EthNetwork.ROPSTEN
+        }else{
+            return EthNetwork.MAINNET
+        }
+    }
 }
