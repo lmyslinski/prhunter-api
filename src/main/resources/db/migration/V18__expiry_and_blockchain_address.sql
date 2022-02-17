@@ -1,0 +1,2 @@
+ALTER TABLE "bounty" ADD COLUMN expires_at TIMESTAMP NOT NULL DEFAULT NOW();
+ALTER TABLE "bounty" ADD COLUMN blockchain_address VARCHAR;

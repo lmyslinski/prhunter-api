@@ -3,7 +3,6 @@ package io.prhunter.api.contract
 import io.prhunter.api.bounty.BountyRepository
 import io.prhunter.api.bounty.BountyStatus
 import io.prhunter.api.github.GithubAppService
-import io.prhunter.api.github.GithubUserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -42,16 +41,17 @@ class EthContractService(
             if (bountyAddressOpt != null && bountyAddressOpt != "0x0000000000000000000000000000000000000000") {
                 val contractId = getContractBountyId(bountyAddressOpt)
                 if (contractId == bounty.id.toString()) {
-                    activateBounty(bounty)
+                    activateBounty(bounty, bountyAddressOpt)
                 }
             }
         }
     }
 
-    private fun activateBounty(bounty: io.prhunter.api.bounty.Bounty) {
+    private fun activateBounty(bounty: io.prhunter.api.bounty.Bounty, bountyAddress: String) {
         log.info { "Bounty ${bounty.id} deployed successfully, activating" }
         try{
             bounty.bountyStatus = BountyStatus.ACTIVE
+            bounty.blockchainAddress = bountyAddress
             bountyRepository.save(bounty)
             githubAppService.newBountyComment(bounty)
         }catch (ex: Throwable){

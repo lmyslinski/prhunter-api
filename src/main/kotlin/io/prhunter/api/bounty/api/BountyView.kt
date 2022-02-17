@@ -26,6 +26,8 @@ data class BountyView(
     val bountyValueUsd: BigDecimal,
     val bountyCurrency: String,
     val bountyStatus: BountyStatus,
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant,
+    val expiresAt: Instant,
+    val blockchainAddress: String?,
 )
 

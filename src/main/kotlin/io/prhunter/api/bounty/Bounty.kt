@@ -42,6 +42,8 @@ data class Bounty(
     var bountyStatus: BountyStatus = BountyStatus.PENDING,
     var completedBy: String? = null,
     var completedAt: Instant? = null,
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now(),
+    val expiresAt: Instant,
+    var blockchainAddress: String? = null
 )
 

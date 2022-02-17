@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import java.math.BigDecimal
+import java.time.Instant
 import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,7 +59,8 @@ class BountyControllerTest(
         Experience.Beginner,
         BountyType.Feature,
         BigDecimal.valueOf(100L),
-        "ETH"
+        "ETH",
+        Instant.now().plusSeconds(100L).epochSecond
     )
     private val updateBountyRequest = UpdateBountyRequest(
         "new-title",
