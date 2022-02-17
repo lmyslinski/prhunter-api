@@ -201,4 +201,8 @@ class BountyService(
         log.info { "Bounty ${bounty.id} was cancelled due to: $reason" }
     }
 
+    fun getByStatus(status: BountyStatus): List<Bounty> {
+        return bountyRepository.findAllByBountyStatus(status)
+    }
+
 }
