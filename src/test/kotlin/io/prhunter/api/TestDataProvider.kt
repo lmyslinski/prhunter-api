@@ -23,12 +23,20 @@ object TestDataProvider {
             BountyType.Feature, BigDecimal.valueOf(10), BigDecimal.valueOf(10),"ETH", createdAt = NOW.minus(
                 1,
                 ChronoUnit.MINUTES
+            ),
+            expiresAt = NOW.plus(
+                10,
+                ChronoUnit.MINUTES
             )
         ),
         Bounty(
             UUID.fromString("ff6e2ea5-5970-4168-8028-78dfb42b780f"), 2L, "test-owner", "test-name-2", 2, 2, "12345","title-2", "statement", "title-4", arrayOf("java"), tags = arrayOf("new", "first"),
             Experience.Beginner,
             BountyType.Feature, BigDecimal.valueOf(20), BigDecimal.valueOf(20),"ETH", createdAt = NOW.minus(
+                10,
+                ChronoUnit.MINUTES
+            ),
+            expiresAt = NOW.plus(
                 10,
                 ChronoUnit.MINUTES
             )
@@ -45,6 +53,10 @@ object TestDataProvider {
             createdAt = NOW.minus(
                 5,
                 ChronoUnit.MINUTES
+            ),
+            expiresAt = NOW.plus(
+                10,
+                ChronoUnit.MINUTES
             )
         ),
         Bounty(
@@ -58,6 +70,10 @@ object TestDataProvider {
             "ETH",
             createdAt = NOW.minus(
                 4,
+                ChronoUnit.MINUTES
+            ),
+            expiresAt = NOW.plus(
+                10,
                 ChronoUnit.MINUTES
             )
         )

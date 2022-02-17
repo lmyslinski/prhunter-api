@@ -40,6 +40,8 @@ public class Bounty implements Serializable {
     private final String        completedBy;
     private final LocalDateTime completedAt;
     private final LocalDateTime createdAt;
+    private final LocalDateTime expiresAt;
+    private final String        blockchainAddress;
 
     public Bounty(Bounty value) {
         this.id = value.id;
@@ -63,6 +65,8 @@ public class Bounty implements Serializable {
         this.completedBy = value.completedBy;
         this.completedAt = value.completedAt;
         this.createdAt = value.createdAt;
+        this.expiresAt = value.expiresAt;
+        this.blockchainAddress = value.blockchainAddress;
     }
 
     public Bounty(
@@ -86,7 +90,9 @@ public class Bounty implements Serializable {
         String        bountyStatus,
         String        completedBy,
         LocalDateTime completedAt,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime expiresAt,
+        String        blockchainAddress
     ) {
         this.id = id;
         this.repoId = repoId;
@@ -109,6 +115,8 @@ public class Bounty implements Serializable {
         this.completedBy = completedBy;
         this.completedAt = completedAt;
         this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+        this.blockchainAddress = blockchainAddress;
     }
 
     /**
@@ -258,6 +266,20 @@ public class Bounty implements Serializable {
         return this.createdAt;
     }
 
+    /**
+     * Getter for <code>public.bounty.expires_at</code>.
+     */
+    public LocalDateTime getExpiresAt() {
+        return this.expiresAt;
+    }
+
+    /**
+     * Getter for <code>public.bounty.blockchain_address</code>.
+     */
+    public String getBlockchainAddress() {
+        return this.blockchainAddress;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bounty (");
@@ -283,6 +305,8 @@ public class Bounty implements Serializable {
         sb.append(", ").append(completedBy);
         sb.append(", ").append(completedAt);
         sb.append(", ").append(createdAt);
+        sb.append(", ").append(expiresAt);
+        sb.append(", ").append(blockchainAddress);
 
         sb.append(")");
         return sb.toString();

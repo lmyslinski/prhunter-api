@@ -67,6 +67,7 @@ class BountyService(
             experience = createBountyRequest.experience,
             bountyType = createBountyRequest.bountyType,
             bountyStatus = BountyStatus.PENDING,
+            expiresAt = Instant.ofEpochMilli(createBountyRequest.expiresAt)
         )
         val newBounty = toView(bountyRepository.save(bounty))
         log.info { "Created a new pending bounty: ${newBounty.id}" }
@@ -177,11 +178,12 @@ class BountyService(
             bounty.bountyCurrency,
             bounty.bountyStatus,
             bounty.createdAt,
+            bounty.expiresAt,
+            bounty.blockchainAddress,
         )
     }
 
     fun completeBounty(bounty: Bounty, user: UserAccount) {
-
         contractService.payoutBounty(user.ethWalletAddress!!, bounty)
         bounty.bountyStatus = BountyStatus.COMPLETED
         bounty.completedBy = user.firebaseUserId
@@ -189,9 +191,7 @@ class BountyService(
         bountyRepository.save(bounty)
 
         // Missing steps to make this actually work:
-        // 1. Add user wallet registration on the backend
-        // 2. Make sure that issue is not closed before a PR webhook comes in
-        // 2. Add webhook signature signing verification so that we can't just get someone to send us a request
+        // Add webhook signature signing verification so that we can't just get someone to send us a request
         log.info { "Bounty was completed successfully" }
     }
 
