@@ -1,36 +1,40 @@
 package io.prhunter.api.github
 
 import io.prhunter.api.auth.FirebaseUser
+import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.common.errors.GithubAuthMissing
 import io.prhunter.api.user.UserAccountService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
+import io.prhunter.api.github.client.RepositoryList
+import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
+import io.prhunter.api.user.UserAccount
 //import io.prhunter.api.user.GithubUser
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class GithubService(
-    private val githubAppInstallationService: GithubAppInstallationService,
-    private val installationService: InstallationService,
+class GithubUserService(
     private val userAccountService: UserAccountService,
-    private val githubRestClient: GithubRestClient
+    private val githubRestClient: GithubRestClient,
+    private val githubAppService: GithubAppService,
+    private val installationService: InstallationService
 ) {
 
+    private val log = KotlinLogging.logger {}
+
     fun listUserInstallationRepositories(currentUser: FirebaseUser): List<GHRepoData> {
-        val userGithubId = userAccountService.getUserAccount(currentUser.id).githubUserId
-        val installations = if(userGithubId != null){
-            installationService.getInstallationsByUserId(userGithubId)
-        }else listOf()
-        return if (installations.isNotEmpty()) {
-            installations.map { installation ->
-                runBlocking {
-                    githubAppInstallationService.listRepositories(installation.id)
-                }!!.repositories
-            }.flatten()
-        } else listOf()
+        val user = userAccountService.getUserAccount(currentUser.id)
+        val installations = installationService.getUserInstallations(user)
+        return installations.map { installation ->
+            runBlocking {
+                githubAppService.listRepositories(installation.id)
+            }!!.repositories
+        }.flatten()
     }
 
     fun listRepositoryIssues(owner: String, repo: String, user: FirebaseUser): List<Issue> {
@@ -53,4 +57,6 @@ class GithubService(
             githubRestClient.getRepository(owner, repo, token)
         }
     }
+
+
 }

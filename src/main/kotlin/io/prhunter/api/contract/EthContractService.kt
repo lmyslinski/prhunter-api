@@ -2,6 +2,8 @@ package io.prhunter.api.contract
 
 import io.prhunter.api.bounty.BountyRepository
 import io.prhunter.api.bounty.BountyStatus
+import io.prhunter.api.github.GithubAppService
+import io.prhunter.api.github.GithubUserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -16,6 +18,7 @@ import org.web3j.tx.gas.DefaultGasProvider
 @Profile("!test")
 class EthContractService(
     private val bountyRepository: BountyRepository,
+    private val githubAppService: GithubAppService,
     @Value("\${crypto.alchemyUrl}") val alchemyUrl: String,
     @Value("\${crypto.ethPkey}") val ethPrivateKey: String,
     @Value("\${crypto.bountyFactoryEthAddress}") val bountyFactoryEthAddress: String,
@@ -36,14 +39,23 @@ class EthContractService(
         val pendingBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)
         pendingBounties.forEach { bounty ->
             val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
-            if (bountyAddressOpt != null) {
+            if (bountyAddressOpt != null && bountyAddressOpt != "0x0000000000000000000000000000000000000000") {
                 val contractId = getContractBountyId(bountyAddressOpt)
                 if (contractId == bounty.id.toString()) {
-                    log.info { "Bounty ${bounty.id} deployed successfully, activating" }
-                    bounty.bountyStatus = BountyStatus.ACTIVE
-                    bountyRepository.save(bounty)
+                    activateBounty(bounty)
                 }
             }
+        }
+    }
+
+    private fun activateBounty(bounty: io.prhunter.api.bounty.Bounty) {
+        log.info { "Bounty ${bounty.id} deployed successfully, activating" }
+        try{
+            bounty.bountyStatus = BountyStatus.ACTIVE
+            bountyRepository.save(bounty)
+            githubAppService.newBountyComment(bounty)
+        }catch (ex: Throwable){
+            log.error(ex) { "An error was occurred while activating bounty ${bounty.id}" }
         }
     }
 

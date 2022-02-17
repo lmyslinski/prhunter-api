@@ -20,6 +20,8 @@ class GithubAuthServiceImpl(
     private var lastRefreshTime: Instant = Instant.MIN
 
     // Functional programming ftw
+    // TODO store this in Postgres for simplicity
+    // so far no need to add redis
     private fun refreshJwtTokenIfStale(){
         // if more than 5 minutes have passed since last jwt token refresh
         if(Instant.now().minus(5, ChronoUnit.MINUTES).isAfter(lastRefreshTime)){

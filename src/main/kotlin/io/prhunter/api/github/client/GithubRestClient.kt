@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -74,8 +75,8 @@ class GithubRestClient(
         }
     }
 
-    suspend fun getRepository(owner: String, repo: String, userToken: String): GHRepoData {
-        val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$owner/$repo") {
+    suspend fun getRepository(repoOwner: String, repo: String, userToken: String): GHRepoData {
+        val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$repoOwner/$repo") {
             headers {
                 header("accept", "application/vnd.github.v3+json")
                 header("Authorization", "Bearer $userToken")
@@ -89,7 +90,6 @@ class GithubRestClient(
         }
     }
 
-//    https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
     suspend fun listAuthenticatedUserRepos(userToken: String): List<GHRepoPermissionData> {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/user/repos") {
             headers {
@@ -120,5 +120,17 @@ class GithubRestClient(
         }
     }
 
-
+    suspend fun postIssueComment(repoOwner: String, repo: String, issueNumber: Long, comment: String, authToken: String) {
+        val response = httpClient.post<HttpResponse>("$githubBaseUrl/repos/$repoOwner/$repo/issues/${issueNumber}/comments") {
+            headers {
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $authToken")
+            }
+            contentType(ContentType.Application.Json)
+            body = mapOf("body" to comment)
+        }
+        if(response.status.value != 201){
+            throw RuntimeException("Posting a comment on $repoOwner/$repo/issues/${issueNumber} has failed")
+        }
+    }
 }

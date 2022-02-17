@@ -1,21 +1,13 @@
 package io.prhunter.api.bounty
 
-import io.mockk.every
 import io.mockk.mockk
-import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
-import io.prhunter.api.github.GithubService
-import io.prhunter.api.github.client.GHRepoPermissionData
-import io.prhunter.api.github.client.Permissions
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import java.math.BigDecimal
+import io.prhunter.api.github.GithubUserService
 
 class BountyServiceTest {
 
     private val accessToken = "123"
-    private val githubService = mockk<GithubService>()
+    private val githubUserService = mockk<GithubUserService>()
     private val bountyRepository = mockk<BountyRepository>()
     private val coinGeckoApiService = mockk<CoinGeckoApiService>()
 //    private val bountyService = BountyService(bountyRepository, githubService, coinGeckoApiService)

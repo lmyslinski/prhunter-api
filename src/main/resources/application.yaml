@@ -30,6 +30,9 @@ server:
   servlet:
     contextPath: /
 
+prhunter:
+  frontendUrl: ${FRONTEND_URL:http://localhost:3000}
+
 firebase:
   privateKey: ${FIREBASE_PRIVATE_KEY:""}
 
