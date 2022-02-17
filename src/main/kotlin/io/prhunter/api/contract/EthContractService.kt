@@ -2,7 +2,8 @@ package io.prhunter.api.contract
 
 import io.prhunter.api.bounty.BountyRepository
 import io.prhunter.api.bounty.BountyStatus
-import io.prhunter.api.github.GithubService
+import io.prhunter.api.github.GithubAppService
+import io.prhunter.api.github.GithubUserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -17,7 +18,7 @@ import org.web3j.tx.gas.DefaultGasProvider
 @Profile("!test")
 class EthContractService(
     private val bountyRepository: BountyRepository,
-    private val githubService: GithubService,
+    private val githubAppService: GithubAppService,
     @Value("\${crypto.alchemyUrl}") val alchemyUrl: String,
     @Value("\${crypto.ethPkey}") val ethPrivateKey: String,
     @Value("\${crypto.bountyFactoryEthAddress}") val bountyFactoryEthAddress: String,
@@ -52,7 +53,7 @@ class EthContractService(
         try{
             bounty.bountyStatus = BountyStatus.ACTIVE
             bountyRepository.save(bounty)
-            githubService.newBountyComment(bounty)
+            githubAppService.newBountyComment(bounty)
         }catch (ex: Throwable){
             log.error(ex) { "An error was occurred while activating bounty ${bounty.id}" }
         }

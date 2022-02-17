@@ -1,8 +1,8 @@
 package io.prhunter.api.github.client
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import io.ktor.client.*
 import io.prhunter.api.WireMockContextInitializer
 import io.prhunter.api.config.JacksonConfig
@@ -22,7 +22,10 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(initializers = [WireMockContextInitializer::class])
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class GithubRestClientTest {
+class GithubRestClientTest(
+    @Autowired private val httpClient: HttpClient,
+    @Autowired private val objectMapper: ObjectMapper
+) {
 
     @Autowired
     private lateinit var wireMockServer: WireMockServer
@@ -44,7 +47,7 @@ class GithubRestClientTest {
             get("/installation/repositories").withHeader("Authorization", equalTo("Bearer $token")).willReturn(aResponse().withBody(repoListResponse))
         )
 
-        val client = GithubRestClient(HttpClient(), JacksonConfig().objectMapper(), wireMockServer.baseUrl())
+        val client = GithubRestClient(httpClient, objectMapper, wireMockServer.baseUrl())
         val resp = runBlocking {
             client.listRepositories("12345")
         }
@@ -66,7 +69,7 @@ class GithubRestClientTest {
             get("/repos/$owner/$repo/issues").withHeader("Authorization", equalTo("Bearer $token")).willReturn(aResponse().withBody(issueListResponse))
         )
 
-        val client = GithubRestClient(HttpClient(), JacksonConfig().objectMapper(), wireMockServer.baseUrl())
+        val client = GithubRestClient(httpClient, objectMapper, wireMockServer.baseUrl())
         val resp = runBlocking {
             client.listIssues(owner, repo, token)
         }
@@ -85,7 +88,7 @@ class GithubRestClientTest {
             get("/user/repos").withHeader("Authorization", equalTo("Bearer $token")).willReturn(aResponse().withBody(userRepoListResponse))
         )
 
-        val client = GithubRestClient(HttpClient(), JacksonConfig().objectMapper(), wireMockServer.baseUrl())
+        val client = GithubRestClient(httpClient, objectMapper, wireMockServer.baseUrl())
         val resp = runBlocking {
             client.listAuthenticatedUserRepos(token)
         }
@@ -103,7 +106,7 @@ class GithubRestClientTest {
                 .withRequestBody(equalToJson("{\"body\": \"${comment}\"}"))
                 .willReturn(aResponse().withStatus(201))
         )
-        val client = GithubRestClient(HttpClient(), JacksonConfig().objectMapper(), wireMockServer.baseUrl())
+        val client = GithubRestClient(httpClient, objectMapper, wireMockServer.baseUrl())
         runBlocking {
             client.postIssueComment("owner1", "repo1", 8, comment, token)
         }

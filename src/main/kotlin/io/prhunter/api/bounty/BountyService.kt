@@ -11,7 +11,7 @@ import io.prhunter.api.common.errors.RepoAdminAccessRequired
 import io.prhunter.api.contract.ContractService
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.crypto.CryptoCurrency
-import io.prhunter.api.github.GithubService
+import io.prhunter.api.github.GithubUserService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.Issue
 import io.prhunter.api.user.UserAccount
@@ -27,7 +27,7 @@ private val log = KotlinLogging.logger {}
 @Service
 class BountyService(
     private val bountyRepository: BountyRepository,
-    private val githubService: GithubService,
+    private val githubUserService: GithubUserService,
     private val coinGeckoApiService: CoinGeckoApiService,
     private val contractService: ContractService
 ) {
@@ -129,7 +129,7 @@ class BountyService(
 
     private fun getIssueAsUser(repoOwner: String, repoName: String, issueNumber: Long, user: FirebaseUser): Issue {
         try{
-            return githubService.getIssue(repoOwner, repoName, issueNumber, user)
+            return githubUserService.getIssue(repoOwner, repoName, issueNumber, user)
         }catch (ex: Throwable){
             log.error( "Could not fetch issue ${repoOwner}/${repoName}/${issueNumber}", ex)
             throw IssueAdminAccessRequired()
@@ -140,7 +140,7 @@ class BountyService(
     private fun getRepositoryAsUser(owner: String, repoName: String, user: FirebaseUser): GHRepoData {
         // check if the user has admin access to the repository linked in the request
         try{
-            return githubService.getRepository(owner, repoName, user)
+            return githubUserService.getRepository(owner, repoName, user)
         }catch (ex: Throwable){
             log.error( "Could not fetch repository ${owner}/${repoName}", ex)
             throw RepoAdminAccessRequired()

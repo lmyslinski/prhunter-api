@@ -1,5 +1,6 @@
 package io.prhunter.api.installation
 
+import io.prhunter.api.user.UserAccount
 import mu.KotlinLogging
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
@@ -26,7 +27,10 @@ class InstallationService(
         }
     }
 
-    fun getInstallationsByUserId(id: Long): List<Installation> {
-        return installationRepository.findBySenderId(id)
+    fun getUserInstallations(user: UserAccount): List<Installation> {
+        val userGithubId = user.githubUserId
+        return if (userGithubId != null) {
+            installationRepository.findBySenderId(userGithubId)
+        } else listOf()
     }
 }

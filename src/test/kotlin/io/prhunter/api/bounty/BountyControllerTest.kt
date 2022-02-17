@@ -199,7 +199,7 @@ class BountyControllerTest(
         )
         val bounty = bountyRepository.findByIssueId(1L)
         bounty!!.bountyStatus = BountyStatus.ACTIVE
-        bountyRepository.save(bounty!!)
+        bountyRepository.save(bounty)
 
         mockMvc.post("/bounty") {
             content = objectMapper.writeValueAsString(createBountyRequest)
