@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.post
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-internal class WebhookControllerTest(
+class WebhookControllerTest(
     @Autowired val mockMvc: MockMvc,
 ) {
 

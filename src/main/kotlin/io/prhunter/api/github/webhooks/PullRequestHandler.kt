@@ -37,11 +37,11 @@ class PullRequestHandler(
 
         matchingBounties.forEach { bounty ->
             val fullName = "${bounty.repoOwner}/${bounty.repoName}"
-            if (fullName == details.pullRequest.repoDetails.fullName) {
+            if (fullName == details.repository.fullName) {
                 log.info { "Completing bounty ${bounty.id}" }
                 bountyService.completeBounty(bounty, userAccount)
             } else {
-                log.info { "Bounty repo $fullName does not match PR repo ${details.pullRequest.repoDetails.fullName}" }
+                log.info { "Bounty repo $fullName does not match PR repo ${details.repository.fullName}" }
             }
         }
     }

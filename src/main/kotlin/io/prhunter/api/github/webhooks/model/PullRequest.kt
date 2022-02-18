@@ -5,13 +5,13 @@ data class PullRequestWebhook(
     val action: String,
     val pullRequest: PullRequestDetails,
     val installation: InstallationId,
+    val repository: RepoDetails
 )
 
 data class PullRequestDetails(
     val merged: Boolean,
     val issueUrl: String?,
     val body: String,
-    val repoDetails: RepoDetails
 )
 
 data class RepoDetails(
