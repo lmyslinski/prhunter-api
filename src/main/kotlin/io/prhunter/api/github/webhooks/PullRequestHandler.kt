@@ -3,7 +3,6 @@ package io.prhunter.api.github.webhooks
 import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.BountyStatus
 import io.prhunter.api.github.GithubAppService
-import io.prhunter.api.github.GithubUserService
 import io.prhunter.api.github.webhooks.model.PullRequestWebhook
 import io.prhunter.api.user.UserAccountRepository
 import kotlinx.coroutines.runBlocking
