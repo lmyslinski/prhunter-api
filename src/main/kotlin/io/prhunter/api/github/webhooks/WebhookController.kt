@@ -27,7 +27,7 @@ class WebhookController(
 
     @PostMapping()
     fun receiveWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
-        log.debug { "Webhook received: $eventBody" }
+//        log.debug { "Webhook received: $eventBody" }
         validateWebhook()
         handleWebhook(eventBody)
         return ResponseEntity.ok().body("")
@@ -40,14 +40,19 @@ class WebhookController(
         if (eventTree.get("pull_request") != null) {
             val pull_request = eventTree.get("pull_request")
             val action = eventTree.get("action")
-            val issueUrl = pull_request.get("issue_url")
             val merged = pull_request.get("merged")
-            if (action.textValue() == "closed" && issueUrl != null && merged.asBoolean()) {
+            if (action.textValue() == "closed" && merged.asBoolean()) {
                 val webhook = objectMapper.readValue<PullRequestWebhook>(body)
                 // what if a PR closes multiple issues?
-                pullRequestHandler.handlePullRequestMerged(webhook)
+                pullRequestHandler.handleMerged(webhook)
+                handled = true
+            }else if (action.textValue() == "opened" || action.textValue() == "reopened"){
+                val webhook = objectMapper.readValue<PullRequestWebhook>(body)
+                pullRequestHandler.handleOpened(webhook)
                 handled = true
             }
+
+
         }
 
         // make sure that only the minimal set of data is present on the installation request

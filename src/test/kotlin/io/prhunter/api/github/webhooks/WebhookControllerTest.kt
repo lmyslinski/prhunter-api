@@ -57,14 +57,14 @@ class WebhookControllerTest(
     @Test
     fun `should handle pull request merged request correctly`() {
         val pullRequestBody = ClassPathResource("/github/webhook/pull-request-merged.json").file.readText()
-        every { pullRequestHandler?.handlePullRequestMerged(any()) } returns Unit
+        every { pullRequestHandler?.handleMerged(any()) } returns Unit
         mockMvc.post("/webhook") {
             content = pullRequestBody
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
         }
-        verify(exactly = 1) { pullRequestHandler?.handlePullRequestMerged(any()) }
+        verify(exactly = 1) { pullRequestHandler?.handleMerged(any()) }
         confirmVerified(pullRequestHandler!!)
     }
 
