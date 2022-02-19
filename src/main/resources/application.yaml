@@ -43,6 +43,7 @@ github:
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 
 crypto:
+  ethGasStationApiKey: ${ETH_GAS_STATION_API_KEY:}
   alchemyUrl: ${ALCHEMY_URL:invalid}
   ethPkey: ${ETH_PKEY:invalid}
   bountyFactoryEthAddress: ${BOUNTY_FACTORY_ETH_ADDRESS:invalid}

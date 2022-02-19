@@ -8,14 +8,13 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
-private val log = KotlinLogging.logger {}
-
 @Service
 class CoinGeckoApiClient(
     private val httpClient: HttpClient,
     private val objectMapper: ObjectMapper,
 ) {
 
+    private val log = KotlinLogging.logger {}
     private val coinGeckoBaseUrl = "https://api.coingecko.com/api/v3"
     private val fallbackValue = BigDecimal.valueOf(1L)
 
