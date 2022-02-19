@@ -28,7 +28,7 @@ class WebhookController(
 
     @PostMapping()
     fun receiveWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
-//        log.debug { "Webhook received: $eventBody" }
+        log.debug { "Webhook received: $eventBody" }
         validateWebhook()
         handleWebhook(eventBody)
         return ResponseEntity.ok().body("")

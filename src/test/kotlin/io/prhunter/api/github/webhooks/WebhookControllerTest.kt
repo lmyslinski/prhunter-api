@@ -31,19 +31,20 @@ class WebhookControllerTest(
     @Test
     fun `should handle pull request opened request correctly`() {
         val pullRequestBody = ClassPathResource("/github/webhook/pull-request-opened.json").file.readText()
+        every { pullRequestHandler?.handleOpened(any()) } returns Unit
         mockMvc.post("/webhook") {
             content = pullRequestBody
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
         }
-        verify { pullRequestHandler!! wasNot Called }
+        verify(exactly = 1) { pullRequestHandler?.handleOpened(any()) }
         confirmVerified(pullRequestHandler!!)
     }
 
     @Test
     fun `should handle pull request closed request correctly`() {
-        val pullRequestBody = ClassPathResource("/github/webhook/pull-request-opened.json").file.readText()
+        val pullRequestBody = ClassPathResource("/github/webhook/pull-request-closed.json").file.readText()
         mockMvc.post("/webhook") {
             content = pullRequestBody
             contentType = MediaType.APPLICATION_JSON
