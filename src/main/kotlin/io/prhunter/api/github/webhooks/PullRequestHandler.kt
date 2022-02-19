@@ -3,6 +3,7 @@ package io.prhunter.api.github.webhooks
 import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.bounty.BountyService
 import io.prhunter.api.bounty.BountyStatus
+import io.prhunter.api.bounty.fullName
 import io.prhunter.api.github.GithubAppService
 import io.prhunter.api.github.webhooks.model.PullRequestWebhook
 import io.prhunter.api.user.UserAccountRepository
@@ -47,15 +48,11 @@ class PullRequestHandler(
         }
 
         bounties.forEach { bounty ->
-            // for each bounty
-            // comment on the PR that it is linked to that bounty
-            // if it actually is, that is
-            val fullName = "${bounty.repoOwner}/${bounty.repoName}"
-            if (fullName == details.repository.fullName) {
+            if (bounty.fullName() == details.repository.fullName) {
                 log.info { "Observed a linked PR at ${details.repository.fullName}/#${details.number}" }
                 githubAppService.newPullRequestComment(bounty, details.number, details.sender.htmlUrl)
             } else {
-                log.info { "Bounty repo $fullName does not match PR repo ${details.repository.fullName}" }
+                log.info { "Bounty repo $${bounty.fullName()} does not match PR repo ${details.repository.fullName}" }
             }
         }
     }
