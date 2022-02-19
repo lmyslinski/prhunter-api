@@ -19,7 +19,7 @@ class AuthTokenResolver(
     private val githubAuthService: GithubAuthService,
 ) {
 
-    // We dont care if we have multiple installations with access to the same repo, as long as we do have access to the repo
+    // We don't care if we have multiple installations with access to the same repo, as long as we do have access to the repo
     internal fun getAccessTokenForBounty(bounty: Bounty): String {
         val user = userAccountService.getUserAccount(bounty.firebaseUserId)
         return installationService.getUserInstallations(user)

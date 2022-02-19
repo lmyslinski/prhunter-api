@@ -52,8 +52,6 @@ class WebhookController(
                 pullRequestHandler.handleOpened(webhook)
                 handled = true
             }
-
-
         }
 
         // make sure that only the minimal set of data is present on the installation request
