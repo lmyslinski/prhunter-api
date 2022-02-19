@@ -47,3 +47,5 @@ data class Bounty(
     var blockchainAddress: String? = null
 )
 
+fun Bounty.fullName(): String = "$repoOwner/$repoName"
+

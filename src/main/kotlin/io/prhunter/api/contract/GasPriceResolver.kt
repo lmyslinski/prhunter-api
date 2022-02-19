@@ -19,10 +19,10 @@ class GasPriceResolver(
 ) {
     // 100 gwei
     private val bigWeiAmount = BigDecimal.valueOf(100L).toWei()
-    // 21k for mainNet
-    private val mainNetGasLimit = BigInteger.valueOf(21000)
-    // 4.7k for ropsten
-    private val ropstenGasLimit = BigInteger.valueOf(4700)
+    // 21m for mainNet
+    private val mainNetGasLimit = BigInteger.valueOf(21000000)
+    // 8m for ropsten
+    private val ropstenGasLimit = BigInteger.valueOf(8000000)
 
     private val log = KotlinLogging.logger {}
     private val cache: Cache<CryptoCurrency, GasPriceInfo> = Caffeine.newBuilder()
@@ -30,38 +30,34 @@ class GasPriceResolver(
         .build()
 
 
-    fun getGasProviderForTx(): StaticGasProvider {
-        val gasPrice = getGasPrice()
-        val gasLimit = getGasLimit()
-        log.info { "Using gas price of $gasPrice and gas limit of $gasLimit" }
-        return StaticGasProvider(gasPrice.toBigInteger(), gasLimit)
-    }
-
-    fun getGasPrice(): BigDecimal {
+    fun getGasPrice(): BigInteger {
         return if(getNetwork() == EthNetwork.MAINNET){
-            getMainNetGasPrice()
+            getMainNetGasPrice().toBigInteger()
         }else{
-            bigWeiAmount
+            log.info { "Using gas price of ${bigWeiAmount.toGwei()} gwei" }
+            bigWeiAmount.toBigInteger()
         }
     }
 
-    fun getGasLimit(): BigInteger{
-        return if(getNetwork() == EthNetwork.MAINNET){
+    fun getGasLimit(): BigInteger {
+        val gasLimit = if(getNetwork() == EthNetwork.MAINNET){
             mainNetGasLimit
         }else{
             ropstenGasLimit
         }
+        log.info { "Using gas limit of $gasLimit" }
+        return gasLimit
     }
 
     private fun getMainNetGasPrice(): BigDecimal {
         val priceInfo = getFromCacheOrFetch()
         return if(priceInfo.safeLowWait >= 30.0){
             val price = convertToWeiFromPriceInfo(priceInfo.average)
-            log.info { "Using average price of $${price}. Est wait time: ${priceInfo.avgWait}m" }
+            log.info { "Using average price of ${price.toGwei()} gwei. Est wait time: ${priceInfo.avgWait}m" }
             price
         }else {
             val price = convertToWeiFromPriceInfo(priceInfo.safeLow)
-            log.info { "Using safeLow price of $${price}. Est wait time: ${priceInfo.safeLowWait}m" }
+            log.info { "Using safeLow price of ${price.toGwei()} gwei. Est wait time: ${priceInfo.safeLowWait}m" }
             price
         }
     }
@@ -75,12 +71,11 @@ class GasPriceResolver(
     }
 
     private fun getNetwork(): EthNetwork {
-        return EthNetwork.MAINNET
-//        if(alchemyUrl.contains("ropsten")){
-//            return EthNetwork.ROPSTEN
-//        }else{
-//            return EthNetwork.MAINNET
-//        }
+        return if(alchemyUrl.contains("ropsten")){
+            EthNetwork.ROPSTEN
+        }else{
+            EthNetwork.MAINNET
+        }
     }
 
     private fun convertToWeiFromPriceInfo(longPrice: Long): BigDecimal {
@@ -90,5 +85,10 @@ class GasPriceResolver(
     // converts gwei to wei
     private final fun BigDecimal.toWei(): BigDecimal{
         return this.times(BigDecimal.valueOf(1000000000))
+    }
+
+    // converts wei to gwei
+    private final fun BigDecimal.toGwei(): BigDecimal{
+        return this.divide(BigDecimal.valueOf(1000000000))
     }
 }

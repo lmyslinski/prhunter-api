@@ -1,20 +1,14 @@
 package io.prhunter.api.github
 
 import io.prhunter.api.auth.FirebaseUser
-import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.common.errors.GithubAuthMissing
-import io.prhunter.api.user.UserAccountService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
-import io.prhunter.api.github.client.RepositoryList
-import io.prhunter.api.installation.Installation
 import io.prhunter.api.installation.InstallationService
-import io.prhunter.api.user.UserAccount
-//import io.prhunter.api.user.GithubUser
+import io.prhunter.api.user.UserAccountService
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service

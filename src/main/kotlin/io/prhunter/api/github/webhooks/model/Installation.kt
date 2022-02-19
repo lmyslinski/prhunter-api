@@ -13,5 +13,6 @@ data class InstallationDetails(
 
 data class AccountDetails(
     val id: Long,
-    val type: String
+    val type: String,
+    val htmlUrl: String
 )

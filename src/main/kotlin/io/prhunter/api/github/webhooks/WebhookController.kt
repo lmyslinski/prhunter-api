@@ -1,5 +1,6 @@
 package io.prhunter.api.github.webhooks
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.github.GithubSecrets
@@ -40,18 +41,21 @@ class WebhookController(
         if (eventTree.get("pull_request") != null) {
             val pull_request = eventTree.get("pull_request")
             val action = eventTree.get("action")
-            val issueUrl = pull_request.get("issue_url")
             val merged = pull_request.get("merged")
-            if (action.textValue() == "closed" && issueUrl != null && merged.asBoolean()) {
+            if (action.textValue() == "closed" && merged.asBoolean()) {
                 val webhook = objectMapper.readValue<PullRequestWebhook>(body)
                 // what if a PR closes multiple issues?
-                pullRequestHandler.handlePullRequestMerged(webhook)
+                pullRequestHandler.handleMerged(webhook)
+                handled = true
+            }else if (action.textValue() == "opened" || action.textValue() == "reopened"){
+                val webhook = objectMapper.readValue<PullRequestWebhook>(body)
+                pullRequestHandler.handleOpened(webhook)
                 handled = true
             }
         }
 
         // make sure that only the minimal set of data is present on the installation request
-        if (eventTree.count() == 4) {
+        if (isInstallationEvent(eventTree)) {
             val action = eventTree.get("action")
             val repos = eventTree.get("repositories")
             val installation = eventTree.get("installation")
@@ -80,6 +84,11 @@ class WebhookController(
 
     private fun validateWebhook() {
         // TODO use webhook secret to check that the webhook comes from Github
+    }
+
+    private fun isInstallationEvent(eventTree: JsonNode): Boolean {
+        val stupidGithubApiWorkaround = (eventTree.count() == 5) && eventTree.get("requester").isNull
+        return eventTree.count() == 4 || stupidGithubApiWorkaround
     }
 }
 
