@@ -1,5 +1,6 @@
 package io.prhunter.api.github.webhooks
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.prhunter.api.github.GithubSecrets
@@ -56,7 +57,7 @@ class WebhookController(
         }
 
         // make sure that only the minimal set of data is present on the installation request
-        if (eventTree.count() == 4) {
+        if (isInstallationEvent(eventTree)) {
             val action = eventTree.get("action")
             val repos = eventTree.get("repositories")
             val installation = eventTree.get("installation")
@@ -85,6 +86,11 @@ class WebhookController(
 
     private fun validateWebhook() {
         // TODO use webhook secret to check that the webhook comes from Github
+    }
+
+    private fun isInstallationEvent(eventTree: JsonNode): Boolean {
+        val stupidGithubApiWorkaround = (eventTree.count() == 5) && eventTree.get("requester").isNull
+        return eventTree.count() == 4 || stupidGithubApiWorkaround
     }
 }
 
