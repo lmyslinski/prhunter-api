@@ -46,20 +46,6 @@ class GithubRestClient(
         }
     }
 
-    suspend fun getIssueAtUrl(issueUrl: String, installationToken: String): Issue {
-        val response = httpClient.get<HttpResponse>(issueUrl) {
-            headers {
-                header("accept", "application/vnd.github.v3+json")
-                header("Authorization", "Bearer $installationToken")
-            }
-        }
-        if (response.status.value == 200) {
-            return objectMapper.readValue(response.readText())
-        } else {
-            throw RuntimeException("Could not get issues")
-        }
-    }
-
     suspend fun listIssues(owner: String, repo: String, userToken: String): List<Issue> {
         val response = httpClient.get<HttpResponse>("$githubBaseUrl/repos/$owner/$repo/issues") {
             headers {
@@ -131,6 +117,21 @@ class GithubRestClient(
         }
         if(response.status.value != 201){
             throw RuntimeException("Posting a comment on $repoOwner/$repo/issues/${issueNumber} has failed")
+        }
+    }
+
+    // every pull request is an issue, thanks github, that makes my life so much more miserable
+    suspend fun postPullRequestComment(repoOwner: String, repo: String, pullRequestNumber: Long, comment: String, authToken: String) {
+        val response = httpClient.post<HttpResponse>("$githubBaseUrl/repos/$repoOwner/$repo/issues/${pullRequestNumber}/comments") {
+            headers {
+                header("accept", "application/vnd.github.v3+json")
+                header("Authorization", "Bearer $authToken")
+            }
+            contentType(ContentType.Application.Json)
+            body = mapOf("body" to comment)
+        }
+        if(response.status.value != 201){
+            throw RuntimeException("Posting a comment on $repoOwner/$repo/issues/${pullRequestNumber} has failed")
         }
     }
 }
