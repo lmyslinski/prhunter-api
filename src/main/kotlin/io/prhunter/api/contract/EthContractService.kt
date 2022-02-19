@@ -11,16 +11,16 @@ import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.exceptions.ContractCallException
-import org.web3j.tx.gas.DefaultGasProvider
 
 @Service
 @Profile("!test")
 class EthContractService(
     private val bountyRepository: BountyRepository,
     private val githubAppService: GithubAppService,
+    private val lazyGasProvider: LazyGasProvider,
     @Value("\${crypto.alchemyUrl}") val alchemyUrl: String,
     @Value("\${crypto.ethPkey}") val ethPrivateKey: String,
-    @Value("\${crypto.bountyFactoryEthAddress}") val bountyFactoryEthAddress: String,
+    @Value("\${crypto.bountyFactoryEthAddress}") val bountyFactoryEthAddress: String
 ) : ContractService {
 
     private val log = KotlinLogging.logger {}
@@ -30,7 +30,7 @@ class EthContractService(
         bountyFactoryEthAddress,
         web3j,
         credentials,
-        DefaultGasProvider()
+        lazyGasProvider
     )
 
     @Suppress("UNCHECKED_CAST")
@@ -62,11 +62,11 @@ class EthContractService(
     override fun payoutBounty(targetAddress: String, bounty: io.prhunter.api.bounty.Bounty) {
         try {
             val address = bountyFactory.allBounties(bounty.id.toString()).send()
-            val bountyContract = Bounty.load(address, web3j, credentials, DefaultGasProvider())
+            val bountyContract = Bounty.load(address, web3j, credentials, lazyGasProvider)
             bountyContract.payoutBounty(targetAddress).send()
             // TODO verify the TX was successful
             // maybe add the TX in an event so that we can monitor what's going on
-            log.info { "Sent a payout transaction from bounty $address to $targetAddress" }
+            log.info { "Successfully submitted a payout bounty tx from bounty $address to $targetAddress" }
         } catch (ex: Throwable) {
             log.error(ex) { "Fatal error, could not load bounty in order to payout bounty" }
         }
@@ -74,27 +74,10 @@ class EthContractService(
 
     private fun getContractBountyId(bountyAddressOpt: String): String? {
         return try {
-            Bounty.load(bountyAddressOpt, web3j, credentials, DefaultGasProvider()).bountyId().send()
+            Bounty.load(bountyAddressOpt, web3j, credentials, lazyGasProvider).bountyId().send()
         } catch (ex: ContractCallException) {
             log.warn { "Could not load contract at $bountyAddressOpt" }
             null
-        }
-    }
-
-    private fun getGasPrice(){
-        val network = getNetwork()
-        if(network == EthNetwork.MAINNET){
-            // get low safe gas price from https://ethgasstation.info/api/ethgasAPI.json?
-        }else{
-            // on ropsten just use high enough values
-        }
-    }
-
-    private fun getNetwork(): EthNetwork {
-        if(alchemyUrl.contains("ropsten")){
-            return EthNetwork.ROPSTEN
-        }else{
-            return EthNetwork.MAINNET
         }
     }
 }
