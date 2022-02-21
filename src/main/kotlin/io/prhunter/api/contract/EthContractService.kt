@@ -11,6 +11,7 @@ import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.exceptions.ContractCallException
+import java.time.Instant
 
 @Service
 @Profile("!test")
@@ -18,9 +19,9 @@ class EthContractService(
     private val bountyRepository: BountyRepository,
     private val githubAppService: GithubAppService,
     private val lazyGasProvider: LazyGasProvider,
-    @Value("\${crypto.alchemyUrl}") val alchemyUrl: String,
-    @Value("\${crypto.ethPkey}") val ethPrivateKey: String,
-    @Value("\${crypto.bountyFactoryEthAddress}") val bountyFactoryEthAddress: String
+    @Value("\${crypto.alchemyUrl}") private val alchemyUrl: String,
+    @Value("\${crypto.ethPkey}") private val ethPrivateKey: String,
+    @Value("\${crypto.bountyFactoryEthAddress}") private val bountyFactoryEthAddress: String
 ) : ContractService {
 
     private val log = KotlinLogging.logger {}
@@ -49,12 +50,12 @@ class EthContractService(
 
     private fun activateBounty(bounty: io.prhunter.api.bounty.Bounty, bountyAddress: String) {
         log.info { "Bounty ${bounty.id} deployed successfully, activating" }
-        try{
+        try {
             bounty.bountyStatus = BountyStatus.ACTIVE
             bounty.blockchainAddress = bountyAddress
             bountyRepository.save(bounty)
             githubAppService.newBountyComment(bounty)
-        }catch (ex: Throwable){
+        } catch (ex: Throwable) {
             log.error(ex) { "An error was occurred while activating bounty ${bounty.id}" }
         }
     }
@@ -69,6 +70,19 @@ class EthContractService(
             log.info { "Successfully submitted a payout bounty tx from bounty $address to $targetAddress" }
         } catch (ex: Throwable) {
             log.error(ex) { "Fatal error, could not load bounty in order to payout bounty" }
+        }
+    }
+
+    override fun cleanupExpiredBounties() {
+            bountyRepository.findAllByBountyStatusAndExpiresAtLessThan(BountyStatus.ACTIVE, Instant.now()).forEach { bounty ->
+            try {
+                val bountyContract = Bounty.load(bounty.blockchainAddress, web3j, credentials, lazyGasProvider)
+                bountyContract.claimTimeout().send()
+                bounty.bountyStatus = BountyStatus.EXPIRED
+                bountyRepository.save(bounty)
+            } catch (ex: Throwable) {
+                log.error(ex) { "Fatal error, could not claim timeout on bounty ${bounty.id}, bounty has expired at ${bounty.expiresAt}" }
+            }
         }
     }
 

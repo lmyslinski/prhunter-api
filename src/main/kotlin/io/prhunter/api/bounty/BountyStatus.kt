@@ -7,5 +7,4 @@ enum class BountyStatus {
     EXPIRED,
     FAILED,
     CANCELLED,
-
 }

@@ -205,4 +205,16 @@ class BountyService(
         return bountyRepository.findAllByBountyStatus(status)
     }
 
+    fun failNonDeployedBounties() {
+        // bounties that were published but were not activated within 1h should be mark as failed
+        val oneHour = 3600L
+        val pendingBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)
+        val failedBounties = pendingBounties.filter { it.createdAt.isBefore(Instant.now().minusSeconds(oneHour)) }
+        failedBounties.forEach {
+            it.bountyStatus = BountyStatus.FAILED
+            bountyRepository.save(it)
+            log.info { "Bounty ${it.id} failed to activate within 1h" }
+        }
+    }
+
 }

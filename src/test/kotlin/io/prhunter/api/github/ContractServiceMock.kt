@@ -17,4 +17,8 @@ class MockEthContractService(
     override fun payoutBounty(targetAddress: String, bounty: Bounty) {
         throw NotSupportedException()
     }
+
+    override fun cleanupExpiredBounties() {
+        throw NotSupportedException()
+    }
 }
