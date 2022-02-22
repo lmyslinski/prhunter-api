@@ -42,7 +42,7 @@ class TaskConfiguration {
     @Bean
     fun failNonDeployedBounties(bountyService: BountyService): RecurringTask<Void>? {
         return Tasks
-            .recurring("update-pending-contracts", FixedDelay.ofMinutes(10))
+            .recurring("fail-non-deployed-bounties", FixedDelay.ofSeconds(60))
             .execute { _, _ ->
                 log.debug { "Marking non deployed bounties as failed" }
                 bountyService.failNonDeployedBounties()
@@ -53,7 +53,7 @@ class TaskConfiguration {
     @Bean
     fun cleanupExpiredBounties(ethContractService: EthContractService): RecurringTask<Void>? {
         return Tasks
-            .recurring("update-pending-contracts", FixedDelay.ofMinutes(10))
+            .recurring("cleanup-expired-bounties", FixedDelay.ofSeconds(10))
             .execute { _, _ ->
                 log.debug { "Cleaning up expired bounties" }
                 ethContractService.cleanupExpiredBounties()

@@ -67,7 +67,7 @@ class BountyService(
             experience = createBountyRequest.experience,
             bountyType = createBountyRequest.bountyType,
             bountyStatus = BountyStatus.PENDING,
-            expiresAt = Instant.ofEpochMilli(createBountyRequest.expiresAt)
+            expiresAt = Instant.ofEpochSecond(createBountyRequest.expiresAt)
         )
         val newBounty = toView(bountyRepository.save(bounty))
         log.info { "Created a new pending bounty: ${newBounty.id}" }
