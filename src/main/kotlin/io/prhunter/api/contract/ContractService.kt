@@ -6,4 +6,5 @@ interface ContractService{
 
     fun payoutBounty(targetAddress: String, bounty: io.prhunter.api.bounty.Bounty)
     fun cleanupExpiredBounties()
+    fun getBountyFactoryAddress(): String
 }

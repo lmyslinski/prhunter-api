@@ -3,6 +3,7 @@ package io.prhunter.api.bounty
 import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
+import io.prhunter.api.bounty.api.CreateBountyResponse
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.common.errors.BountyAlreadyExists
 import io.prhunter.api.common.errors.IssueAdminAccessRequired
@@ -33,19 +34,19 @@ class BountyService(
 ) {
 
     // In order to solve the problem with multiple submissions and account for the user cancelling the metamask tx we accept this payload multiple times
-    fun getOrCreateBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): BountyView {
+    fun getOrCreateBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): CreateBountyResponse {
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         val bountyOpt = bountyRepository.findByIssueIdAndFirebaseUserIdAndBountyStatus(issueData.id, user.id, BountyStatus.PENDING)
         return if(bountyOpt != null){
             log.info { "Bounty already exists, returning the existing entity" }
-            toView(bountyOpt)
+            CreateBountyResponse(bountyOpt.id!!, contractService.getBountyFactoryAddress())
         }else{
             validateNoBountyFoundForIssue(issueData.id)
             createBounty(createBountyRequest, issueData.id, user)
         }
     }
 
-    fun createBounty(createBountyRequest: CreateBountyRequest, issueId: Long, user: FirebaseUser): BountyView {
+    fun createBounty(createBountyRequest: CreateBountyRequest, issueId: Long, user: FirebaseUser): CreateBountyResponse {
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice)
@@ -71,7 +72,7 @@ class BountyService(
         )
         val newBounty = toView(bountyRepository.save(bounty))
         log.info { "Created a new pending bounty: ${newBounty.id}" }
-        return newBounty
+        return CreateBountyResponse(newBounty.id, contractService.getBountyFactoryAddress())
     }
 
     fun getBounty(id: UUID): Bounty {
