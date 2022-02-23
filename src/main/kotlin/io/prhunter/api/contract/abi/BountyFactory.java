@@ -1,4 +1,4 @@
-package io.prhunter.api.contract;
+package io.prhunter.api.contract.abi;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;

@@ -2,6 +2,9 @@ package io.prhunter.api.contract
 
 import io.prhunter.api.bounty.BountyRepository
 import io.prhunter.api.bounty.BountyStatus
+import io.prhunter.api.contract.abi.Bounty
+import io.prhunter.api.contract.abi.BountyFactory
+import io.prhunter.api.contract.gas.LazyGasProvider
 import io.prhunter.api.github.GithubAppService
 import mu.KotlinLogging
 import org.web3j.crypto.Credentials
@@ -11,12 +14,12 @@ import org.web3j.tx.exceptions.ContractCallException
 abstract class ContractService(
     private val bountyRepository: BountyRepository,
     private val githubAppService: GithubAppService,
-    private val lazyGasProvider: LazyGasProvider,
 ) {
 
     protected abstract val bountyFactory: BountyFactory
     protected abstract val web3j: Web3j
     protected abstract val credentials: Credentials
+    protected abstract val lazyGasProvider: LazyGasProvider
 
     protected val log = KotlinLogging.logger {}
 
