@@ -37,7 +37,7 @@ class IssueHandler(
     // to make sure that the PR webhook is handled first
     fun scheduleBountyClosure(issueId: Long){
         // Schedule the task for execution a certain time in the future and optionally provide custom data for the execution
-        scheduler.schedule(issueCloseTask.instance(issueId.toString(), CloseIssueData(issueId)), Instant.now().plusSeconds(30))
+        scheduler.schedule(issueCloseTask.instance(issueId.toString(), CloseIssueData(issueId)), Instant.now().plusSeconds(60))
     }
 
     fun closeTheIssueIfBountyNotCompleted(issueId: Long) {

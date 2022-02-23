@@ -3,6 +3,7 @@ package io.prhunter.api.bounty
 import io.prhunter.api.RequestUtil
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
+import io.prhunter.api.bounty.api.CreateBountyResponse
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -31,7 +32,7 @@ class BountyController(
     fun createBounty(
         @RequestBody createBountyRequest: CreateBountyRequest,
         principal: Principal
-    ): ResponseEntity<BountyView> {
+    ): ResponseEntity<CreateBountyResponse> {
         val firebaseUser = RequestUtil.getUserFromRequest(principal)
         val bountyView = bountyService.getOrCreateBounty(
             createBountyRequest,

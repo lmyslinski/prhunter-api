@@ -42,6 +42,19 @@ class GithubAppService(
         }
     }
 
+    fun expireBountyComment(bounty: Bounty) {
+        val installationBountyAccessToken = authTokenResolver.getAccessTokenForBounty(bounty)
+        runBlocking {
+            githubRestClient.postIssueComment(
+                bounty.repoOwner,
+                bounty.repoName,
+                bounty.issueNumber,
+                getExpireBountyCommentBody(bounty),
+                installationBountyAccessToken
+            )
+        }
+    }
+
     suspend fun listRepositories(installationId: Long): RepositoryList? {
         val authToken = githubAuthService.getInstallationAuthToken(installationId)
         return githubRestClient.listRepositories(authToken)
@@ -53,9 +66,10 @@ class GithubAppService(
                 "The author offers ${bounty.bountyValue} ${bounty.bountyCurrency} (~\$${bounty.bountyValueUsd}) for solving it. " +
                 "Submit a pull request to claim your reward. More details [here]($frontendUrl/docs#completing-bounties)."
 
+    private fun getExpireBountyCommentBody(bounty: Bounty): String = "The [PRHunter bounty]($frontendUrl/bounties/${bounty.id}) has expired and is no longer active. The bounty value was returned to the bounty owner."
+
     private fun getNewPullRequestCommentBody(bounty: Bounty, profileUrl: String): String {
         val name = profileUrl.split('/').last()
         return "This PR is a valid candidate for this [PRHunter bounty]($frontendUrl/bounties/${bounty.id}). Once it's merged by the repo owner, the reward of ${bounty.bountyValue} ${bounty.bountyCurrency} (~\$${bounty.bountyValueUsd}) will go to [@$name]($profileUrl)!"
     }
-
 }
