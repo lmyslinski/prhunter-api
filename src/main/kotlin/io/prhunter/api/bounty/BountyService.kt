@@ -205,9 +205,4 @@ class BountyService(
     fun getByStatus(status: BountyStatus): List<Bounty> {
         return bountyRepository.findAllByBountyStatus(status)
     }
-
-    fun failNonDeployedBounties() {
-
-    }
-
 }
