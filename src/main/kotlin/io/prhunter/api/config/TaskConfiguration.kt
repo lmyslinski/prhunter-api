@@ -4,6 +4,7 @@ import com.github.kagkarlsson.scheduler.task.helper.RecurringTask
 import com.github.kagkarlsson.scheduler.task.helper.Tasks
 import com.github.kagkarlsson.scheduler.task.schedule.FixedDelay
 import io.prhunter.api.bounty.BountyPriceService
+import io.prhunter.api.contract.BscContractService
 import io.prhunter.api.contract.EthContractService
 import mu.KotlinLogging
 import org.springframework.context.annotation.Bean
@@ -28,13 +29,24 @@ class TaskConfiguration {
     }
 
     @Bean
-    fun updatePendingContractsTask(contractService: EthContractService) : RecurringTask<Void>? {
+    fun updatePendingContractsEthTask(ethContractService: EthContractService) : RecurringTask<Void>? {
         return Tasks
-            .recurring("update-pending-contracts", FixedDelay.ofSeconds(30))
+            .recurring("update-pending-contracts-eth", FixedDelay.ofSeconds(35))
             .execute { _, _ ->
-                log.debug { "Running pending contracts task" }
-                contractService.checkPendingContracts()
-                log.debug { "Pending contracts task completed" }
+                log.debug { "Running pending ETH contracts task" }
+                ethContractService.checkPendingContracts()
+                log.debug { "Pending contracts ETH task completed" }
+            }
+    }
+
+    @Bean
+    fun updatePendingContractsBscTask(bscContractService: BscContractService) : RecurringTask<Void>? {
+        return Tasks
+            .recurring("update-pending-contracts-bsc", FixedDelay.ofSeconds(30))
+            .execute { _, _ ->
+                log.debug { "Running pending BSC contracts task" }
+                bscContractService.checkPendingContracts()
+                log.debug { "Pending contracts BSC task completed" }
             }
     }
 

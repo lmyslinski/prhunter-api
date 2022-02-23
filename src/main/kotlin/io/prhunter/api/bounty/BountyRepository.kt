@@ -11,4 +11,5 @@ interface BountyRepository : JpaRepository<Bounty, UUID>{
     fun findByIssueIdAndFirebaseUserIdAndBountyStatus(issueId: Long, firebaseUserId: String, bountyStatus: BountyStatus): Bounty?
     fun findAllByBountyStatus(status: BountyStatus): List<Bounty>
     fun findByCompletedBy(firebaseUserId: String): List<Bounty>
+    fun findByIssueIdAndBountyStatus(issueId: Long, active: BountyStatus): Bounty?
 }
