@@ -12,6 +12,7 @@ import io.prhunter.api.auth.FirebaseService
 import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
+import io.prhunter.api.bounty.api.CreateBountyResponse
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.client.GHRepoData
@@ -125,10 +126,8 @@ class BountyControllerTest(
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn().response.contentAsString
 
-        val actual = objectMapper.readValue<BountyView>(response)
-
-        Assertions.assertNotNull(actual.id)
-        Assertions.assertEquals(createBountyRequest.title, actual.title)
+        val actual = objectMapper.readValue<CreateBountyResponse>(response)
+        Assertions.assertNotNull(actual.newBountyId)
     }
 
     @Test
@@ -170,10 +169,10 @@ class BountyControllerTest(
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn().response.contentAsString
 
-        val actual = objectMapper.readValue<BountyView>(duplicateResponse)
+        val actual = objectMapper.readValue<CreateBountyResponse>(duplicateResponse)
 
-        Assertions.assertNotNull(actual.id)
-        Assertions.assertEquals(createBountyRequest.title, actual.title)
+        Assertions.assertNotNull(actual.newBountyId)
+        Assertions.assertEquals("0x0",actual.bountyFactoryAddress)
         Assertions.assertEquals(bountyRepository.findAll().size, BOUNTIES.size+1)
     }
 

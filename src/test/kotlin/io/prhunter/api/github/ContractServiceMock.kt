@@ -10,11 +10,15 @@ import javax.transaction.NotSupportedException
 @Profile("test")
 class MockEthContractService(
 ) : ContractService {
-    override fun checkPendingContracts() {
+    override fun periodicBountyUpdate() {
         throw NotSupportedException()
     }
 
     override fun payoutBounty(targetAddress: String, bounty: Bounty) {
         throw NotSupportedException()
+    }
+
+    override fun getBountyFactoryAddress(): String {
+        return "0x0"
     }
 }

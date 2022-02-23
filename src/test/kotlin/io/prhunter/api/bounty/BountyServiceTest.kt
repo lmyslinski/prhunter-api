@@ -1,75 +1,48 @@
 package io.prhunter.api.bounty
 
-import io.mockk.mockk
-import io.prhunter.api.crypto.CoinGeckoApiService
-import io.prhunter.api.github.GithubUserService
+import io.prhunter.api.TestDataProvider
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import java.time.Instant
 
-class BountyServiceTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Disabled("Fix post launch")
+class BountyServiceTest(
+    @Autowired private val bountyRepository: BountyRepository,
+    @Autowired private val bountyService: BountyService
+) {
 
-    private val accessToken = "123"
-    private val githubUserService = mockk<GithubUserService>()
-    private val bountyRepository = mockk<BountyRepository>()
-    private val coinGeckoApiService = mockk<CoinGeckoApiService>()
-//    private val bountyService = BountyService(bountyRepository, githubService, coinGeckoApiService)
+    @BeforeEach
+    fun cleanup(){
+        bountyRepository.deleteAll()
+    }
 
-//    @Test
-//    fun `should throw if user does not have admin access to the repository`() {
-//        val createBountyRequest = mockk<CreateBountyRequest>()
-//        every { createBountyRequest.repoId }.returns(1L)
-//        every { githubService.listAuthenticatedUserRepos(accessToken) }.returns(
-//            listOf(
-//                GHRepoPermissionData(
-//                    1L,
-//                    "",
-//                    "",
-//                    false,
-//                    Permissions(false, false, false, false, false)
-//                )
-//            )
-//        )
-//
-//        assertThrows<RepoAdminAccessRequired> { bountyService.createBounty(createBountyRequest, accessToken) }
-//    }
-//
-//    @Test
-//    fun `should throw if user does not have repo access at all`() {
-//        val createBountyRequest = mockk<CreateBountyRequest>()
-//        every { createBountyRequest.repoId }.returns(1L)
-//        every { githubService.listAuthenticatedUserRepos(accessToken) }.returns(
-//            listOf(
-//                GHRepoPermissionData(
-//                    2L,
-//                    "",
-//                    "",
-//                    false,
-//                    Permissions(true, false, false, false, false)
-//                )
-//            )
-//        )
-//
-//        assertThrows<RepoAdminAccessRequired> { bountyService.createBounty(createBountyRequest, accessToken) }
-//    }
-//
-//    @Test
-//    fun `should create bounty if user has admin access to the repository`() {
-//        val createBountyRequest =
-//            CreateBountyRequest(1L, 2L, "title", "body", listOf("scala"), listOf("new", "first"),
-//                Experience.Beginner,
-//                BountyType.Feature,BigDecimal.valueOf(20L), "ETH")
-//        every { githubService.listAuthenticatedUserRepos(accessToken) }.returns(
-//            listOf(
-//                GHRepoPermissionData(
-//                    1L,
-//                    "",
-//                    "",
-//                    false,
-//                    Permissions(true, false, false, false, false)
-//                )
-//            )
-//        )
-//        val bounty = mockk<Bounty>()
-//        every { bountyRepository.save(any()) }.returns(bounty)
-//        val expected = bountyService.createBounty(createBountyRequest, accessToken)
-//        assertEquals(bounty, expected)
-//    }
+    @Test
+    fun `Should mark bounties as failed if not deployed with 1h`(){
+        val sixtyOneMinutesAgo = Instant.now().minusSeconds(60*61L)
+        val testBounty = TestDataProvider.BOUNTIES.first().copy(createdAt = sixtyOneMinutesAgo)
+        bountyRepository.save(testBounty)
+//        bountyService.failNonDeployedBounties()
+        val afterUpdate = bountyRepository.findByIssueId(testBounty.issueId)
+        assertEquals(BountyStatus.FAILED, afterUpdate?.bountyStatus)
+    }
+
+    @Test
+    fun `should not fail bounties if just deployed`(){
+        val fiftyNineMinutesAgo = Instant.now().minusSeconds(59)
+        val testBounty = TestDataProvider.BOUNTIES.first().copy(createdAt = fiftyNineMinutesAgo)
+        bountyRepository.save(testBounty)
+//        bountyService.failNonDeployedBounties()
+        val afterUpdate = bountyRepository.findByIssueId(testBounty.issueId)
+        assertEquals(BountyStatus.PENDING, afterUpdate?.bountyStatus)
+    }
+
 }
