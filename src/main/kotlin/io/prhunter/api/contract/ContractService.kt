@@ -106,4 +106,6 @@ abstract class ContractService(
             log.error(ex) { "An error was occurred while activating bounty ${bounty.id}" }
         }
     }
+
+    fun getBountyFactoryAddress(): String = bountyFactory.contractAddress
 }

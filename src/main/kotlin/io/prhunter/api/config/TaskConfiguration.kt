@@ -31,7 +31,7 @@ class TaskConfiguration {
     @Bean
     fun updatePendingContractsEthTask(ethContractService: EthContractService) : RecurringTask<Void>? {
         return Tasks
-            .recurring("update-pending-contracts-eth", FixedDelay.ofSeconds(35))
+            .recurring("update-contracts-eth", FixedDelay.ofSeconds(35))
             .execute { _, _ ->
                 log.debug { "Running pending ETH contracts task" }
                 ethContractService.periodicBountyUpdate()
@@ -42,7 +42,7 @@ class TaskConfiguration {
     @Bean
     fun updatePendingContractsBscTask(bscContractService: BscContractService) : RecurringTask<Void>? {
         return Tasks
-            .recurring("update-pending-contracts-bsc", FixedDelay.ofSeconds(30))
+            .recurring("update-contracts-bsc", FixedDelay.ofSeconds(30))
             .execute { _, _ ->
                 log.debug { "Running pending BSC contracts task" }
                 bscContractService.periodicBountyUpdate()

@@ -38,6 +38,7 @@ class BountyService(
     fun getOrCreateBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): CreateBountyResponse {
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         val bountyOpt = bountyRepository.findByIssueIdAndFirebaseUserIdAndBountyStatus(issueData.id, user.id, BountyStatus.PENDING)
+        val contractService = contractServiceResolver.getContractService(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         return if(bountyOpt != null){
             log.info { "Bounty already exists, returning the existing entity" }
             CreateBountyResponse(bountyOpt.id!!, contractService.getBountyFactoryAddress())
@@ -51,6 +52,7 @@ class BountyService(
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice)
+        val contractService = contractServiceResolver.getContractService(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bounty = Bounty(
             repoId = repoData.id,
             repoOwner = createBountyRequest.repoOwner,
