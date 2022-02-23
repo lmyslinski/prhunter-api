@@ -47,8 +47,6 @@ public class Bounty extends Contract {
 
     public static final String FUNC_GETBOUNTYVALUE = "getBountyValue";
 
-    public static final String FUNC_GETEXPIRYDATE = "getExpiryDate";
-
     public static final String FUNC_PAYOUTBOUNTY = "payoutBounty";
 
     public static final Event BOUNTYCOMPLETED_EVENT = new Event("BountyCompleted", 
@@ -200,13 +198,6 @@ public class Bounty extends Contract {
 
     public RemoteFunctionCall<BigInteger> getBountyValue() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETBOUNTYVALUE, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
-    }
-
-    public RemoteFunctionCall<BigInteger> getExpiryDate() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETEXPIRYDATE, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
