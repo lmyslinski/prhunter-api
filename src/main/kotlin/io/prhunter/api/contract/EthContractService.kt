@@ -27,6 +27,7 @@ class EthContractService(
     private val log = KotlinLogging.logger {}
     private val web3j = Web3j.build(HttpService(alchemyUrl))
     private val credentials = Credentials.create(ethPrivateKey)
+    private val oneHour = 3600L
 
     private val bountyFactory: BountyFactory = BountyFactory.load(
         bountyFactoryEthAddress,
@@ -36,28 +37,62 @@ class EthContractService(
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun checkPendingContracts() {
+    override fun periodicBountyUpdate() {
         val pendingBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)
-        pendingBounties.forEach { bounty ->
-            val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
-            if (bountyAddressOpt != null && bountyAddressOpt != "0x0000000000000000000000000000000000000000") {
-                val contractId = getContractBountyId(bountyAddressOpt)
-                if (contractId == bounty.id.toString()) {
-                    activateBounty(bounty, bountyAddressOpt)
-                }
+        pendingBounties.forEach { activateIfDeployed(it) }
+        val failedBounties = pendingBounties.filter { it.createdAt.isBefore(Instant.now().minusSeconds(oneHour)) }
+        failedBounties.forEach { failIfNotDeployedForTooLong(it) }
+        val expiredBounties =
+            bountyRepository.findAllByBountyStatusAndExpiresAtLessThan(BountyStatus.ACTIVE, Instant.now())
+        expiredBounties.forEach { cleanupExpiredBounty(it) }
+    }
+
+    private fun cleanupExpiredBounty(bounty: io.prhunter.api.bounty.Bounty) {
+        log.info { "Cleaning up expired bounty ${bounty.id}" }
+        try {
+            val bountyContract = Bounty.load(bounty.blockchainAddress, web3j, credentials, lazyGasProvider)
+            val timestamp = bountyContract.expiryTimestamp().send()
+            log.debug { "Contract timestamp: $timestamp" }
+            bountyContract.claimTimeout().send()
+            bounty.bountyStatus = BountyStatus.EXPIRED
+            bountyRepository.save(bounty)
+            githubAppService.expireBountyComment(bounty)
+            log.info { "Cleaned up expired bounty ${bounty.id}" }
+        } catch (ex: Throwable) {
+            log.error(ex) { "An error was occurred while updating bounty ${bounty.id}" }
+        }
+    }
+
+    private fun activateIfDeployed(bounty: io.prhunter.api.bounty.Bounty) {
+        val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
+        if (bountyAddressOpt != null && bountyAddressOpt != "0x0000000000000000000000000000000000000000") {
+            val contractId = getContractBountyId(bountyAddressOpt)
+            if (contractId == bounty.id.toString()) {
+                activateBounty(bounty, bountyAddressOpt)
             }
         }
     }
 
+    private fun failIfNotDeployedForTooLong(bounty: io.prhunter.api.bounty.Bounty) {
+        log.info { "Bounty ${bounty.id} failed to deploy within 1h, marking as FAILED" }
+        try {
+            bounty.bountyStatus = BountyStatus.FAILED
+            bountyRepository.save(bounty)
+        } catch (ex: Throwable) {
+            log.error(ex) { "An error was occurred while updating bounty ${bounty.id}" }
+        }
+        log.info { "Bounty ${bounty.id} failed to deploy within 1h, marking as failed" }
+    }
+
     private fun activateBounty(bounty: io.prhunter.api.bounty.Bounty, bountyAddress: String) {
-        log.info { "Bounty ${bounty.id} deployed successfully, activating" }
+        log.info { "Bounty ${bounty.id} deployed successfully, marking as ACTIVE" }
         try {
             bounty.bountyStatus = BountyStatus.ACTIVE
             bounty.blockchainAddress = bountyAddress
             bountyRepository.save(bounty)
             githubAppService.newBountyComment(bounty)
         } catch (ex: Throwable) {
-            log.error(ex) { "An error was occurred while activating bounty ${bounty.id}" }
+            log.error(ex) { "An error was occurred while updating bounty ${bounty.id}" }
         }
     }
 
@@ -74,26 +109,7 @@ class EthContractService(
         }
     }
 
-    override fun cleanupExpiredBounties() {
-            bountyRepository.findAllByBountyStatusAndExpiresAtLessThan(BountyStatus.ACTIVE, Instant.now()).forEach { bounty ->
-            try {
-                claimTimeoutOnBounty(bounty)
-            } catch (ex: Throwable) {
-                log.error(ex) { "Fatal error, could not claim timeout on bounty ${bounty.id}, bounty has expired at ${bounty.expiresAt}" }
-            }
-        }
-    }
-
-    private fun claimTimeoutOnBounty(bounty: io.prhunter.api.bounty.Bounty){
-        log.info { "Cleaning up expired bounty ${bounty.id}" }
-        val bountyContract = Bounty.load(bounty.blockchainAddress, web3j, credentials, lazyGasProvider)
-        val timestamp = bountyContract.expiryTimestamp().send()
-        log.debug { "Contract timestamp: $timestamp" }
-        bountyContract.claimTimeout().send()
-        bounty.bountyStatus = BountyStatus.EXPIRED
-        bountyRepository.save(bounty)
-        log.info { "Cleaned up expired bounty ${bounty.id}" }
-    }
+    override fun getBountyFactoryAddress(): String = bountyFactoryEthAddress
 
     private fun getContractBountyId(bountyAddressOpt: String): String? {
         return try {

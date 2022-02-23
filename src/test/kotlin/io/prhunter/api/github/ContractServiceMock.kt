@@ -10,7 +10,7 @@ import javax.transaction.NotSupportedException
 @Profile("test")
 class MockEthContractService(
 ) : ContractService {
-    override fun checkPendingContracts() {
+    override fun periodicBountyUpdate() {
         throw NotSupportedException()
     }
 

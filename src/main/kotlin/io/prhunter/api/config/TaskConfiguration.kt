@@ -29,36 +29,16 @@ class TaskConfiguration {
     }
 
     @Bean
-    fun updatePendingContractsTask(contractService: EthContractService): RecurringTask<Void>? {
+    fun updatePendingContractsTask(
+        ethContractService: EthContractService,
+        bountyService: BountyService
+    ): RecurringTask<Void>? {
         return Tasks
-            .recurring("update-pending-contracts", FixedDelay.ofSeconds(30))
+            .recurring("update-contracts-task", FixedDelay.ofSeconds(30))
             .execute { _, _ ->
-                log.debug { "Running pending contracts task" }
-                contractService.checkPendingContracts()
-                log.debug { "Pending contracts task completed" }
+                log.debug { "Running update contracts task" }
+                ethContractService.periodicBountyUpdate()
+                log.debug { "Update contracts task completed" }
             }
     }
-
-    @Bean
-    fun failNonDeployedBounties(bountyService: BountyService): RecurringTask<Void>? {
-        return Tasks
-            .recurring("fail-non-deployed-bounties", FixedDelay.ofSeconds(60))
-            .execute { _, _ ->
-                log.debug { "Marking non deployed bounties as failed" }
-                bountyService.failNonDeployedBounties()
-                log.debug { "Marking non deployed bounties as failed task completed" }
-            }
-    }
-
-    @Bean
-    fun cleanupExpiredBounties(ethContractService: EthContractService): RecurringTask<Void>? {
-        return Tasks
-            .recurring("cleanup-expired-bounties", FixedDelay.ofSeconds(10))
-            .execute { _, _ ->
-                log.debug { "Cleaning up expired bounties" }
-                ethContractService.cleanupExpiredBounties()
-                log.debug { "Cleaning up expired bounties completed" }
-            }
-    }
-
 }
