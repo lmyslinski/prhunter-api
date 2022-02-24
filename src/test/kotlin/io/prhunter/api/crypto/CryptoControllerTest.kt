@@ -1,11 +1,9 @@
-package io.prhunter.api
+package io.prhunter.api.crypto
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import io.prhunter.api.crypto.CoinGeckoApiService
-import io.prhunter.api.crypto.CryptoCurrency
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,14 +22,13 @@ import java.math.BigDecimal
 class CryptoControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val objectMapper: ObjectMapper,
-)
-{
+) {
 
     @MockkBean
     private val coinGeckoApiService: CoinGeckoApiService? = null
 
     @Test
-    fun `should return current crypto pricing`(){
+    fun `should return current crypto pricing`() {
 
         every { coinGeckoApiService!!.getCurrentPrice(CryptoCurrency.ETH) }.returns(BigDecimal.valueOf(4312.22))
         every { coinGeckoApiService!!.getCurrentPrice(CryptoCurrency.BNB) }.returns(BigDecimal.valueOf(3.232))
@@ -43,16 +40,12 @@ class CryptoControllerTest(
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn().response.contentAsString
 
-        val actual = objectMapper.readValue<List<Pair<CryptoCurrency, BigDecimal>>>(response)
-        Assertions.assertEquals(listOf(
-            Pair(
-                CryptoCurrency.ETH,
-                BigDecimal.valueOf(4312.22)
-            ),
-            Pair(
-                CryptoCurrency.BNB,
-                BigDecimal.valueOf(3.232)
-            )
-        ), actual)
+        val actual: List<CryptoPrice> = objectMapper.readValue(response)
+        Assertions.assertEquals(
+            listOf(
+                CryptoPrice(CryptoCurrency.ETH.name, BigDecimal.valueOf(4312.22)),
+                CryptoPrice(CryptoCurrency.BNB.name, BigDecimal.valueOf(3.232))
+            ), actual
+        )
     }
 }
