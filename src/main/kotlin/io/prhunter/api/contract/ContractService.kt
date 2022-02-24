@@ -21,13 +21,14 @@ abstract class ContractService(
     protected abstract val web3j: Web3j
     protected abstract val credentials: Credentials
     protected abstract val lazyGasProvider: LazyGasProvider
+    protected abstract val blockchainInfo: BlockchainInfo
 
     protected val log = KotlinLogging.logger {}
     private val oneHour = 3600L
 
     @Suppress("UNCHECKED_CAST")
     fun periodicBountyUpdate() {
-        val pendingBounties = bountyRepository.findAllByBountyStatus(BountyStatus.PENDING)
+        val pendingBounties = bountyRepository.findAllByBountyStatusAndBountyCurrency(BountyStatus.PENDING, blockchainInfo.currency.name)
         pendingBounties.forEach { activateIfDeployed(it) }
         val failedBounties = pendingBounties.filter { it.createdAt.isBefore(Instant.now().minusSeconds(oneHour)) }
         failedBounties.forEach { failIfNotDeployedForTooLong(it) }
@@ -53,6 +54,8 @@ abstract class ContractService(
     }
 
     private fun activateIfDeployed(bounty: io.prhunter.api.bounty.Bounty) {
+        // TODO add try-catch to all bountyFactory functions,
+        //  probably best to wrap it as a separate service with build in error handling
         val bountyAddressOpt = bountyFactory.allBounties(bounty.id.toString()).send()
         if (bountyAddressOpt != null && bountyAddressOpt != "0x0000000000000000000000000000000000000000") {
             val contractId = getContractBountyId(bountyAddressOpt)

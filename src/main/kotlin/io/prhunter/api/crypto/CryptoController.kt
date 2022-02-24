@@ -10,7 +10,7 @@ class CryptoController(
 ) {
 
     @GetMapping("/crypto/prices")
-    fun getCurrentCryptoPrices(): List<Pair<CryptoCurrency, BigDecimal>> {
-        return CryptoCurrency.values().map { Pair(it, coinGeckoApiService.getCurrentPrice(it)) }
+    fun getCurrentCryptoPrices(): List<CryptoPrice> {
+        return CryptoCurrency.values().map { CryptoPrice(it.name, coinGeckoApiService.getCurrentPrice(it)) }
     }
 }
