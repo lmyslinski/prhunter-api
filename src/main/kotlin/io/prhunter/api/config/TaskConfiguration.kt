@@ -33,9 +33,9 @@ class TaskConfiguration {
         return Tasks
             .recurring("update-contracts-eth", FixedDelay.ofSeconds(35))
             .execute { _, _ ->
-                log.debug { "Running pending ETH contracts task" }
+                log.debug { "Running update ETH contracts task" }
                 ethContractService.periodicBountyUpdate()
-                log.debug { "Pending contracts ETH task completed" }
+                log.debug { "ETH contract task completed" }
             }
     }
 
@@ -44,9 +44,9 @@ class TaskConfiguration {
         return Tasks
             .recurring("update-contracts-bsc", FixedDelay.ofSeconds(30))
             .execute { _, _ ->
-                log.debug { "Running pending BSC contracts task" }
+                log.debug { "Running update BSC contracts task" }
                 bscContractService.periodicBountyUpdate()
-                log.debug { "Pending contracts BSC task completed" }
+                log.debug { "BSC contract task completed" }
             }
     }
 
