@@ -23,10 +23,12 @@ class EthContractService(
     final override val web3j = Web3j.build(HttpService(ethBlockchainInfo.rpcUrl))
     final override val credentials = Credentials.create(ethBlockchainInfo.walletPkey)
     final override val lazyGasProvider: LazyGasProvider = LazyGasProvider(gasPriceResolver, ethBlockchainInfo)
+    final override val blockchainInfo: BlockchainInfo = ethBlockchainInfo
     final override val bountyFactory: BountyFactory = BountyFactory.load(
         ethBlockchainInfo.bountyFactoryAddress,
         web3j,
         credentials,
         lazyGasProvider
     )
+
 }

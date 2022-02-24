@@ -23,11 +23,13 @@ class BscContractService(
     final override val web3j = Web3j.build(HttpService(bscBlockchainInfo.rpcUrl))
     final override val credentials = Credentials.create(bscBlockchainInfo.walletPkey)
     final override val lazyGasProvider: LazyGasProvider = LazyGasProvider(gasPriceResolver, bscBlockchainInfo)
+    final override val blockchainInfo: BlockchainInfo = bscBlockchainInfo
     final override val bountyFactory: BountyFactory = BountyFactory.load(
         bscBlockchainInfo.bountyFactoryAddress,
         web3j,
         credentials,
         lazyGasProvider
     )
+
 
 }

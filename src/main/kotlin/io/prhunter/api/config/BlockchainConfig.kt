@@ -46,9 +46,9 @@ class BlockchainConfig(
     @Bean
     fun ethBlockchainInfo(): BlockchainInfo {
         if(isTestNet){
-            log.info { "Running on BSC Testnet - Bounty Factory URL: $ethBountyFactoryAddress, RPC: $ethRpcUrl" }
+            log.info { "Running on ETH Testnet - Bounty Factory URL: $ethBountyFactoryAddress, RPC: $ethRpcUrl" }
         }else{
-            log.info { "Running on BSC Mainnet - Bounty Factory URL: $ethBountyFactoryAddress, RPC: $ethRpcUrl" }
+            log.info { "Running on ETH Mainnet - Bounty Factory URL: $ethBountyFactoryAddress, RPC: $ethRpcUrl" }
         }
 
         return BlockchainInfo(

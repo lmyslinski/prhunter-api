@@ -21,6 +21,7 @@ class MockBscContractService(
     override val web3j: Web3j = mockk()
     override val credentials: Credentials = mockk()
     override val lazyGasProvider: LazyGasProvider = mockk()
+    override val blockchainInfo: BlockchainInfo = mockk()
 
     @PostConstruct
     fun init(){
