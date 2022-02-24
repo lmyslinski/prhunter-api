@@ -9,10 +9,9 @@ import io.prhunter.api.common.errors.BountyAlreadyExists
 import io.prhunter.api.common.errors.IssueAdminAccessRequired
 import io.prhunter.api.common.errors.NotFoundException
 import io.prhunter.api.common.errors.RepoAdminAccessRequired
-import io.prhunter.api.contract.ContractService
-import io.prhunter.api.contract.ContractServiceResolver
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.crypto.CryptoCurrency
+import io.prhunter.api.crypto.CryptoResolver
 import io.prhunter.api.github.GithubUserService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.Issue
@@ -31,14 +30,14 @@ class BountyService(
     private val bountyRepository: BountyRepository,
     private val githubUserService: GithubUserService,
     private val coinGeckoApiService: CoinGeckoApiService,
-    private val contractServiceResolver: ContractServiceResolver
+    private val cryptoResolver: CryptoResolver
 ) {
 
     // In order to solve the problem with multiple submissions and account for the user cancelling the metamask tx we accept this payload multiple times
     fun getOrCreateBounty(createBountyRequest: CreateBountyRequest, user: FirebaseUser): CreateBountyResponse {
         val issueData = getIssueAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, createBountyRequest.issueNumber, user)
         val bountyOpt = bountyRepository.findByIssueIdAndFirebaseUserIdAndBountyStatus(issueData.id, user.id, BountyStatus.PENDING)
-        val contractService = contractServiceResolver.getContractService(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
+        val contractService = cryptoResolver.getContractService(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         return if(bountyOpt != null){
             log.info { "Bounty already exists, returning the existing entity" }
             CreateBountyResponse(bountyOpt.id!!, contractService.getBountyFactoryAddress())
@@ -52,7 +51,7 @@ class BountyService(
         val repoData = getRepositoryAsUser(createBountyRequest.repoOwner, createBountyRequest.repoName, user)
         val currentCryptoPrice = coinGeckoApiService.getCurrentPrice(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bountyValueUsd = createBountyRequest.bountyValue.multiply(currentCryptoPrice)
-        val contractService = contractServiceResolver.getContractService(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
+        val contractService = cryptoResolver.getContractService(CryptoCurrency.valueOf(createBountyRequest.bountyCurrency))
         val bounty = Bounty(
             repoId = repoData.id,
             repoOwner = createBountyRequest.repoOwner,
@@ -184,11 +183,12 @@ class BountyService(
             bounty.createdAt,
             bounty.expiresAt,
             bounty.blockchainAddress,
+            cryptoResolver.getBlockchainUrl(bounty.blockchainAddress, CryptoCurrency.valueOf(bounty.bountyCurrency))
         )
     }
 
     fun completeBounty(bounty: Bounty, user: UserAccount) {
-        val contractService = contractServiceResolver.getContractService(CryptoCurrency.valueOf(bounty.bountyCurrency))
+        val contractService = cryptoResolver.getContractService(CryptoCurrency.valueOf(bounty.bountyCurrency))
         contractService.payoutBounty(user.ethWalletAddress!!, bounty)
         bounty.bountyStatus = BountyStatus.COMPLETED
         bounty.completedBy = user.firebaseUserId

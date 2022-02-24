@@ -29,5 +29,6 @@ data class BountyView(
     val createdAt: Instant,
     val expiresAt: Instant,
     val blockchainAddress: String?,
+    val blockchainUrl: String?,
 )
 
