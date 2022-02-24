@@ -28,7 +28,7 @@ abstract class ContractService(
 
     @Suppress("UNCHECKED_CAST")
     fun periodicBountyUpdate() {
-        val pendingBounties = bountyRepository.findAllByBountyStatusAndBountyCurrency(BountyStatus.PENDING, blockchainInfo.currency)
+        val pendingBounties = bountyRepository.findAllByBountyStatusAndBountyCurrency(BountyStatus.PENDING, blockchainInfo.currency.name)
         pendingBounties.forEach { activateIfDeployed(it) }
         val failedBounties = pendingBounties.filter { it.createdAt.isBefore(Instant.now().minusSeconds(oneHour)) }
         failedBounties.forEach { failIfNotDeployedForTooLong(it) }
