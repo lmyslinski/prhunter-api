@@ -43,10 +43,17 @@ github:
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 
 crypto:
-  ethGasStationApiKey: ${ETH_GAS_STATION_API_KEY:}
-  alchemyUrl: ${ALCHEMY_URL:invalid}
+  ethBountyFactoryAddress: ${BOUNTY_FACTORY_ETH_ADDRESS:invalid}
+  ethEtherscanUrl: "https://etherscan.io/"
+  ethRpcUrl: ${ETH_RPC_URL:invalid}
   ethPkey: ${ETH_PKEY:invalid}
-  bountyFactoryEthAddress: ${BOUNTY_FACTORY_ETH_ADDRESS:invalid}
+  ethGasLimit: 21000000
+  bscBountyFactoryAddress: ${BOUNTY_FACTORY_BSC_ADDRESS:invalid}
+  bscEtherscanUrl: "https://bscscan.com/"
+  bscRpcUrl: "https://bsc-dataseed.binance.org/"
+  bscGasLimit: 80000000
+  isTestNet: false
+
 
 twilio:
   apiKey: ${TWILIO_KEY:invalid}

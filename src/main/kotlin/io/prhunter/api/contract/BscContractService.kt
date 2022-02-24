@@ -11,22 +11,23 @@ import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 
-@Service
+@Service("bscContractService")
 @Profile("!test")
-class EthContractService(
+class BscContractService(
     bountyRepository: BountyRepository,
     githubAppService: GithubAppService,
-    ethBlockchainInfo: BlockchainInfo,
+    bscBlockchainInfo: BlockchainInfo,
     gasPriceResolver: GasPriceResolver
 ) : ContractService(bountyRepository, githubAppService) {
 
-    final override val web3j = Web3j.build(HttpService(ethBlockchainInfo.rpcUrl))
-    final override val credentials = Credentials.create(ethBlockchainInfo.walletPkey)
-    final override val lazyGasProvider: LazyGasProvider = LazyGasProvider(gasPriceResolver, ethBlockchainInfo)
+    final override val web3j = Web3j.build(HttpService(bscBlockchainInfo.rpcUrl))
+    final override val credentials = Credentials.create(bscBlockchainInfo.walletPkey)
+    final override val lazyGasProvider: LazyGasProvider = LazyGasProvider(gasPriceResolver, bscBlockchainInfo)
     final override val bountyFactory: BountyFactory = BountyFactory.load(
-        ethBlockchainInfo.bountyFactoryAddress,
+        bscBlockchainInfo.bountyFactoryAddress,
         web3j,
         credentials,
         lazyGasProvider
     )
+
 }

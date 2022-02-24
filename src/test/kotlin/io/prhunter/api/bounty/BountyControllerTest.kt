@@ -15,6 +15,7 @@ import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.CreateBountyResponse
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
+import io.prhunter.api.crypto.CryptoResolver
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
@@ -210,10 +211,6 @@ class BountyControllerTest(
             status { is4xxClientError() }
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn().response.contentAsString
-
-        // need to figure out localdatetime deserialization
-//        val apiError: ApiError = objectMapper.readValue(response)
-//        Assertions.assertEquals("This issue already has a bounty. You cannot have multiple bounties for the same issue.", apiError.message)
     }
 
     @Test

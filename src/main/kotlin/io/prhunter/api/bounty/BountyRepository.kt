@@ -13,4 +13,5 @@ interface BountyRepository : JpaRepository<Bounty, UUID>{
     fun findAllByBountyStatus(status: BountyStatus): List<Bounty>
     fun findAllByBountyStatusAndExpiresAtLessThan(status: BountyStatus, timestamp: Instant): List<Bounty>
     fun findByCompletedBy(firebaseUserId: String): List<Bounty>
+    fun findByIssueIdAndBountyStatus(issueId: Long, active: BountyStatus): Bounty?
 }
