@@ -4,14 +4,17 @@ import io.prhunter.api.contract.BlockchainInfo
 import io.prhunter.api.contract.BscContractService
 import io.prhunter.api.contract.ContractService
 import io.prhunter.api.contract.EthContractService
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
 class CryptoResolver(
     private val ethBlockchainInfo: BlockchainInfo,
     private val bscBlockchainInfo: BlockchainInfo,
-    private val ethContractService: EthContractService,
-    private val bscContractService: BscContractService
+    @Qualifier("ethContractService")
+    private val ethContractService: ContractService,
+    @Qualifier("bscContractService")
+    private val bscContractService: ContractService
 ) {
 
     fun getBlockchainUrl(address: String?, cryptoCurrency: CryptoCurrency): String? {

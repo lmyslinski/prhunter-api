@@ -11,7 +11,7 @@ import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 
-@Service
+@Service("bscContractService")
 @Profile("!test")
 class BscContractService(
     bountyRepository: BountyRepository,
