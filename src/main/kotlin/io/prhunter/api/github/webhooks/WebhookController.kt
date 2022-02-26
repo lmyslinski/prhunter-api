@@ -28,7 +28,6 @@ class WebhookController(
 
     @PostMapping()
     fun receiveWebhook(@RequestBody eventBody: String): ResponseEntity<String> {
-        log.debug { "Webhook received: $eventBody" }
         validateWebhook()
         handleWebhook(eventBody)
         return ResponseEntity.ok().body("")
@@ -36,6 +35,7 @@ class WebhookController(
 
     private fun handleWebhook(body: String) {
         val eventTree = objectMapper.readTree(body)
+        log.debug { "Webhook received: $eventTree" }
         var handled = false
 
         if (eventTree.get("pull_request") != null) {
@@ -78,7 +78,7 @@ class WebhookController(
         }
 
         if(!handled) {
-            log.info { "A webhook event was ignored: $body" }
+            log.info { "A webhook event was ignored: $eventTree" }
         }
     }
 

@@ -39,9 +39,8 @@ class GasPriceResolver(
 
     private fun getMainNetGasPrice(currency: CryptoCurrency): BigDecimal {
         val priceInfo = getFromCacheOrFetch(currency)
-        val price = priceInfo.avgTx.toWei()
-        log.info { "Using average price of ${price.toGwei()} gwei ${currency.ticker}. Est wait time: ${priceInfo.avgTime.setScale(0, RoundingMode.HALF_UP)}m" }
-        return price
+        log.info { "Using gas price of ${priceInfo.baseFee} gwei ${currency.name}" }
+        return priceInfo.baseFee.toWei()
     }
 
     private fun getFromCacheOrFetch(currency: CryptoCurrency): GasPriceInfo {
