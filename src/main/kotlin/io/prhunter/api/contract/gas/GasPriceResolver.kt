@@ -9,24 +9,27 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
 @Service
 class GasPriceResolver(
     private val ethGasStationApiClient: OwlracleApiClient
 ) {
-    // 100 gwei
-    private val bigWeiAmount = BigDecimal.valueOf(100L).toWei()
+    // 50 gwei
+    private val eth100Wei = BigDecimal.valueOf(100L).toWei()
+    private val bsc20Wei = BigDecimal.valueOf(20L).toWei()
     private val log = KotlinLogging.logger {}
     private val cache: Cache<CryptoCurrency, GasPriceInfo> = Caffeine.newBuilder()
         .expireAfterWrite(30, TimeUnit.MINUTES)
         .build()
 
     fun getGasPrice(blockchainInfo: BlockchainInfo): BigInteger {
-        return if(blockchainInfo.testNet){
-            log.info { "Using gas price of ${bigWeiAmount.toGwei()} gwei ${blockchainInfo.currency.ticker}" }
-            bigWeiAmount.toBigInteger()
+        return if(blockchainInfo.testNet && blockchainInfo.currency == CryptoCurrency.ETH){
+            log.info { "Using gas price of ${eth100Wei.toGwei()} gwei ${blockchainInfo.currency.name}" }
+            eth100Wei.toBigInteger()
+        }else if(blockchainInfo.testNet && blockchainInfo.currency == CryptoCurrency.BNB){
+            log.info { "Using gas price of ${bsc20Wei.toGwei()} gwei ${blockchainInfo.currency.name}" }
+            bsc20Wei.toBigInteger()
         }else{
             getMainNetGasPrice(blockchainInfo.currency).toBigInteger()
         }
