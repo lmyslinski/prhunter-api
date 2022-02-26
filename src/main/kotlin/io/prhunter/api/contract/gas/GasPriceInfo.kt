@@ -1,8 +1,9 @@
 package io.prhunter.api.contract.gas
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 
 data class GasPriceInfo(
-    val avgTx: BigDecimal,
-    val avgTime: BigDecimal
+    @JsonProperty("baseFee")
+    val baseFee: BigDecimal
 )
