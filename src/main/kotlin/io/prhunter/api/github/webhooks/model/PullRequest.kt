@@ -11,7 +11,6 @@ data class PullRequestWebhook(
 
 data class PullRequestDetails(
     val merged: Boolean,
-    val issueUrl: String?,
     val body: String?,
 )
 

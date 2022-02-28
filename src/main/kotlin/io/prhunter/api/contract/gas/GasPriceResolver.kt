@@ -15,9 +15,8 @@ import java.util.concurrent.TimeUnit
 class GasPriceResolver(
     private val ethGasStationApiClient: OwlracleApiClient
 ) {
-    // 50 gwei
     private val eth100Wei = BigDecimal.valueOf(100L).toWei()
-    private val bsc20Wei = BigDecimal.valueOf(20L).toWei()
+    private val bsc100Wei = BigDecimal.valueOf(100L).toWei()
     private val log = KotlinLogging.logger {}
     private val cache: Cache<CryptoCurrency, GasPriceInfo> = Caffeine.newBuilder()
         .expireAfterWrite(30, TimeUnit.MINUTES)
@@ -28,8 +27,8 @@ class GasPriceResolver(
             log.info { "Using gas price of ${eth100Wei.toGwei()} gwei ${blockchainInfo.currency.name}" }
             eth100Wei.toBigInteger()
         }else if(blockchainInfo.testNet && blockchainInfo.currency == CryptoCurrency.BNB){
-            log.info { "Using gas price of ${bsc20Wei.toGwei()} gwei ${blockchainInfo.currency.name}" }
-            bsc20Wei.toBigInteger()
+            log.info { "Using gas price of ${bsc100Wei.toGwei()} gwei ${blockchainInfo.currency.name}" }
+            bsc100Wei.toBigInteger()
         }else{
             getMainNetGasPrice(blockchainInfo.currency).toBigInteger()
         }

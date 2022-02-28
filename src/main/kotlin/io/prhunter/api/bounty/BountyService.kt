@@ -138,7 +138,6 @@ class BountyService(
             log.error( "Could not fetch issue ${repoOwner}/${repoName}/${issueNumber}", ex)
             throw IssueAdminAccessRequired()
         }
-
     }
 
     private fun getRepositoryAsUser(owner: String, repoName: String, user: FirebaseUser): GHRepoData {

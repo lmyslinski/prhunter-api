@@ -85,7 +85,8 @@ abstract class ContractService(
             // maybe add the TX in an event so that we can monitor what's going on
             log.info { "Successfully submitted a payout bounty tx from bounty $address to $targetAddress" }
         } catch (ex: Throwable) {
-            log.error(ex) { "Fatal error, could not load bounty in order to payout bounty" }
+            log.error(ex) { "Fatal error, could not payout bounty" }
+            throw ex
         }
     }
 
