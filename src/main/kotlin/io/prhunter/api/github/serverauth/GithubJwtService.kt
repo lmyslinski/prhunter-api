@@ -1,4 +1,4 @@
-package io.prhunter.api.github
+package io.prhunter.api.github.serverauth
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm

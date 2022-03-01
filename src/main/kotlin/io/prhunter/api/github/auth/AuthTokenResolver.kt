@@ -2,14 +2,12 @@ package io.prhunter.api.github.auth
 
 import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.bounty.fullName
-import io.prhunter.api.github.GithubAuthService
+import io.prhunter.api.github.serverauth.GithubAuthService
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.installation.InstallationService
 import io.prhunter.api.user.UserAccountService
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import org.web3j.abi.datatypes.Bool
 
 @Service
 class AuthTokenResolver(

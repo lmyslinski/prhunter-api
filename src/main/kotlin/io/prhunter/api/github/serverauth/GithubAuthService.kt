@@ -1,4 +1,4 @@
-package io.prhunter.api.github
+package io.prhunter.api.github.serverauth
 
 interface GithubAuthService {
     fun getInstallationAuthToken(installationId: Long): String

@@ -21,6 +21,7 @@ class GithubUserService(
 
     private val log = KotlinLogging.logger {}
 
+
     fun listUserInstallationRepositories(currentUser: FirebaseUser): List<GHRepoData> {
         val user = userAccountService.getUserAccount(currentUser.id)
         val installations = installationService.getUserInstallations(user)

@@ -4,6 +4,7 @@ import io.prhunter.api.bounty.Bounty
 import io.prhunter.api.github.auth.AuthTokenResolver
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.RepositoryList
+import io.prhunter.api.github.serverauth.GithubAuthService
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
