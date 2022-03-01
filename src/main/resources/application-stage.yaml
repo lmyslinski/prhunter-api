@@ -7,5 +7,5 @@ crypto:
   bscBountyFactoryAddress: ${BOUNTY_FACTORY_BSC_ADDRESS:invalid}
   bscEtherscanUrl: "https://testnet.bscscan.com/"
   bscRpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/"
-  bscGasLimit: 30000000
+  bscGasLimit: 9000000
   isTestNet: true
