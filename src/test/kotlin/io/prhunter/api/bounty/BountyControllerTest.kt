@@ -15,7 +15,6 @@ import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.CreateBountyResponse
 import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
-import io.prhunter.api.crypto.CryptoResolver
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.Issue
@@ -114,7 +113,8 @@ class BountyControllerTest(
                 "full-name",
                 "state",
                 "body",
-                0L
+                null,
+                0L,
             )
         )
 
@@ -149,6 +149,7 @@ class BountyControllerTest(
                 "full-name",
                 "state",
                 "body",
+                null,
                 0L
             )
         )
@@ -196,6 +197,8 @@ class BountyControllerTest(
                 "full-name",
                 "state",
                 "body",
+
+                null,
                 0L
             )
         )
