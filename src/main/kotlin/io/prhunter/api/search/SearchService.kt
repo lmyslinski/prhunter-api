@@ -28,6 +28,7 @@ class SearchService(
             getPriceFilter(searchRequest),
             getCurrencyFilter(searchRequest),
             getBountyTypeFilter(searchRequest),
+            getBountyStatusFilter(searchRequest),
             getTitleOrBodyFilter(searchRequest),
             getTagsFilter(searchRequest),
         )
@@ -40,6 +41,12 @@ class SearchService(
         val results = selectQuery.fetchInto(Bounty::class.java)
         val bountyViews = results.map { bountyService.toView(it) }
         return PageResponse(bountyViews, pageable.pageNumber + 1, total)
+    }
+
+    private fun getBountyStatusFilter(searchRequest: SearchRequest): Condition? {
+        return if (searchRequest.bountyStatus != null) {
+            BOUNTY.BOUNTY_STATUS.eq(searchRequest.bountyStatus.name)
+        } else null
     }
 
     private fun getBountyTypeFilter(searchRequest: SearchRequest): Condition? {

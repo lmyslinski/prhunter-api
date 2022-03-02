@@ -1,5 +1,6 @@
 package io.prhunter.api.search
 
+import io.prhunter.api.bounty.BountyStatus
 import io.prhunter.api.bounty.BountyType
 import io.prhunter.api.bounty.Experience
 import io.prhunter.api.crypto.CryptoCurrency
@@ -16,6 +17,7 @@ data class SearchRequest(
         val price: PriceFilterParams? = null,
         val tags: List<String>? = null,
         val bountyType: BountyType? = null,
+        val bountyStatus: BountyStatus? = null,
         val contentContains: String? = null,
         val currency: CryptoCurrency? = null
 )
