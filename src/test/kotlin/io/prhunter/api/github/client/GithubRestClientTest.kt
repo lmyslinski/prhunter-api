@@ -75,7 +75,7 @@ class GithubRestClientTest(
         }
 
         val expected = listOf(
-            Issue(1L, "MDU6SXNzdWUx", "Found a bug", "open", "I'm having a problem with this.", 1347)
+            Issue(1L, "MDU6SXNzdWUx", "Found a bug", "open", "I'm having a problem with this.", null, 1347)
         )
         Assertions.assertEquals(expected, resp)
     }

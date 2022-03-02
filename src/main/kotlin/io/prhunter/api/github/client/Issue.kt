@@ -6,5 +6,10 @@ data class Issue(
     val title: String,
     val state: String,
     val body: String?,
-    val number: Long
+    val pullRequest: PullRequest?,
+    val number: Long,
+)
+
+data class PullRequest(
+    val url: String
 )
