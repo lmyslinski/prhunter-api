@@ -44,16 +44,15 @@ github:
 
 crypto:
   ethBountyFactoryAddress: ${BOUNTY_FACTORY_ETH_ADDRESS:invalid}
-  ethEtherscanUrl: "https://etherscan.io/"
+  ethEtherscanUrl: "https://ropsten.etherscan.io/"
   ethRpcUrl: ${ETH_RPC_URL:invalid}
   ethPkey: ${ETH_PKEY:invalid}
-  ethGasLimit: 21000000
+  ethGasLimit: 8000000
   bscBountyFactoryAddress: ${BOUNTY_FACTORY_BSC_ADDRESS:invalid}
-  bscEtherscanUrl: "https://bscscan.com/"
-  bscRpcUrl: "https://bsc-dataseed.binance.org/"
-  bscGasLimit: 80000000
-  isTestNet: false
-
+  bscEtherscanUrl: "https://testnet.bscscan.com/"
+  bscRpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/"
+  bscGasLimit: 9000000
+  isTestNet: true
 
 twilio:
   apiKey: ${TWILIO_KEY:invalid}
