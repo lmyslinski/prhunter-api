@@ -4,7 +4,6 @@ import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.CreateBountyResponse
-import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.common.errors.BountyAlreadyExists
 import io.prhunter.api.common.errors.IssueAdminAccessRequired
 import io.prhunter.api.common.errors.NotFoundException
@@ -106,25 +105,6 @@ class BountyService(
 
     fun list(): List<BountyView> {
         return bountyRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).map { toView(it) }
-    }
-
-    fun updateBounty(id: UUID, updateBountyRequest: UpdateBountyRequest, user: FirebaseUser): BountyView {
-        val bounty = getBounty(id)
-        if(user.id != bounty.firebaseUserId){
-            throw RepoAdminAccessRequired()
-        }
-        val updatedBounty = bounty.copy(
-            problemStatement = updateBountyRequest.problemStatement,
-            acceptanceCriteria = updateBountyRequest.acceptanceCriteria,
-            title = updateBountyRequest.title,
-            languages = updateBountyRequest.languages.toTypedArray(),
-            bountyCurrency = updateBountyRequest.bountryCurrency,
-            bountyValue = updateBountyRequest.bountyValue,
-            tags = updateBountyRequest.tags.toTypedArray(),
-            experience = updateBountyRequest.experience,
-            bountyType = updateBountyRequest.bountyType
-        )
-        return toView(bountyRepository.save(updatedBounty))
     }
 
     fun getCompletedBy(firebaseUserId: String): List<BountyView> {

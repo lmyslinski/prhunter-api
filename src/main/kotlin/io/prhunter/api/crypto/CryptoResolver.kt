@@ -1,9 +1,7 @@
 package io.prhunter.api.crypto
 
 import io.prhunter.api.contract.BlockchainInfo
-import io.prhunter.api.contract.BscContractService
 import io.prhunter.api.contract.ContractService
-import io.prhunter.api.contract.EthContractService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
