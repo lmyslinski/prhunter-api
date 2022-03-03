@@ -1,10 +1,7 @@
 package io.prhunter.api.github.webhooks
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.Called
-import io.mockk.confirmVerified
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -31,14 +28,14 @@ class WebhookControllerTest(
     @Test
     fun `should handle pull request opened request correctly`() {
         val pullRequestBody = ClassPathResource("/github/webhook/pull-request-opened.json").file.readText()
-        every { pullRequestHandler?.handleOpened(any()) } returns Unit
+        coEvery { pullRequestHandler?.handleOpened(any()) } returns Unit
         mockMvc.post("/webhook") {
             content = pullRequestBody
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
         }
-        verify(exactly = 1) { pullRequestHandler?.handleOpened(any()) }
+        coVerify(exactly = 1) { pullRequestHandler?.handleOpened(any()) }
         confirmVerified(pullRequestHandler!!)
     }
 
@@ -51,21 +48,21 @@ class WebhookControllerTest(
         }.andExpect {
             status { isOk() }
         }
-        verify { pullRequestHandler!! wasNot Called }
+        coVerify { pullRequestHandler!! wasNot Called }
         confirmVerified(pullRequestHandler!!)
     }
 
     @Test
     fun `should handle pull request merged request correctly`() {
         val pullRequestBody = ClassPathResource("/github/webhook/pull-request-merged.json").file.readText()
-        every { pullRequestHandler?.handleMerged(any()) } returns Unit
+        coEvery { pullRequestHandler?.handleMerged(any()) } returns Unit
         mockMvc.post("/webhook") {
             content = pullRequestBody
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
         }
-        verify(exactly = 1) { pullRequestHandler?.handleMerged(any()) }
+        coVerify(exactly = 1) { pullRequestHandler?.handleMerged(any()) }
         confirmVerified(pullRequestHandler!!)
     }
 
@@ -79,7 +76,7 @@ class WebhookControllerTest(
         }.andExpect {
             status { isOk() }
         }
-        verify(exactly = 1) { installationHandler?.handle(any()) }
+        coVerify(exactly = 1) { installationHandler?.handle(any()) }
         confirmVerified(installationHandler!!)
     }
 
@@ -93,7 +90,7 @@ class WebhookControllerTest(
         }.andExpect {
             status { isOk() }
         }
-        verify(exactly = 1) { installationHandler?.handle(any()) }
+        coVerify(exactly = 1) { installationHandler?.handle(any()) }
         confirmVerified(installationHandler!!)
     }
 

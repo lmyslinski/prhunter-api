@@ -12,6 +12,11 @@ data class PullRequestWebhook(
 data class PullRequestDetails(
     val merged: Boolean,
     val body: String?,
+    val user: UserDetails
+)
+
+data class UserDetails(
+    val id: Long
 )
 
 data class RepoDetails(

@@ -19,9 +19,9 @@ class PullRequestHandler(
     private val githubAppService: GithubAppService
 ) {
 
-    fun handleMerged(details: PullRequestWebhook) {
+    suspend fun handleMerged(details: PullRequestWebhook) {
         val bounties = getMatchingBountiesForPr(details)
-        val userAccount = userAccountRepository.findByGithubUserId(details.sender.id)
+        val userAccount = userAccountRepository.findByGithubUserId(details.pullRequest.user.id)
         // TODO instead of logging, schedule a task that will comment on the PR prompting the user to fill in his details first so that he can claim the reward
         if (userAccount?.githubUserId == null || userAccount.ethWalletAddress == null) {
             log.info { "The PR was opened by a user without a wallet or github account linked. Ignoring" }
@@ -38,7 +38,7 @@ class PullRequestHandler(
         }
     }
 
-    fun handleOpened(details: PullRequestWebhook) {
+    suspend fun handleOpened(details: PullRequestWebhook) {
         val bounties = getMatchingBountiesForPr(details)
         val userAccount = userAccountRepository.findByGithubUserId(details.sender.id)
         // TODO instead of logging, schedule a task that will comment on the PR prompting the user to fill in his details first so that he can claim the reward

@@ -4,7 +4,6 @@ import io.prhunter.api.RequestUtil
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.CreateBountyResponse
-import io.prhunter.api.bounty.api.UpdateBountyRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -54,16 +53,5 @@ class BountyController(
         } else {
             ResponseEntity.status(HttpStatus.CONFLICT).body(bountyView)
         }
-    }
-
-    @PutMapping("/{id}")
-    fun updateBounty(
-        @PathVariable id: UUID,
-        @RequestBody updateBountyRequest: UpdateBountyRequest,
-        principal: Principal
-    ): ResponseEntity<BountyView> {
-        val firebaseUser = RequestUtil.getUserFromRequest(principal)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(bountyService.updateBounty(id, updateBountyRequest, firebaseUser))
     }
 }

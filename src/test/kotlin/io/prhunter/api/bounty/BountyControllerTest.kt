@@ -13,7 +13,6 @@ import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.bounty.api.BountyView
 import io.prhunter.api.bounty.api.CreateBountyRequest
 import io.prhunter.api.bounty.api.CreateBountyResponse
-import io.prhunter.api.bounty.api.UpdateBountyRequest
 import io.prhunter.api.crypto.CoinGeckoApiService
 import io.prhunter.api.github.client.GHRepoData
 import io.prhunter.api.github.client.GithubRestClient
@@ -62,16 +61,6 @@ class BountyControllerTest(
         BigDecimal.valueOf(100L),
         "ETH",
         Instant.now().plusSeconds(100L).epochSecond
-    )
-    private val updateBountyRequest = UpdateBountyRequest(
-        "new-title",
-        "statement-new", "acceptance-new",
-        listOf("kotlin", "javascript"),
-        listOf("updated"),
-        Experience.Advanced,
-        BountyType.Feature,
-        BigDecimal.valueOf(99),
-        "ETH"
     )
 
     @MockkBean
@@ -315,33 +304,6 @@ class BountyControllerTest(
                     json((objectMapper.writeValueAsString(bountyService.toView((expected)))))
                 }
             }
-        }
-    }
-
-    @Test
-    fun `should return 401 for update bounty if not signed in`() {
-        mockMvc.put("/bounty/1") {
-            content = objectMapper.writeValueAsString(updateBountyRequest)
-            contentType = MediaType.APPLICATION_JSON
-            accept = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isEqualTo(HttpStatus.UNAUTHORIZED.value()) }
-        }
-    }
-
-    @Test
-    fun `should return 403 for update bounty if not issue owner`() {
-        val differentUser = FirebaseUser("333", "aa", "bb")
-        TestDataProvider.setAuthenticatedContext(differentUser)
-        val expected = bountyRepository.findAll().sortedBy { it.createdAt }.first()
-        coEvery { githubRestClient!!.listAuthenticatedUserRepos(any()) }.returns(listOf())
-
-        mockMvc.put("/bounty/${expected.id}") {
-            content = objectMapper.writeValueAsString(updateBountyRequest)
-            contentType = MediaType.APPLICATION_JSON
-            accept = MediaType.APPLICATION_JSON
-        }.andExpect {
-            status { isEqualTo(HttpStatus.FORBIDDEN.value()) }
         }
     }
 }
