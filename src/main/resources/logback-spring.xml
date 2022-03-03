@@ -22,14 +22,14 @@
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.zalando.logbook" level="INFO"/>
 
-    <springProfile name="!production">
+    <springProfile name="dev">
         <!-- configuration to be enabled when the "production" profile is not active -->
         <root level="info">
             <appender-ref ref="console"/>
         </root>
     </springProfile>
 
-    <springProfile name="production">
+    <springProfile name="production, staging">
         <!-- configuration to be enabled when the "production" profile is active -->
         <root level="info">
             <appender-ref ref="json-stdout"/>
