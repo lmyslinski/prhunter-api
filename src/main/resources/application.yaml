@@ -43,12 +43,12 @@ github:
   privateKey: ${GITHUB_PRIVATE_KEY:invalid}
 
 crypto:
-  ethBountyFactoryAddress: ${BOUNTY_FACTORY_ETH_ADDRESS:invalid}
+  ethBountyFactoryAddress: "0x5fAa7Da985cc953C2E430A67E2498dE4b3B1ef92"
   ethEtherscanUrl: "https://ropsten.etherscan.io/"
   ethRpcUrl: ${ETH_RPC_URL:invalid}
   ethPkey: ${ETH_PKEY:invalid}
   ethGasLimit: 8000000
-  bscBountyFactoryAddress: ${BOUNTY_FACTORY_BSC_ADDRESS:invalid}
+  bscBountyFactoryAddress: "0x06783aE8EF55191730244984CA2FDAEd197ebCc0"
   bscEtherscanUrl: "https://testnet.bscscan.com/"
   bscRpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/"
   bscGasLimit: 9000000
