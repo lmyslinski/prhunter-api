@@ -1,11 +1,11 @@
 crypto:
   ethBountyFactoryAddress: "0xB8CD9308bA0577A3439cd39c23EFe57Cf0B35Baf"
-  ethEtherscanUrl: "https://etherscan.io/"
+  ethEtherscanUrl: "https://etherscan.io"
   ethRpcUrl: ${ETH_RPC_URL:invalid}
   ethPkey: ${ETH_PKEY:invalid}
   ethGasLimit: 21000000
   bscBountyFactoryAddress: "0xB8CD9308bA0577A3439cd39c23EFe57Cf0B35Baf"
-  bscEtherscanUrl: "https://bscscan.com/"
+  bscEtherscanUrl: "https://bscscan.com"
   bscRpcUrl: "https://bsc-dataseed.binance.org/"
   bscGasLimit: 80000000
   isTestNet: false
