@@ -1,12 +1,13 @@
 package io.prhunter.api.email
 
-import com.google.firebase.auth.FirebaseAuth
+import io.prhunter.api.auth.FirebaseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 open class EmailService(
-    @Autowired val emailClient: EmailClient
+    @Autowired val emailClient: EmailClient,
+    private val firebaseService: FirebaseService
 ) {
 
     fun sendContactEmail(contactMessageDto: ContactMessageDto) {
@@ -14,13 +15,10 @@ open class EmailService(
     }
 
     fun sendRegistrationEmail(email: String) {
-        val link = FirebaseAuth.getInstance().generateEmailVerificationLink(email)
-        println(link)
-        emailClient.sendRegistrationEmail(email, link)
+        emailClient.sendRegistrationEmail(email, firebaseService.getEmailVerificationLink(email))
     }
 
     fun sendEmailVerification(email: String) {
-        val link = FirebaseAuth.getInstance().generateEmailVerificationLink(email)
-        emailClient.sendEmailVerificationEmail(email, link)
+        emailClient.sendEmailVerificationEmail(email, firebaseService.getEmailVerificationLink(email))
     }
 }

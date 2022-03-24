@@ -5,14 +5,10 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.prhunter.api.TestDataProvider
-import io.prhunter.api.common.RestExceptionHandler
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -20,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.put
-import org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,7 +32,7 @@ class UserControllerTest(
     @Test
     fun `should return user account view if signed in`() {
         TestDataProvider.setAuthenticatedContext()
-        val userAccountView = UserAccountView("test-email", "display", "0x012312")
+        val userAccountView = UserAccountView("test-email", false, "display", "0x012312")
         every { userAccountService?.getUserAccountView(any()) }.returns(userAccountView)
         val response = mockMvc.get("/user") {
             accept = MediaType.APPLICATION_JSON

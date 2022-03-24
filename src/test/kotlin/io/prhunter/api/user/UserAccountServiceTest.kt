@@ -1,6 +1,5 @@
 package io.prhunter.api.user
 
-import com.google.firebase.auth.UserRecord
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coEvery
 import io.mockk.every
@@ -8,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.prhunter.api.auth.FirebaseService
 import io.prhunter.api.auth.FirebaseUser
+import io.prhunter.api.email.EmailService
 import io.prhunter.api.github.auth.GithubTokenRequest
 import io.prhunter.api.github.client.GithubRestClient
 import io.prhunter.api.github.client.GithubUserData
@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 class UserAccountServiceTest(
     @Autowired val userAccountRepository: UserAccountRepository,
+    @Autowired val emailService: EmailService,
 ) {
 
     @MockkBean
@@ -34,7 +35,7 @@ class UserAccountServiceTest(
 
     @BeforeEach
     fun setup() {
-        userAccountService = UserAccountService(userAccountRepository, githubRestClient!!, firebaseService!!)
+        userAccountService = UserAccountService(userAccountRepository, githubRestClient!!, firebaseService!!, emailService)
         userAccountRepository.deleteAll()
     }
 
@@ -49,6 +50,7 @@ class UserAccountServiceTest(
 
     @Test
     fun `should update existing account github token`() {
+        every { firebaseService!!.getUserById(any()) }.returns(null)
         coEvery { githubRestClient!!.getGithubUserData(any()) } returns GithubUserData("login", 0L)
         userAccountRepository.save(UserAccount("new-id"))
         userAccountService.updateGithubToken(GithubTokenRequest("new-id", "access-token-2"))
@@ -58,6 +60,8 @@ class UserAccountServiceTest(
 
     @Test
     fun `should update user email in firebase`() {
+        every { firebaseService!!.getUserById(any()) }.returns(null)
+        every { firebaseService!!.getEmailVerificationLink(any()) }.returns("https://sth.com")
         val fbUser = FirebaseUser("id", "name", "url")
         every { firebaseService!!.updateUserEmail(any(), any()) } returns mockk()
         userAccountService.updateUserAccount(fbUser, UpdateUserAccount("new-email", null))
@@ -66,6 +70,7 @@ class UserAccountServiceTest(
 
     @Test
     fun `should update user eth wallet and create a user if doesn't exist`(){
+        every { firebaseService!!.getUserById(any()) }.returns(null)
         val fbUser = FirebaseUser("another-id", "", "")
         userAccountService.updateUserAccount(fbUser, UpdateUserAccount(null, "0x0"))
         val userOpt = userAccountRepository.findById(fbUser.id)
@@ -74,6 +79,7 @@ class UserAccountServiceTest(
 
     @Test
     fun `should update existing user eth wallet`(){
+        every { firebaseService!!.getUserById(any()) }.returns(null)
         userAccountRepository.save(UserAccount("id-3"))
         val fbUser = FirebaseUser("id-3", "", "")
         userAccountService.updateUserAccount(fbUser, UpdateUserAccount(null, "0x0x"))
