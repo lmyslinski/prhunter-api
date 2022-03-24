@@ -35,4 +35,8 @@ class FirebaseService {
         val defaultAuth = FirebaseAuth.getInstance()
         return defaultAuth.getUser(userId)
     }
+
+    fun getEmailVerificationLink(email: String): String {
+        return FirebaseAuth.getInstance().generateEmailVerificationLink(email)
+    }
 }

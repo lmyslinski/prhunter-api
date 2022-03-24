@@ -22,8 +22,34 @@ class TwilioEmailClient(@Value("\${twilio.apiKey}") val apiKey: String) : EmailC
 
     companion object {
         const val SUPPORT: String = "support@prhunter.io"
+        const val FROM: String = "no-reply@prhunter.io"
         const val CONTACT_FORM_TEMPLATE_ID = "d-cf4326cc29f74f708ba0b11536520638"
+        const val SIGNUP_TEMPLATE_ID = "d-46638797fd2740cdaf3ddf9966b0a473"
+        const val EMAIL_VERIFICATION_TEMPLATE_ID = "d-a12a5100c8634aa7a2e02fde695ffa20"
+    }
 
+    override fun sendRegistrationEmail(email: String, link: String){
+        val mail = Mail()
+        mail.setFrom(Email(FROM, "PRHunter Team"))
+        mail.setReplyTo(Email(SUPPORT, "PRHunter Team"))
+        mail.setTemplateId(SIGNUP_TEMPLATE_ID)
+        val personalization = Personalization()
+        personalization.addDynamicTemplateData("link", link)
+        personalization.addTo(Email(email))
+        mail.addPersonalization(personalization)
+        sendInternal(mail)
+    }
+
+    override fun sendEmailVerificationEmail(email: String, link: String) {
+        val mail = Mail()
+        mail.setFrom(Email(FROM, "PRHunter Team"))
+        mail.setReplyTo(Email(SUPPORT, "PRHunter Team"))
+        mail.setTemplateId(EMAIL_VERIFICATION_TEMPLATE_ID)
+        val personalization = Personalization()
+        personalization.addDynamicTemplateData("link", link)
+        personalization.addTo(Email(email))
+        mail.addPersonalization(personalization)
+        sendInternal(mail)
     }
 
     override fun sendContactEmail(contactMessageDto: ContactMessageDto) {

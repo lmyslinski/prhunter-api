@@ -3,6 +3,7 @@ package io.prhunter.api.user
 import io.prhunter.api.auth.FirebaseService
 import io.prhunter.api.auth.FirebaseUser
 import io.prhunter.api.common.errors.NotFoundException
+import io.prhunter.api.email.EmailService
 import io.prhunter.api.github.auth.GithubTokenRequest
 import io.prhunter.api.github.client.GithubRestClient
 import kotlinx.coroutines.runBlocking
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service
 class UserAccountService(
     private val userAccountRepository: UserAccountRepository,
     private val githubRestClient: GithubRestClient,
-    private val firebaseService: FirebaseService
+    private val firebaseService: FirebaseService,
+    private val emailService: EmailService
 ) {
 
     fun getUserAccount(firebaseUserId: String): UserAccount {
@@ -36,16 +38,20 @@ class UserAccountService(
     fun getUserAccountView(firebaseUser: FirebaseUser): UserAccountView? {
         val firebaseUserRecord = firebaseService.getUserById(firebaseUser.id)
         val userAccount = userAccountRepository.findByFirebaseUserId(firebaseUser.id)
+
         return UserAccountView(
             firebaseUserRecord?.email,
+            firebaseUserRecord?.isEmailVerified,
             firebaseUserRecord?.displayName,
             userAccount?.ethWalletAddress
         )
     }
 
     fun updateUserAccount(firebaseUser: FirebaseUser, updateUserAccount: UpdateUserAccount) {
-        if (!updateUserAccount.email.isNullOrEmpty()) {
+        val firebaseUserRecord = firebaseService.getUserById(firebaseUser.id)
+        if (!updateUserAccount.email.isNullOrEmpty() && updateUserAccount.email != firebaseUserRecord?.email) {
             firebaseService.updateUserEmail(firebaseUser.id, updateUserAccount.email)
+            emailService.sendEmailVerification(updateUserAccount.email)
         }
 
         val userAccountOpt = userAccountRepository.findByFirebaseUserId(firebaseUser.id)
