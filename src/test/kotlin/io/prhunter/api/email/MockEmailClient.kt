@@ -9,4 +9,8 @@ class MockEmailClient : EmailClient {
     override fun sendContactEmail(contactMessageDto: ContactMessageDto) {
 
     }
+
+    override fun sendRegistrationEmail(email: String, link: String) {
+
+    }
 }

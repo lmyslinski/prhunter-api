@@ -8,13 +8,20 @@ import org.springframework.web.bind.annotation.RestController
 
 data class ContactMessageDto(val senderEmailAddress: String, val name: String, val subject: String, val message: String)
 
+data class RegistrationEmailDto(val email: String)
+
 @RestController
-@RequestMapping("/contact")
-class ContactController(
+@RequestMapping("/email")
+class EmailController(
         @Autowired private val emailService: EmailService
 ) {
 
-    @PostMapping
+    @PostMapping("/signup")
+    fun sendRegistrationEmail(@RequestBody registrationEmailDto: RegistrationEmailDto){
+
+    }
+
+    @PostMapping("/contact")
     fun sendContactMessage(@RequestBody contactMessageDto: ContactMessageDto){
         emailService.sendContactEmail(contactMessageDto)
     }
